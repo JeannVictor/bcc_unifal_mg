@@ -1,0 +1,245 @@
+\chapter{Introdução ao JavaScript}
+
+\section{O que é JavaScript?}
+
+Em uma definição de alto nível, JavaScript é uma linguagem de programação que permite implementar comportamento dinâmico e interatividade em aplicações web. Enquanto HTML fornece a estrutura e o CSS cuida da estética, o JavaScript é responsável por capturar eventos — cliques, digitação, envio de formulários, passagem do cursor sobre um elemento, entre tantos outros — e, a partir desses eventos, executar lógica de negócio que pode, por exemplo, atualizar a interface em tempo real, sem que seja necessária uma nova requisição ao servidor.
+
+\begin{infobox}{JavaScript em poucas palavras}
+JavaScript é uma linguagem de programação interpretada, originalmente criada para rodar dentro de navegadores web, que permite capturar eventos do usuário e manipular dinamicamente o conteúdo, o estilo e a estrutura de uma página, sem depender de uma nova requisição ao servidor a cada mudança.
+\end{infobox}
+
+Vale destacar uma diferença importante em relação a HTML e CSS: essas duas são linguagens declarativas e de marcação/estilo, ao passo que o JavaScript é uma linguagem de programação completa, no sentido usual da Ciência da Computação. Isso significa que o leitor encontrará ali os elementos que já conhece de outras linguagens: variáveis, tipos de dados primitivos e objetos, arrays, laços de repetição, estruturas condicionais, funções e tratamento de eventos. Tudo o que for aprendido sobre lógica de programação em JavaScript é, em grande medida, reaproveitável em qualquer outra linguagem de programação — o que muda são as particularidades de sintaxe e a forma como a linguagem se integra ao navegador. É comum classificar o JavaScript apenas como ”linguagem de script”, em oposição a uma ”linguagem de programação completa”. Essa distinção, hoje, é discutível. Desde
+
+o surgimento do Node.js, há mais de uma década, o JavaScript deixou de ser uma linguagem restrita ao front-end rodando dentro do navegador e passou a poder ser executado também no lado do servidor, sem depender de um navegador. Além disso, a linguagem incorporou ao longo do tempo conceitos de orientação a objetos e de programação funcional, tornando-se uma linguagem de propósito mais geral. Por essas razões, é mais correto pensar em JavaScript como uma linguagem de programação multiparadigma, que pode ser usada tanto no front-end quanto no back-end (o que forma o chamado desenvolvedor full stack).
+
+\subsection{O caminho de aprendizagem: HTML, CSS e depois JavaScript}
+
+O caminho mais comum trilhado por quem está aprendendo desenvolvimento front-end é começar por HTML, seguir para CSS e, por fim, chegar ao JavaScript. Essa ordem faz sentido pedagógico: primeiro se aprende a estruturar o conteúdo (HTML), depois a estilizá-lo (CSS) e, só então, a torná-lo interativo (JavaScript). Este livro, mais adiante, também abordará o desenvolvimento back-end, formando o quadro completo de um desenvolvedor full stack.
+
+\section{Para que serve o JavaScript na prática}
+
+Historicamente, um dos grandes problemas da programação para web era a necessidade de recarregar a página inteira a cada pequena atualização de conteúdo. Imagine um portal de notícias que precisa atualizar uma manchete a cada poucos minutos: se toda atualização exigisse reescrever o HTML no servidor e recarregar a página inteira no navegador do usuário, a experiência seria lenta e pouco prática. O JavaScript resolve esse tipo de problema ao permitir capturar atualizações — muitas vezes de forma assíncrona, buscando dados no servidor sem bloquear a interface — e atualizar apenas a parte específica da página onde a mudança deve ocorrer, sem a necessidade de um recarregamento completo (o chamado reload da página). Além da atualização dinâmica de conteúdo, o JavaScript é amplamente utilizado para:
+
+\begin{itemize}
+  \item capturar e responder a interações do usuário (cliques, digitação, rolagem, etc.);
+\end{itemize}
+
+\begin{itemize}
+  \item validar formulários no lado do cliente antes de enviá-los ao servidor;
+\end{itemize}
+
+\begin{itemize}
+  \item criar animações e efeitos visuais dinâmicos;
+\end{itemize}
+
+\begin{itemize}
+  \item desenvolver jogos, inclusive com desenho 2D e 3D usando a API de canvas;
+\end{itemize}
+
+\begin{itemize}
+  \item manipular áudio, vídeo e outros recursos de multimídia;
+\end{itemize}
+
+\begin{itemize}
+  \item se comunicar de forma assíncrona com um servidor (por exemplo, via requisições Ajax ou fetch), buscando ou enviando dados sem recarregar a página.
+\end{itemize}
+
+\subsection{Um exemplo mínimo para ganhar intuição}
+
+Antes de entrar em detalhes de sintaxe — que serão vistos com calma nos próximos capítulos —, vale observar um exemplo simples apenas para ganhar intuição sobre como o JavaScript se conecta ao HTML. Considere o seguinte parágrafo em HTML:
+
+\begin{codebox}{HTML}
+<p id="jogador">Jogador 1: Cris</p>
+\end{codebox}
+
+Com JavaScript, é possível selecionar esse elemento, associar um evento de clique a ele e, quando o evento ocorrer, alterar dinamicamente o seu conteúdo:
+
+\begin{codebox}{JavaScript}
+const paragrafo = document.querySelector("#jogador");
+
+paragrafo.addEventListener("click", function () {
+  const nome = prompt("Digite o novo nome:");
+  paragrafo.textContent = "Jogador 1: " + nome;
+});
+\end{codebox}
+
+Repare que, na primeira linha, é criada uma constante que aponta para o parágrafo dentro do DOM (a árvore de elementos que o navegador cria em memória a partir do HTML). Em seguida, é registrado um ”ouvinte”de evento (event listener) nesse parágrafo: sempre que o usuário clicar nele, uma função é executada. Essa função abre uma caixa de diálogo pedindo um novo nome e, assim que o usuário confirma, atualiza o conteúdo textual do parágrafo usando a propriedade textContent. Note que, em nenhum momento, houve uma nova requisição ao servidor: toda a atualização aconteceu inteiramente no navegador, no lado do cliente. Esse é, em essência, o tipo de comportamento dinâmico que o JavaScript viabiliza, e que será estudado em profundidade ao longo desta parte do livro.
+
+\section{APIs disponibilizadas pelos navegadores}
+
+Quando se trabalha com JavaScript associado a um navegador web, além da linguagem em si, o desenvolvedor tem acesso a diversas APIs (Application Programming Interfaces) fornecidas pelo próprio navegador. Essas APIs permitem, entre outras coisas, manipular o DOM — pesquisar elementos, criar novos elementos, remover elementos existentes, atualizar conteúdo e estilo. É justamente essa API de manipulação do DOM que permite construir aplicações web front-end cada vez mais ricas e interativas. Além das APIs padrão dos navegadores, existem também APIs de terceiros, desenvolvidas por empresas ou comunidades, que podem ser incorporadas a um projeto. Exemplos incluem APIs de mapas (como o Google Maps ou o OpenStreetMap) ou de redes sociais (como incorporar publicações do Twitter em um site). Este livro concentra-se nas APIs padrão, disponíveis nativamente nos navegadores, documentadas oficialmente na Mozilla Developer Network (MDN), uma das referências mais completas e confiáveis para consulta sobre JavaScript e APIs web.
+
+\begin{infobox}{Dica}
+A documentação da Mozilla Developer Network (MDN) é, hoje, a referência mais respeitada da comunidade para consultar detalhes sobre JavaScript, HTML, CSS e as APIs dos navegadores. Sempre que surgir uma dúvida sobre um método, uma propriedade ou uma mensagem de erro, vale a pena buscar diretamente na documentação do MDN antes de recorrer a fontes de terceiros.
+\end{infobox}
+
+\section{Como incluir JavaScript em uma página}
+
+Assim como ocorre com o CSS, existem diferentes formas de associar código JavaScript a um documento HTML: de forma interna, de forma externa e, ainda, de forma inline em atributos de elementos HTML.
+
+\subsection{JavaScript interno}
+
+É possível escrever código JavaScript diretamente dentro do documento HTML, utilizando o elemento script:
+
+\begin{codebox}{HTML}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo JavaScript interno</title>
+</head>
+<body>
+  <button id="botao">Clique aqui</button>
+
+     <script>
+       function criarParagrafo() {
+         const paragrafo = document.createElement("p");
+         paragrafo.textContent = "Você clicou no botão!";
+         document.body.appendChild(paragrafo);
+       }
+
+    const botao = document.querySelector("#botao");
+    botao.addEventListener("click", criarParagrafo);
+  </script>
+</body>
+</html>
+\end{codebox}
+
+\subsection{JavaScript externo}
+
+A abordagem preferida na prática, e recomendada como boa prática de desenvolvimento, é manter o código JavaScript em um arquivo separado, com extensão .js, e referenciá-lo a partir do HTML usando o atributo src do elemento script:
+
+\begin{codebox}{HTML}
+<body>
+  <button id="botao">Clique aqui</button>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
+\end{codebox}
+
+script.js
+
+\begin{codebox}{Código}
+function criarParagrafo() {
+const paragrafo = document.createElement("p");
+paragrafo.textContent = "Você clicou no botão!";
+document.body.appendChild(paragrafo);
+}
+\end{codebox}
+
+\begin{codebox}{Código}
+const botao = document.querySelector("#botao");
+botao.addEventListener("click", criarParagrafo);
+\end{codebox}
+
+Essa separação torna o código mais modular e mais legível, evitando misturar estrutura (HTML), apresentação (CSS) e comportamento (JavaScript) em um único arquivo — o que é uma boa prática amplamente adotada no mercado.
+
+\subsection{JavaScript inline}
+
+Também é possível associar código JavaScript diretamente a atributos de eventos de um elemento HTML, como onclick:
+
+\begin{codebox}{HTML}
+<button onclick="criarParagrafo()">Clique aqui</button>
+\end{codebox}
+
+Essa forma, no entanto, não é recomendada. Além de misturar HTML e JavaScript, ela se torna pouco eficiente quando há muitos elementos que precisam do mesmo comportamento: seria necessário repetir o atributo em cada botão. Uma alternativa muito mais elegante é selecionar todos os elementos de uma vez e associar o mesmo tratador de evento a todos eles em um laço:
+
+\begin{codebox}{JavaScript}
+const botoes = document.querySelectorAll("button");
+
+botoes.forEach(function (botao) {
+  botao.addEventListener("click", criarParagrafo);
+});
+\end{codebox}
+
+Dessa forma, não importa se a página tem 2 ou 200 botões: o mesmo trecho de código associa o comportamento a todos eles, sem necessidade de alterar o JavaScript cada vez que um novo botão for adicionado.
+
+\section{Ordem de carregamento: os atributos defer e async}
+
+Como o JavaScript frequentemente precisa manipular elementos do DOM, a ordem em que os arquivos são carregados importa. Se um script tentar acessar um elemento que ainda não foi criado pelo navegador (porque o HTML correspondente ainda não foi processado), ocorrerá um erro. Existem algumas estratégias para lidar com isso:
+
+\begin{itemize}
+  \item Colocar o script no final do body: uma solução mais antiga, que garante que todo o HTML já foi processado antes do script ser executado, mas que pode prejudicar a performance, pois o carregamento do script só começa depois de todo o HTML ter sido baixado.
+  \item Atributo defer: instrui o navegador a baixar o script em paralelo à renderização da página, mas só executá-lo depois que o documento HTML tiver sido completamente processado. Os scripts com defer são executados na ordem em que aparecem no documento.
+  \item Atributo async: também faz o download do script em paralelo, mas o executa assim que o download terminar, sem esperar o restante do HTML nem garantir qualquer ordem entre múltiplos scripts.
+  \item Evento DOMContentLoaded: permite registrar um bloco de código que só será executado depois que o DOM tiver sido completamente construído, ainda que outros recursos (como imagens) possam continuar carregando.
+\end{itemize}
+
+\begin{codebox}{JavaScript}
+document.addEventListener("DOMContentLoaded", function () {
+  // este código só executa depois que o DOM estiver pronto
+  const botao = document.querySelector("#botao");
+  botao.addEventListener("click", criarParagrafo);
+});
+\end{codebox}
+
+Como regra prática: use async quando os scripts carregados forem independentes entre si (sem que um dependa de código definido em outro); use defer quando existir dependência entre os scripts e a ordem de execução precisar ser respeitada.
+
+\section{Características importantes da linguagem}
+
+Algumas características do JavaScript merecem destaque neste momento inicial, pois vão acompanhar o leitor ao longo de toda esta parte do livro:
+
+\begin{itemize}
+  \item Linguagem interpretada: tradicionalmente, o código JavaScript é interpretado pelo navegador, executado na ordem em que aparece no documento (de cima para baixo), e não compilado previamente como ocorre em outras linguagens. Isso não impede, porém, que motores modernos de JavaScript utilizem compilação just-in-time (JIT) internamente para ganhar desempenho durante a execução.
+\end{itemize}
+
+\begin{itemize}
+  \item Execução síncrona por padrão, com suporte a assincronismo: por padrão, o JavaScript executa uma instrução após a outra, na ordem em que aparecem. No entanto, é extremamente comum, e cada vez mais central à linguagem, o uso de programação assíncrona, que permite executar operações (como requisições de rede) sem bloquear o restante do código.
+\end{itemize}
+
+\begin{itemize}
+  \item Sandbox de segurança: cada aba do navegador executa seu próprio código JavaScript em um ambiente isolado (sandbox), por questões de segurança. Isso não impede totalmente a comunicação entre abas, mas tal comunicação exige mecanismos específicos que fogem do escopo deste livro introdutório.
+\end{itemize}
+
+\begin{itemize}
+  \item Frontend e backend com a mesma linguagem: com o Node.js, tornou-se possível escrever tanto o código do lado do cliente quanto o código do lado do servidor em JavaScript, o que representa uma vantagem de produtividade para equipes e desenvolvedores individuais.
+\end{itemize}
+
+\section{Comentários em JavaScript}
+
+Assim como em outras linguagens de programação, o JavaScript oferece duas formas de comentário: comentários de uma linha, com //, e comentários de múltiplas linhas, delimitados por /* e */.
+
+\begin{codebox}{JavaScript}
+ // Isso é um comentário de uma linha
+\end{codebox}
+
+\begin{infobox}{/*}
+Isso é um comentário que ocupa várias linhas */
+\end{infobox}
+
+\begin{codebox}{Código}
+let idade = 25; // comentário ao final da linha
+\end{codebox}
+
+Comentários devem agregar valor semântico ao código, explicando decisões, lógicas não triviais ou avisos importantes para quem for dar manutenção no futuro. Comentários óbvios ou redundantes — como comentar que uma variável chamada idade ”guarda a idade”— apenas poluem o código sem trazer benefício real. A melhor forma de tornar um código autoexplicativo é escolher bons nomes para variáveis, funções e parâmetros, reduzindo a necessidade de comentários excessivos.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item JavaScript é a terceira linguagem fundamental do desenvolvimento web, responsável por adicionar comportamento dinâmico e interatividade a HTML e CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item Diferentemente de HTML e CSS, que são declarativas, o JavaScript é uma linguagem de programação completa, com variáveis, tipos, estruturas de controle, funções e orientação a objetos.
+\end{itemize}
+
+\begin{itemize}
+  \item Desde o surgimento do Node.js, o JavaScript deixou de ser exclusivo do navegador e passou a poder rodar também no lado do servidor, formando a base do desenvolvimento full stack.
+\end{itemize}
+
+\begin{itemize}
+  \item O JavaScript pode ser incluído em uma página de três formas: interno (dentro de um elemento script), externo (em um arquivo .js separado, a forma recomendada) e inline (em atributos como onclick, não recomendado).
+\end{itemize}
+
+\begin{itemize}
+  \item Os atributos defer e async, além do evento DOMContentLoaded, controlam a ordem e o momento em que scripts são executados em relação à construção do DOM.
+\end{itemize}
+
+\begin{itemize}
+  \item O navegador expõe APIs padrão para manipulação do DOM, geolocalização, canvas, áudio e vídeo, entre outras, documentadas oficialmente pela Mozilla Developer Network.
+\end{itemize}
+
+\begin{itemize}
+  \item Comentários devem agregar valor ao código, evitando tanto a ausência de documentação necessária quanto o excesso de comentários óbvios.
+\end{itemize}

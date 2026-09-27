@@ -1,0 +1,255 @@
+\chapter{Primeiros Passos com CSS (Parte 2)}
+
+\section{As Três Formas de Aplicar CSS}
+
+Existem três maneiras de associar estilos CSS a um documento HTML: folha de estilo externa, folha de estilo interna e estilo em linha (inline).
+
+\subsection{Folha de Estilo Externa (Recomendada)}
+
+Como já vimos, a forma recomendada é a folha de estilo externa, associada via elemento link dentro do head:
+
+\begin{codebox}{HTML}
+<head>
+  <link rel="stylesheet" href="styles/estilo.css">
+</head>
+\end{codebox}
+
+A grande vantagem dessa abordagem é o reúso: quando um site possui várias páginas, todas podem compartilhar a mesma folha de estilo externa, garantindo uma aparência consistente. Se, no futuro, for necessário alterar uma cor em todo o site, basta modificar um único arquivo CSS, em vez de precisar editar manualmente cada página individualmente.
+
+\subsection{Folha de Estilo Interna}
+
+É possível, também, declarar estilos dentro do próprio documento HTML, utilizando o elemento style dentro do head:
+
+\begin{codebox}{HTML}
+<head>
+  <style>
+    h1 {
+       color: blue;
+       background-color: yellow;
+
+
+
+    }
+    p {
+      color: red;
+    }
+  </style>
+</head>
+\end{codebox}
+
+\subsection{Estilo em Linha (Inline)}
+
+Por fim, é possível aplicar estilo diretamente em um elemento específico, usando o atributo style:
+
+\begin{codebox}{HTML}
+<h1 style="color: blue; background-color: yellow;">Hello, world!</h1>
+<p style="color: red;">Texto de exemplo.</p>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Estilos internos e, principalmente, estilos em linha, não são recomendados como prática padrão. Se você quiser replicar o mesmo estilo em várias páginas de um site, precisará copiar e colar o mesmo trecho repetidamente — e, se um dia precisar alterar uma cor, terá que editar cada cópia manualmente, um verdadeiro pesadelo de manutenção. Além disso, misturar HTML (estrutura) e CSS (apresentação) no mesmo arquivo dificulta o trabalho em equipe: se um desenvolvedor é especialista em HTML e outro em CSS, separar os arquivos permite que ambos trabalhem em paralelo sem conflitos. Existem, porém, exceções legítimas. Um exemplo clássico é o desenvolvimento de e-mails de marketing (mala direta): muitos clientes de e-mail removem folhas de estilo externas e internas por segurança, então, nesse contexto específico, o estilo em linha se torna necessário para garantir que o e-mail seja exibido corretamente. Outro exemplo é quando você trabalha com um sistema de gestão de conteúdo (CMS) como WordPress ou Drupal, e não possui permissão de acesso para editar a folha de estilo principal do site — nesses casos, uma solução de contorno pode ser aplicar estilos internos ou em linha nas páginas que você efetivamente controla.
+\end{infobox}
+
+\section{Seletores Baseados em Localização e Estado}
+
+Além dos seletores de tag, classe e ID, o CSS permite selecionar elementos com base em sua posição dentro da árvore do documento (o DOM) e em seu estado atual.
+
+\subsection{Combinador Descendente}
+
+O combinador descendente, representado por um espaço em branco entre dois seletores, seleciona um elemento que esteja dentro de outro, em qualquer nível de profundidade.
+
+\begin{codebox}{CSS}
+li em {
+  color: rebeccapurple;
+}
+\end{codebox}
+
+Essa regra seleciona qualquer elemento em que esteja dentro de um elemento li, em qualquer profundidade — e apenas esses elementos em específicos, não todos os em do documento.
+
+\subsection{Combinador Adjacente}
+
+O combinador de irmão adjacente, representado pelo sinal de mais (+), seleciona um elemento que esteja imediatamente após outro, no mesmo nível hierárquico (e não aninhado dentro dele).
+
+\begin{codebox}{CSS}
+h1 + p {
+  font-size: 200%;
+}
+\end{codebox}
+
+Essa regra seleciona o primeiro parágrafo que aparece imediatamente após um h1, no mesmo nível do DOM — e apenas esse primeiro parágrafo, não os demais parágrafos da página.
+
+\subsection{Combinando Seletores}
+
+É possível combinar múltiplos seletores em uma única regra, criando combinações mais específicas:
+
+\begin{codebox}{CSS}
+article p span {
+  color: red;
+}
+
+h1 + ul li {
+  color: green;
+}
+
+.especial p + h1 {
+  background-color: black;
+  color: yellow;
+}
+\end{codebox}
+
+A primeira regra seleciona qualquer span que esteja dentro de um p, que por sua vez esteja dentro de um article. A segunda seleciona qualquer li dentro de uma ul que venha logo após um h1. A terceira combina um seletor de classe com o combinador adjacente, selecionando um h1 que venha logo após um p que esteja dentro de um elemento com a classe especial.
+
+\subsection{Seletores de Estado (Pseudo-classes)}
+
+O CSS também permite estilizar elementos com base em seu estado — por exemplo, um link que já foi visitado ou um elemento sobre o qual o mouse está passando no momento. O exemplo mais clássico é o elemento de âncora, que possui diferentes estados possíveis.
+
+\begin{codebox}{CSS}
+a:visited {
+  color: pink;
+}
+
+a:hover {
+  text-decoration: none;
+}
+\end{codebox}
+
+A primeira regra estiliza um link que já foi visitado pelo menos uma vez pelo usuário. A segunda remove o sublinhado de um link no momento em que o mouse passa sobre ele.
+
+\begin{infobox}{Dica}
+Tenha cuidado ao alterar comportamentos que os usuários já esperam por convenção — como o sublinhado dos links. Embora o CSS permita remover completamente essa decoração, pense com calma se essa mudança realmente compensa do ponto de vista de acessibilidade e usabilidade. Lembre-se, também, de que o CSS nem sempre é percebido por todos os usuários da mesma forma: alguém navegando por leitor de tela está ouvindo o conteúdo, e não vendo as cores e tamanhos que você definiu — use estilos com moderação e sempre pensando na experiência de todos os públicos.
+\end{infobox}
+
+\section{Introdução ao Conceito de Caixa (Box)}
+
+Todo elemento HTML, ao ser renderizado, é representado internamente como uma caixa (box) — um retângulo (ou quadrado) que envolve o conteúdo daquele elemento. Esse conceito será aprofundado com muito mais detalhe no próximo capítulo, dedicado inteiramente ao modelo de caixa do CSS (box model), mas já vale introduzi-lo aqui.
+
+\begin{codebox}{HTML}
+<h1>Hello <span class="especial">world</span></h1>
+\end{codebox}
+
+\begin{codebox}{CSS}
+.especial {
+  background-color: black;
+  color: yellow;
+  padding: 10px;
+}
+\end{codebox}
+
+Ao renderizar esse exemplo, fica visualmente claro que o elemento span com a classe especial ocupa uma ”caixa”retangular ao seu redor — com fundo preto, texto amarelo e um espaçamento interno de 10 pixels entre o texto e a borda imaginária dessa caixa. Essa distância entre o conteúdo e a borda da caixa é chamada de padding, uma das propriedades centrais do modelo de caixa que exploraremos em profundidade no próximo capítulo.
+
+\section{Funções CSS: o Exemplo de calc()}
+
+Os valores atribuídos a uma propriedade CSS nem sempre são literais simples como 10px ou red. Muitas vezes, esses valores podem ser o resultado de funções CSS. Um exemplo útil é a função calc(), que permite realizar operações matemáticas diretamente no valor de uma propriedade.
+
+\begin{codebox}{HTML}
+<div class="externo">
+  <div class="interno">Texto de exemplo</div>
+</div>
+\end{codebox}
+
+\begin{codebox}{CSS}
+.externo {
+  border: 5px solid black;
+}
+
+.interno {
+  width: calc(90% - 30px);
+  padding: 10px;
+  background-color: purple;
+  color: white;
+}
+\end{codebox}
+
+Nesse exemplo, a largura da div interna é calculada como noventa por cento da largura do elemento pai, subtraído de 30 pixels — permitindo, por exemplo, reservar um espaço visual fixo entre os dois elementos, independentemente do tamanho da tela do usuário.
+
+\section{A Regra @media e o Layout Responsivo}
+
+Uma das características mais importantes do CSS moderno é a capacidade de adaptar o layout de um site de acordo com as dimensões da tela do usuário — seja um computador, um tablet ou um celular. Essa adaptação é feita através de at-rules (regras precedidas de @), sendo a mais utilizada a regra @media.
+
+\begin{codebox}{CSS}
+body {
+  background-color: pink;
+}
+
+
+
+@media (min-width: 30em) {
+  body {
+    background-color: blue;
+  }
+}
+
+   Essa folha de estilo diz: ”a cor de fundo do corpo do documento é rosa por padrão;
+\end{codebox}
+
+porém, quando a largura da tela (viewport) for maior ou igual a 30em, a cor de fundo passa a ser azul”. Esse mecanismo é a base do que chamamos de design responsivo: definir regras de estilo distintas para diferentes larguras de tela, permitindo que o mesmo site se adapte graticamente a celulares, tablets e monitores grandes.
+
+\begin{infobox}{Dica}
+Uma abordagem muito comum no desenvolvimento moderno é o chamado mobile first: projetar o layout inicialmente pensando em telas pequenas (dispositivos móveis) e, em seguida, usar @media para adicionar ajustes de layout à medida que a tela cresce. Essa estratégia tende a produzir sites mais robustos e mais fáceis de adaptar a qualquer tamanho de dispositivo.
+\end{infobox}
+
+\section{Notação Abreviada (Shorthand) e Comentários}
+
+Muitas propriedades CSS possuem uma forma abreviada de escrita, chamada shorthand, que permite configurar várias propriedades relacionadas com uma única linha.
+
+\begin{codebox}{CSS}
+/* Forma longa (uma propriedade por lado) */
+.caixa-longa {
+  padding-top: 10px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+}
+\end{codebox}
+
+/* Forma abreviada equivalente (sentido horário: topo, direita, baixo, esquerda) */ .caixa-curta \{ padding: 10px 15px; \}
+
+\begin{infobox}{Dica}
+Ao usar a notação abreviada, tenha cuidado: quando você fornece menos valores do que os quatro lados possíveis, o CSS aplica regras específicas de repetição (por exemplo, dois valores se aplicam a topo/baixo e direita/esquerda, respectivamente). Além disso, algumas propriedades shorthand redefinem todos os valores relacionados para seus padrões, mesmo os que você não mencionou explicitamente
+\end{infobox}
+
+— o que pode gerar resultados inesperados se você não conhecer bem o comportamento da propriedade abreviada em questão.
+
+Por fim, o CSS ignora espaços em branco (da mesma forma que o HTML), mas isso não significa que você deva abrir mão de uma boa formatação. Comentários em CSS são delimitados por /* e */, e podem se estender por múltiplas linhas — são fundamentais para documentar o código e facilitar a manutenção futura, tanto para você mesmo quanto para outros desenvolvedores.
+
+\begin{codebox}{CSS}
+/*
+\end{codebox}
+
+\begin{infobox}{Seção: estilos do cabeçalho principal}
+Autor: Equipe de Front-End */ header \{ background-color: navy; color: white; \}
+\end{infobox}
+
+\begin{infobox}{Dica}
+Se você aplicar uma regra CSS e ela parecer não estar funcionando, uma técnica útil de depuração é comentar temporariamente uma das regras conflitantes e recarregar a página. Isso ajuda a identificar se o problema é um conflito de especificidade entre regras — assunto que será tratado em detalhe no capítulo sobre cascata e herança.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Existem três formas de aplicar CSS: folha externa (recomendada, melhor para reúso e manutenção), folha interna (dentro de <style>) e estilo em linha (atributo style, geralmente desaconselhado).
+\end{itemize}
+
+\begin{itemize}
+  \item Combinadores como o descendente (espaço) e o adjacente (+) permitem selecionar elementos com base em sua posição na árvore do documento.
+\end{itemize}
+
+\begin{itemize}
+  \item Pseudo-classes como :visited e :hover permitem estilizar elementos com base em seu estado atual.
+\end{itemize}
+
+\begin{itemize}
+  \item Todo elemento HTML é renderizado como uma caixa (box), conceito que será aprofundado no próximo capítulo sobre o box model.
+\end{itemize}
+
+\begin{itemize}
+  \item Funções CSS, como calc(), permitem calcular valores de propriedades dinamicamente, combinando unidades diferentes.
+\end{itemize}
+
+\begin{itemize}
+  \item A regra @media permite aplicar estilos condicionalmente, de acordo com as dimensões da tela do usuário, sendo a base do design responsivo.
+\end{itemize}
+
+\begin{itemize}
+  \item A notação abreviada (shorthand), como em padding: 10px 15px;, agiliza a escrita de CSS, mas exige atenção às regras de repetição de valores.
+\end{itemize}

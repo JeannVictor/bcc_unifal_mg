@@ -1,0 +1,322 @@
+\chapter{Estruturas de Controle, Funções e Arrays em JavaScript}
+
+\section{Estruturas condicionais}
+
+Estruturas condicionais permitem que um programa tome decisões, executando diferentes blocos de código dependendo se uma determinada condição é verdadeira ou falsa.
+
+\subsection{if, else if e else}
+
+A estrutura condicional mais fundamental é o if, que executa um bloco de código apenas quando a condição entre parênteses é avaliada como verdadeira (true):
+
+\begin{codebox}{JavaScript}
+let idade = 20;
+
+if (idade >= 18) {
+  console.log("Maior de idade.");
+}
+\end{codebox}
+
+É possível encadear alternativas com else if, e definir um bloco padrão, executado quando nenhuma das condições anteriores for verdadeira, com else:
+
+\begin{codebox}{JavaScript}
+let nota = 7.5;
+
+if (nota >= 9) {
+  console.log("Conceito A");
+} else if (nota >= 7) {
+  console.log("Conceito B");
+} else if (nota >= 5) {
+  console.log("Conceito C");
+
+
+
+} else {
+  console.log("Reprovado");
+}
+// imprime: "Conceito B"
+\end{codebox}
+
+As condições podem ser combinadas usando operadores lógicos: \&\& (E lógico, ambas as condições precisam ser verdadeiras), || (OU lógico, pelo menos uma condição precisa ser verdadeira) e ! (negação, inverte o valor lógico de uma expressão).
+
+\begin{codebox}{JavaScript}
+let idade = 25;
+let temCarteira = true;
+
+if (idade >= 18 && temCarteira) {
+  console.log("Pode dirigir.");
+}
+
+let diaDeChuva = false;
+let diaDeSemana = true;
+
+if (diaDeChuva || !diaDeSemana) {
+  console.log("Melhor ficar em casa.");
+} else {
+  console.log("Bom dia para sair.");
+}
+\end{codebox}
+
+\subsection{switch}
+
+Quando é preciso comparar uma mesma variável com vários valores possíveis, o switch costuma tornar o código mais legível do que uma longa cadeia de else if:
+
+\begin{codebox}{JavaScript}
+let diaDaSemana = 3;
+let nomeDoDia;
+
+switch (diaDaSemana) {
+  case 1:
+    nomeDoDia = "Domingo";
+    break;
+  case 2:
+    nomeDoDia = "Segunda-feira";
+    break;
+  case 3:
+    nomeDoDia = "Terça-feira";
+    break;
+  default:
+    nomeDoDia = "Dia inválido";
+}
+
+
+
+console.log(nomeDoDia); // "Terça-feira"
+\end{codebox}
+
+\begin{infobox}{Dica}
+Não esqueça do break ao final de cada case. Sem ele, a execução ”cai”para o próximo case (comportamento chamado fall-through), executando também o bloco seguinte, o que raramente é o comportamento desejado. O bloco default, opcional, funciona como o else de um switch, sendo executado quando nenhum case corresponde ao valor testado.
+\end{infobox}
+
+\section{Estruturas de repetição}
+
+Estruturas de repetição (ou laços) permitem executar um mesmo bloco de código múltiplas vezes, evitando repetição manual de instruções.
+
+\subsection{O laço for}
+
+O laço for clássico é composto por três partes, separadas por ponto e vírgula: a inicialização de uma variável de controle, a condição que mantém o laço em execução, e a atualização da variável de controle a cada iteração.
+
+\begin{codebox}{JavaScript}
+for (let i = 0; i < 5; i++) {
+  console.log("Iteração número " + i);
+}
+// imprime: 0, 1, 2, 3, 4
+\end{codebox}
+
+\subsection{O laço while}
+
+O laço while executa um bloco de código enquanto uma condição permanecer verdadeira, sendo especialmente útil quando não se sabe, de antemão, quantas iterações serão necessárias:
+
+\begin{codebox}{JavaScript}
+let tentativas = 0;
+
+while (tentativas < 3) {
+  console.log("Tentativa " + tentativas);
+  tentativas++;
+}
+\end{codebox}
+
+Uma variação é o do...while, que garante que o bloco de código seja executado ao menos uma vez, mesmo que a condição já seja falsa desde o início, pois a verificação ocorre apenas ao final da primeira execução:
+
+\begin{codebox}{JavaScript}
+let numero = 10;
+
+do {
+  console.log("Executou ao menos uma vez: " + numero);
+} while (numero < 5);
+\end{codebox}
+
+\subsection{for...of e for...in}
+
+Além do for tradicional, o JavaScript oferece duas variações voltadas à iteração sobre coleções de dados. O for...of percorre os valores de uma coleção iterável, como um array ou uma string:
+
+\begin{codebox}{JavaScript}
+const frutas = ["maçã", "banana", "laranja"];
+
+for (const fruta of frutas) {
+  console.log(fruta);
+}
+// imprime: "maçã", "banana", "laranja"
+\end{codebox}
+
+Já o for...in percorre as chaves (ou índices) de um objeto:
+
+\begin{codebox}{JavaScript}
+const aluno = { nome: "Rodrigo", curso: "Ciência da Computação", ano: 2026 };
+
+for (const chave in aluno) {
+  console.log(chave + ": " + aluno[chave]);
+}
+// imprime: "nome: Rodrigo", "curso: Ciência da Computação", "ano: 2026"
+\end{codebox}
+
+\begin{infobox}{Dica}
+Como regra prática: use for...of para percorrer os elementos de um array (ou de outra estrutura iterável), e reserve o for...in para percorrer as propriedades de um objeto. Usar for...in em arrays é possível, mas não é recomendado, pois percorre os índices como strings e pode incluir propriedades herdadas inesperadas.
+\end{infobox}
+
+\section{Funções}
+
+Funções permitem agrupar um bloco de código sob um nome, para que ele possa ser reutilizado e chamado (executado) sempre que necessário, evitando repetição de código.
+
+\subsection{Declaração de função (function declaration)}
+
+A forma mais tradicional de definir uma função é a declaração de função, usando a palavra reservada function:
+
+\begin{codebox}{JavaScript}
+function saudacao(nome) {
+  return "Olá, " + nome + "!";
+}
+
+console.log(saudacao("Ana")); // "Olá, Ana!"
+\end{codebox}
+
+Uma característica interessante das declarações de função é que elas sofrem hoisting completo: é possível chamar a função em uma linha anterior à sua definição no códigofonte, pois o JavaScript já ”conhece”toda a função antes de começar a executar o programa.
+
+\subsection{Expressão de função (function expression)}
+
+Uma função também pode ser atribuída a uma variável, como qualquer outro valor — o que é chamado de expressão de função:
+
+\begin{codebox}{JavaScript}
+const saudacao = function (nome) {
+   return "Olá, " + nome + "!";
+};
+
+console.log(saudacao("Bruno")); // "Olá, Bruno!"
+\end{codebox}
+
+Diferentemente das declarações de função, expressões de função não sofrem hoisting da mesma forma — a variável que armazena a função só pode ser chamada depois da linha em que ela foi definida.
+
+\subsection{Arrow functions}
+
+Introduzidas no ECMAScript 2015, as arrow functions (funções de seta) oferecem uma sintaxe mais compacta para escrever funções, muito utilizada atualmente, especialmente em callbacks passados para outras funções:
+
+\begin{codebox}{JavaScript}
+const saudacao = (nome) => {
+   return "Olá, " + nome + "!";
+};
+
+console.log(saudacao("Carla")); // "Olá, Carla!"
+\end{codebox}
+
+Quando o corpo da função contém apenas uma expressão de retorno, é possível omitir as chaves e a palavra return, tornando a sintaxe ainda mais enxuta:
+
+\begin{codebox}{JavaScript}
+const dobro = (numero) => numero * 2;
+console.log(dobro(5)); // 10
+
+// com apenas um parâmetro, os parênteses também são opcionais:
+const triplo = numero => numero * 3;
+console.log(triplo(5)); // 15
+\end{codebox}
+
+\begin{infobox}{Dica}
+Além da sintaxe mais curta, arrow functions têm uma diferença de comportamento importante em relação ao valor de this dentro delas (elas não criam seu próprio this, herdando-o do contexto onde foram definidas). Esse é um detalhe mais avançado, mas vale saber que ele existe: em código orientado a objetos mais sofisticado, essa diferença pode ser decisiva na escolha entre uma função tradicional e uma arrow function.
+\end{infobox}
+
+\subsection{Parâmetros e retorno}
+
+Funções podem receber múltiplos parâmetros, valores padrão para parâmetros não informados, e devolver um resultado usando a palavra reservada return. Quando uma função não possui um return explícito, ela retorna undefined.
+
+\begin{codebox}{JavaScript}
+function calcularMedia(nota1, nota2, peso = 1) {
+  return ((nota1 + nota2) / 2) * peso;
+}
+
+console.log(calcularMedia(7, 9));    // 8        (peso assume o valor padrão 1)
+console.log(calcularMedia(7, 9, 2)); // 16
+\end{codebox}
+
+\section{Arrays}
+
+Um array é uma estrutura de dados usada para armazenar uma coleção ordenada de valores, acessíveis por meio de um índice numérico que começa em zero.
+
+\begin{codebox}{JavaScript}
+const numeros = [10, 20, 30, 40];
+
+console.log(numeros[0]); // 10 -- primeiro elemento
+console.log(numeros[2]); // 30
+console.log(numeros.length); // 4 -- quantidade de elementos
+\end{codebox}
+
+\subsection{Métodos comuns de array}
+
+O JavaScript oferece uma quantidade rica de métodos embutidos para manipular arrays. Alguns dos mais usados no dia a dia são:
+
+\begin{codebox}{JavaScript}
+ const frutas = ["maçã", "banana"];
+
+ frutas.push("laranja");         // adiciona ao final: ["maçã", "banana", "laranja"]
+ frutas.pop();                    // remove o último: ["maçã", "banana"]
+ frutas.unshift("morango");       // adiciona ao início: ["morango", "maçã", "banana"]
+ frutas.shift();                   // remove o primeiro: ["maçã", "banana"]
+\end{codebox}
+
+Três métodos merecem destaque especial por serem extremamente usados em código JavaScript moderno: forEach, map e filter.
+
+\begin{codebox}{JavaScript}
+ const numeros = [1, 2, 3, 4, 5];
+
+ // forEach: executa uma função para cada elemento (não retorna array novo)
+ numeros.forEach(function (numero) {
+   console.log(numero * 2);
+ });
+
+ // map: cria um NOVO array, transformando cada elemento
+ const dobrados = numeros.map(numero => numero * 2);
+ console.log(dobrados); // [2, 4, 6, 8, 10]
+
+ // filter: cria um NOVO array, mantendo apenas os elementos que satisfazem a condição
+ const pares = numeros.filter(numero => numero % 2 === 0);
+ console.log(pares); // [2, 4]
+\end{codebox}
+
+\begin{infobox}{Dica}
+A diferença essencial entre forEach e map é o valor de retorno: forEach apenas executa uma ação para cada elemento e retorna undefined, sendo usado por seu efeito colateral (como imprimir algo no console ou atualizar a tela); já map constrói e retorna um novo array com os valores transformados, sem alterar o array original. Já filter sempre retorna um novo array, possivelmente menor, contendo apenas os elementos para os quais a função de teste retornou true.
+\end{infobox}
+
+\section{Objetos literais: uma breve introdução}
+
+Além de arrays, o JavaScript utiliza extensivamente objetos literais para agrupar dados relacionados sob um único valor, na forma de pares de chave e valor:
+
+\begin{codebox}{JavaScript}
+ const aluno = {
+\end{codebox}
+
+\begin{infobox}{nome: "Nicolas",}
+curso: "Ciência da Computação", matriculado: true \};
+\end{infobox}
+
+console.log(aluno.nome); // "Nicolas" console.log(aluno["curso"]); // "Ciência da Computação" (acesso alternativo)
+
+aluno.ano = 2026; // adicionando uma nova propriedade console.log(aluno.ano); // 2026
+
+Objetos podem ser acessados tanto pela notação de ponto (aluno.nome) quanto pela notação de colchetes (aluno["nome"]), sendo a segunda especialmente útil quando o nome da propriedade é dinâmico (armazenado em uma variável) ou contém caracteres que não são válidos em identificadores. Objetos são a base de praticamente toda estruturação de dados mais complexa em JavaScript, e serão retomados com mais profundidade quando o assunto de manipulação do DOM for aprofundado no próximo capítulo, já que cada elemento HTML manipulado via JavaScript é, na prática, representado internamente como um objeto.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Estruturas condicionais (if/else if/else e switch) permitem que um programa tome decisões com base em condições booleanas.
+\end{itemize}
+
+\begin{itemize}
+  \item Estruturas de repetição (for, while, do...while) evitam a repetição manual de código, executando um bloco múltiplas vezes.
+\end{itemize}
+
+\begin{itemize}
+  \item for...of percorre valores de coleções iteráveis (como arrays), enquanto for...in percorre chaves de objetos.
+\end{itemize}
+
+\begin{itemize}
+  \item Funções podem ser definidas como declarações, expressões ou arrow functions, cada uma com nuances próprias de hoisting e de comportamento.
+\end{itemize}
+
+\begin{itemize}
+  \item Parâmetros com valores padrão e o uso de return tornam funções flexíveis e reutilizáveis.
+\end{itemize}
+
+\begin{itemize}
+  \item Arrays armazenam coleções ordenadas de valores, manipuláveis por métodos como push, pop, map, filter e forEach.
+\end{itemize}
+
+\begin{itemize}
+  \item Objetos literais organizam dados relacionados em pares de chave e valor, servindo de base para representar entidades do mundo real e elementos do DOM.
+\end{itemize}

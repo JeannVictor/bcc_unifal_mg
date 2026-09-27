@@ -1,0 +1,107 @@
+#=========================================================
+#               AMOSTRAGEM SIMPLES AO ACASO
+#=========================================================
+N = 100   # tamanho da POPULAÇÃO
+n = 10    # tamanho da amostra
+
+sample(N, n)     # sorteando "n" elementos entre 1 e "N"
+
+#=========================================================
+#               AMOSTRAGEM ESTRATIFICADA
+#=========================================================
+TE = c(873, 386, 246, 186, 112)   # tamanho dos estratos (Ni)
+
+N = 1803   # tamanho da População
+n = 100    # tamanho da amostra
+
+ni  = n/N * TE
+ni2 = round(ni, 0)   # arredonda valores para 0 casas decimais
+ni2
+
+# sorteando amostras em cada estrato
+sample(TE[1], ni2[1])   # estrato 1
+sample(TE[2], ni2[2])   # estrato 2
+sample(TE[3], ni2[3])   # estrato 3
+sample(TE[4], ni2[4])   # estrato 4
+sample(TE[5], ni2[5])   # estrato 5
+
+#=========================================================
+#               AMOSTRAGEM SISTEMÁTICA
+#=========================================================
+N = 6000
+n = 30
+
+R = round(N/n, 0)     # razão (passo de amostragem)
+R
+
+sort_elem1 = sample(R, 1)   # sorteando o 1° elemento (entre 1 e R)
+sort_elem1
+
+posicao = seq(sort_elem1, N, R)   # posições da amostra
+posicao
+
+#=========================================================
+# TABELA DE DISTRIBUIÇÃO DE FREQUÊNCIAS (TDF)
+#=========================================================
+# Dataset já deve ter sido importado do Excel com nome "Dataset"
+
+dados <- Dataset$vvpa
+dados
+
+n = length(dados)             # número de observações
+k = round(sqrt(n) + 0.5, 0)   # número de classes
+C = round((max(dados)-min(dados)) / (k-1), 2)   # amplitude de classe
+
+limites = round(min(dados)-C/2, 2) + C*(0:k)   # limites de classe
+TDF = hist(dados, breaks=limites, plot=FALSE, right=FALSE)
+
+tabela = matrix(c(rep(6*k)), k, 6)
+
+for(i in 1:k){
+  tabela[i,1] <- round(TDF$breaks[i], 2)
+  tabela[i,2] <- round(TDF$breaks[i+1], 2)
+  tabela[i,3] <- round(TDF$mids[i], 2)
+  tabela[i,4] <- (TDF$counts[i])
+  tabela[i,5] <- round((TDF$counts[i]/n), 4)
+  tabela[i,6] <- round((100*TDF$counts[i])/n, 2)
+}
+
+colnames(tabela) <- c("LI","LS","Xi","Fi","Fr","Fp")
+tabela
+
+#=========================================================
+# HISTOGRAMA
+#=========================================================
+dados <- Dataset$vvpa
+dados
+
+n = length(dados)
+k = round(sqrt(n) + 0.5, 0)
+C = round((max(dados)-min(dados))/(k-1), 2)
+
+limites = round(min(dados)-C/2, 2) + C*(0:k)
+TDF = hist(dados, breaks=limites, plot=FALSE, right=FALSE)
+
+hist(dados,
+     xlab="VVPAe (pontos)",
+     ylab="Frequência absoluta",
+     label=FALSE,
+     col="gray",
+     main="",
+     right=FALSE,
+     xlim=c(min(TDF$mids)-C, max(TDF$mids)+C),
+     ylim=c(0, max(TDF$counts)+1),
+     breaks=limites,
+     axes=FALSE)
+
+axis(1, at=limites, pos=c(0,0))
+axis(2, at=c(seq(0:(max(TDF$counts)+1))-1))
+
+#=========================================================
+# POLÍGONO SOBRE O HISTOGRAMA
+#=========================================================
+Xip <- c(TDF$mids[1]-C, TDF$mids, TDF$mids[length(TDF$mids)]+C)
+frequencia <- c(0, TDF$counts, 0)
+
+lines(frequencia ~ Xip, type="l", col="blue", lwd=2)
+

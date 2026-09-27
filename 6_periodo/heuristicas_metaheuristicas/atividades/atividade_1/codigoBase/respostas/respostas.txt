@@ -1,0 +1,100 @@
+Uma heurística construtiva para o problema do caminho mais longo
+Questões para reflexão e discussão
+------------------------------------------------------------------------
+
+1. Esta heurística se mostrou eficiente? Por que?
+
+Sim, ela se mostrou eficiente principalmente nos grafos completos, onde
+conseguiu chegar a uma resposta satisfatória em todos os casos, com 100%
+de cobertura. Nos grafos UDG obteve cerca de 82,24% de cobertura em
+média, o que ainda representa uma eficiência alta. Já nos grafos
+regulares apresentou a menor eficiência, com cerca de 39,19% de
+cobertura em média.
+
+No geral, dá pra dizer que a heurística funciona bem para grafos densos
+(onde há muitas arestas e, portanto, mais opções de vizinhos não
+visitados a cada passo), mas tem dificuldade em grafos mais esparsos,
+como os regulares, onde o número reduzido de vizinhos faz o caminho
+ficar "preso" (sem vizinhos não visitados) bem antes de percorrer todos
+os vértices.
+
+------------------------------------------------------------------------
+
+2. Como poderíamos modificá-la para melhorar o resultado? Você
+consegue imaginar alguma outra heurística que poderia funcionar? Quais
+seriam os prós e contras em relação à primeira?
+
+Acredito que poderíamos melhorar o resultado se fosse feito outro tipo
+de análise, e não apenas seguir sempre o vizinho de maior grau. Uma
+ideia seria usar um critério misto, que levasse em conta tanto o grau
+do vizinho quanto o peso da aresta até ele — já que, o objetivo do
+problema é maximizar o peso total do caminho, não necessariamente o
+número de arestas percorridas. Outra ideia seria, depois da construção
+inicial, aplicar uma busca local trocando alguns vértices de posição
+para tentar melhorar a cobertura ou o custo do caminho encontrado.
+
+Como prós, um critério baseado em peso tenderia a gerar caminhos com
+custo maior, e uma busca local poderia melhorar tanto a cobertura
+quanto o custo do resultado da heurística construtiva. Como contra,
+essas mudanças aumentam o custo computacional e a complexidade de
+implementação em relação à heurística gulosa original, que é simples e
+rápida.
+
+------------------------------------------------------------------------
+
+3. Como poderíamos avaliar a qualidade de uma heurística construtiva?
+Quais métricas você acha que seriam interessantes de serem avaliadas?
+
+Acredito que as métricas que poderiam ser utilizadas para avaliar a
+qualidade de uma heurística construtiva são:
+
+- Cobertura das arestas: quantas arestas (ou vértices) o caminho
+  conseguiu percorrer em relação ao total possível, para ver o quão
+  perto ficou de um caminho hamiltoniano;
+- Custo: a soma dos pesos das arestas escolhidas no caminho;
+- Tempo de execução: quanto tempo a heurística demorou para rodar, o
+  que é especialmente importante em instâncias grandes;
+- Vértices visitados: se a heurística conseguiu passar por uma
+  quantidade significativa de vértices antes de parar.
+
+------------------------------------------------------------------------
+
+4. Você consegue pensar em alguma outra maneira de atacar o problema
+do caminho mais longo? (Não é necessário implementar as soluções,
+apenas discuti-las.)
+
+- Programação dinâmica: funciona bem para grafos pequenos ou com
+  estrutura especial (como árvores), mas para grafos grandes fica
+  inviável, já que a complexidade cresce exponencialmente com o número
+  de vértices. Ainda assim, serve como referência de solução exata
+  para instâncias menores.
+- Busca local: depois de obter uma solução construtiva, aplicar
+  movimentos do tipo 2-opt ou 3-opt, trocando arestas do caminho para
+  tentar melhorá-lo aos poucos.
+
+------------------------------------------------------------------------
+
+5. A heurística proposta é gulosa. É possível pensar em alguma solução
+que não seja gulosa? Quais seriam os prós e contras em relação à
+solução gulosa?
+
+Sim, é possível. Algumas opções não gulosas seriam metaheurísticas
+como Simulated Annealing ou Algoritmo Genético, que não tomam decisões
+imediatamente ótimas a cada passo, mas exploram o espaço de soluções
+de forma mais ampla, aceitando às vezes soluções piores no caminho
+para escapar de ótimos locais.
+
+Como prós, essas abordagens tendem a encontrar soluções melhores do
+que a heurística gulosa, já que não ficam presas à primeira decisão
+"boa" tomada em cada passo — o que é justamente a limitação observada
+nos grafos regulares. Como contras, exigem muito mais tempo de
+execução e ajuste de parâmetros (como temperatura no Simulated
+Annealing ou taxa de mutação no Algoritmo Genético), além de ainda não
+garantirem encontrar a solução ótima.
+
+------------------------------------------------------------------------
+
+Na primeira questão os dados forem tirados de um script que reproduzia 
+todas as entradas teste.py, ai fiz a média dos dados de cobertura (que já 
+ajudaram na resposta da 3). As repostas das questões 4,5 tive que olhar nas 
+LLMs e seu material,não sabia mesmo. 

@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://san70ewrn4ap"]
+
+[ext_resource type="Script" uid="uid://cf2apnm38a17n" path="res://Scenes/Player/Guns/Gun_base/gun_base.gd" id="1_0175l"]
+[ext_resource type="Script" uid="uid://d4k2rkusta5n" path="res://Scenes/Player/Guns/Gun_base/enemy_detector.gd" id="3_eh1gl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_eh1gl"]
+radius = 401.31036
+
+[node name="Gun_base" type="Node2D"]
+script = ExtResource("1_0175l")
+init_damage = 10
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="ProjectileSpawnPoint" type="Marker2D" parent="."]
+
+[node name="EnemyDetector" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 960
+monitorable = false
+script = ExtResource("3_eh1gl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+shape = SubResource("CircleShape2D_eh1gl")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

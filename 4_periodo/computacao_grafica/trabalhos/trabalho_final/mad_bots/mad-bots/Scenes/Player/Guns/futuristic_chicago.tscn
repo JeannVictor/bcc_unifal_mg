@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://d330uqv85b571"]
+
+[ext_resource type="PackedScene" uid="uid://san70ewrn4ap" path="res://Scenes/Player/Guns/Gun_base/gun_base.tscn" id="1_aqdgd"]
+[ext_resource type="PackedScene" uid="uid://c6f5u7q2t4m2t" path="res://Scenes/Projectile/projectile_for_player.tscn" id="2_dt3o8"]
+[ext_resource type="Texture2D" uid="uid://cvhvqcx4jgvpy" path="res://Assets/Textures/Armas_E_Personagens/1 Icons/futuristic_chicago.png" id="3_dt3o8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ld2xs"]
+radius = 401.31036
+
+[node name="Futurist_chicago" instance=ExtResource("1_aqdgd")]
+scale = Vector2(1.5, 1.5)
+init_damage = 20
+init_fire_rate = 0.1
+init_fire_range = 500.0
+init_knockback_amount = 1.0
+pierce = 0
+projectile_scene = ExtResource("2_dt3o8")
+
+[node name="Sprite2D" parent="." index="0"]
+rotation = 0.7853982
+texture = ExtResource("3_dt3o8")
+
+[node name="CollisionShape2D" parent="EnemyDetector" index="0"]
+shape = SubResource("CircleShape2D_ld2xs")
+
+[node name="AudioStreamPlayer" parent="." index="3"]
+volume_db = 5.0

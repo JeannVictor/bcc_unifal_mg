@@ -1,0 +1,251 @@
+\chapter{Números e Operadores em JavaScript}
+
+\section{O tipo Number}
+
+Diferentemente de linguagens como Java, que possuem diversos tipos numéricos (byte, short, int, long, float, double), o JavaScript utiliza um único tipo, chamado Number, tanto para números inteiros quanto para números decimais (de ponto flutuante).
+
+\begin{codebox}{JavaScript}
+let meuInteiro = 5;
+let meuFlutuante = 6.667;
+
+console.log(typeof meuInteiro);   // "number"
+console.log(typeof meuFlutuante); // "number"
+\end{codebox}
+
+Como se pode ver, typeof retorna "number" para os dois casos, evidenciando que Number é um tipo ”guarda-chuva”que engloba qualquer valor numérico em JavaScript, independentemente de ser inteiro ou decimal.
+
+\begin{infobox}{BigInt}
+Para valores inteiros extremamente grandes, que ultrapassam a precisão segura do tipo Number (aproximadamente 253 ), o JavaScript oferece um segundo tipo numérico chamado BigInt. Um valor BigInt é criado adicionando a letra n ao final do literal numérico, ou passando o valor para o construtor BigInt(): const numeroEnorme = 9007199254740993n; const outroEnorme = BigInt(9007199254740993);
+\end{infobox}
+
+Esse tipo é utilizado apenas em situações específicas que exigem precisão além do padrão, sendo pouco comum no dia a dia de quem está começando.
+
+\subsection{O objeto Number e seus métodos}
+
+Como praticamente tudo em JavaScript, um valor numérico pode ser tratado como uma instância de um objeto, o que permite chamar métodos e acessar propriedades
+
+sobre ele usando o operador de ponto. Um exemplo útil é o método toFixed(), que arredonda um número para uma quantidade específica de casas decimais, retornando o resultado como uma string:
+
+\begin{codebox}{JavaScript}
+let valor = 6.667321;
+console.log(valor); // 6.667321
+
+valor = valor.toFixed(2);
+console.log(valor); // "6.67"
+\end{codebox}
+
+Outro uso comum do objeto Number é a conversão de uma string numérica em um valor numérico de fato. Isso é especialmente relevante ao capturar dados de formulários HTML: mesmo quando o usuário digita um número em um campo do tipo text ou number, o valor retornado pela propriedade value do campo é sempre uma string.
+
+\begin{codebox}{JavaScript}
+const campoTexto = document.querySelector("#idade");
+const valorDigitado = campoTexto.value;       // sempre uma string, ex: "25"
+const idade = Number(valorDigitado);          // convertido para número: 25
+
+console.log(typeof valorDigitado); // "string"
+console.log(typeof idade);         // "number"
+\end{codebox}
+
+\section{A armadilha da concatenação com strings}
+
+Um dos pontos que mais confundem quem está começando é a interação entre números e strings através do operador +. Em JavaScript, quando pelo menos um dos operandos do operador + é uma string, o outro operando é convertido para string e ocorre uma concatenação, e não uma soma:
+
+\begin{codebox}{JavaScript}
+let myNumber = "74"; // string, não número!
+myNumber = myNumber + 3;
+
+console.log(myNumber);        // "743" (concatenação, não soma!)
+console.log(typeof myNumber); // "string"
+\end{codebox}
+
+Isso ocorre porque "74" é uma string, e o operador + concatena essa string com a representação textual de 3, resultando em "743", e não em 77 (que seria o resultado de uma soma numérica).
+
+\begin{infobox}{Dica}
+Um lembrete importante aqui: strings em JavaScript são imutáveis. Isso significa que uma string, uma vez criada, nunca é alterada ”no lugar”— qualquer operação que pareça modificá-la (como concatenação) na verdade cria e retorna uma nova
+\end{infobox}
+
+string. Se o resultado dessa operação não for capturado em uma variável (ou reatribuído à mesma variável), o valor original permanece inalterado.
+
+Esse detalhe fica mais claro no exemplo a seguir:
+
+\begin{codebox}{JavaScript}
+let myNumber = "74";
+myNumber + 3;                 // resultado "743" é calculado, mas descartado
+
+console.log(myNumber);        // ainda "74" -- nada mudou!
+
+const newNumber = myNumber + 3; // agora capturamos o resultado
+console.log(newNumber);         // "743"
+console.log(myNumber);          // "74" -- continua o mesmo
+\end{codebox}
+
+E se o objetivo for, de fato, somar um valor a um número que veio como string? É necessário convertê-la explicitamente antes de somar:
+
+\begin{codebox}{JavaScript}
+let myNumber = "74";
+myNumber = Number(myNumber) + 3;
+
+console.log(myNumber);        // 77 (soma correta!)
+console.log(typeof myNumber); // "number"
+\end{codebox}
+
+\section{Operadores aritméticos}
+
+Os operadores aritméticos do JavaScript são, em sua maioria, os mesmos já conhecidos da matemática básica e de outras linguagens de programação:
+
+\begin{codebox}{JavaScript}
+10 + 7;      // 17 (adição)
+20 - 15;     // 5   (subtração)
+3 * 7;       // 21 (multiplicação)
+60 / 3;      // 20 (divisão)
+60 % 9;      // 6   (módulo: resto da divisão inteira)
+7 ** 3;      // 343 (exponenciação: 7 elevado ao cubo)
+\end{codebox}
+
+O operador de módulo (\%) retorna o resto de uma divisão entre dois números inteiros — um operador extremamente útil na Ciência da Computação, por exemplo, para verificar se um número é par (n \% 2 === 0). Já o operador de exponenciação (**), introduzido no ECMAScript 2016, é equivalente a chamar o método estático Math.pow():
+
+\begin{codebox}{JavaScript}
+7 ** 3;         // 343
+Math.pow(7, 3); // 343 (equivalente)
+\end{codebox}
+
+\subsection{Precedência de operadores}
+
+Assim como na matemática, o JavaScript segue regras de precedência entre operadores: multiplicação e divisão têm precedência sobre adição e subtração, e operações de mesma precedência são avaliadas da esquerda para a direita.
+
+\begin{codebox}{JavaScript}
+5 + 5 * 2;   // 15, e não 20 -- a multiplicação ocorre primeiro
+(5 + 5) * 2; // 20 -- parênteses alteram a precedência
+\end{codebox}
+
+Sempre que houver dúvida sobre a ordem de avaliação, o uso de parênteses é a forma mais clara e segura de deixar explícita a intenção do código, exatamente como se faz na matemática.
+
+\section{Operadores de incremento e decremento}
+
+O JavaScript oferece operadores de incremento (++) e decremento (--), que somam ou subtraem 1 do valor de uma variável. É importante notar que eles só podem ser aplicados sobre variáveis, e não sobre valores literais diretamente:
+
+\begin{codebox}{JavaScript}
+let numero = 4;
+numero++;
+console.log(numero); // 5
+\end{codebox}
+
+Há uma diferença sutil entre colocar o operador antes ou depois da variável. Quando colocado depois (numero++), o valor atual da variável é retornado antes de o incremento acontecer; quando colocado antes (++numero), o incremento acontece primeiro, e o novo valor já incrementado é retornado:
+
+\begin{codebox}{JavaScript}
+let a = 4;
+console.log(a++); // 4 -- retorna o valor antes de incrementar
+console.log(a);   // 5 -- agora já incrementado
+
+let b = 4;
+console.log(++b); // 5 -- incrementa primeiro, depois retorna
+\end{codebox}
+
+\section{Operadores de atribuição}
+
+Além do operador básico de atribuição (=), o JavaScript oferece operadores de atribuição ”atalho”, que combinam uma operação aritmética com a atribuição em
+
+um único passo:
+
+\begin{codebox}{JavaScript}
+let x = 3;
+let y = 4;
+
+x = y;        // x agora vale 4
+
+x += 4;       // equivalente a: x = x + 4
+x -= 2;       // equivalente a: x = x - 2
+x *= 3;       // equivalente a: x = x * 3
+x /= 5;       // equivalente a: x = x / 5
+\end{codebox}
+
+\section{Operadores de comparação}
+
+Operadores de comparação retornam um valor booleano (true ou false), representando o resultado de uma comparação entre dois valores. O JavaScript possui, na verdade, duas variantes de igualdade e desigualdade, e a diferença entre elas é um dos pontos mais importantes deste capítulo:
+
+\begin{codebox}{JavaScript}
+5 === 2 + 3;     // true (estritamente igual: mesmo valor E mesmo tipo)
+"2" === 2;       // false (tipos diferentes: string x number)
+
+5 !== 2 + 3;     // false (estritamente diferente)
+"2" !== 2;       // true (são diferentes, pois os tipos diferem)
+
+"2" == 2;        // true (igualdade "solta": converte o tipo antes de comparar)
+"2" != 2;        // false (diferença "solta")
+\end{codebox}
+
+\begin{infobox}{Igualdade estrita x igualdade solta}
+Os operadores == e != (com dois caracteres) realizam uma comparação ”solta”, convertendo os tipos dos operandos antes de compará-los quando eles são diferentes. Já os operadores === e !== (com três caracteres) realizam uma comparação estrita, que só é verdadeira quando o valor e o tipo dos dois operandos coincidem. A recomendação amplamente adotada pela comunidade é sempre preferir === e !==, pois eles resultam em código mais previsível e menos sujeito a erros sutis decorrentes de conversões automáticas de tipo.
+\end{infobox}
+
+\begin{codebox}{Código}
+Outros operadores de comparação seguem a intuição matemática usual: > (maior
+que), < (menor que), >= (maior ou igual) e <= (menor ou igual).
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+10 > 5;   // true
+10 < 5;   // false
+10 >= 10; // true
+
+
+
+9 <= 10;     // true
+\end{codebox}
+
+\section{Um exemplo prático: alternando o estado de um botão}
+
+Para fechar o capítulo com um exemplo aplicado, considere uma pequena ”máquina de estados”controlada por um botão: ao clicar, o rótulo do botão e a mensagem exibida alternam entre dois estados, usando o operador de igualdade estrita para verificar o estado atual:
+
+\begin{codebox}{HTML}
+<button id="btn">Iniciar máquina</button>
+<p id="txt">A máquina está parada.</p>
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+const btn = document.querySelector("#btn");
+const txt = document.querySelector("#txt");
+
+btn.addEventListener("click", updateBtn);
+
+function updateBtn() {
+  if (btn.textContent === "Iniciar máquina") {
+    btn.textContent = "Parar máquina";
+    txt.textContent = "A máquina foi iniciada.";
+  } else {
+    btn.textContent = "Iniciar máquina";
+    txt.textContent = "A máquina está parada.";
+  }
+}
+\end{codebox}
+
+Note como o operador === é usado para testar, de forma estrita, se o rótulo atual do botão corresponde a um determinado texto, e como esse teste direciona qual ramo do if/else será executado.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O JavaScript utiliza um único tipo, Number, para representar tanto números inteiros quanto decimais; BigInt existe apenas para valores inteiros excepcionalmente grandes.
+\end{itemize}
+
+\begin{itemize}
+  \item O operador + realiza concatenação (e não soma) sempre que pelo menos um dos operandos é uma string.
+\end{itemize}
+
+\begin{itemize}
+  \item Strings são imutáveis: operações sobre elas sempre retornam um novo valor, que precisa ser capturado em uma variável para não ser perdido.
+\end{itemize}
+
+\begin{itemize}
+  \item Os operadores aritméticos básicos (+, -, *, /, \%, **) seguem as mesmas regras de precedência da matemática tradicional.
+\end{itemize}
+
+\begin{itemize}
+  \item Operadores de atribuição ”atalho”(+=, -=, *=, /=) combinam uma operação aritmética com a atribuição.
+\end{itemize}
+
+\begin{itemize}
+  \item Os operadores === e !== (comparação estrita) são preferíveis a == e != (comparação solta), pois evitam conversões implícitas de tipo que podem gerar comportamentos inesperados.
+\end{itemize}
+
+\begin{itemize}
+  \item Dados capturados de campos de formulário chegam sempre como string, sendo necessário convertê-los explicitamente com Number() antes de realizar operações aritméticas.
+\end{itemize}

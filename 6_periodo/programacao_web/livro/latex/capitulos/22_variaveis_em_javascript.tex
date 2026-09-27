@@ -1,0 +1,224 @@
+\chapter{Variáveis em JavaScript}
+
+\section{O que é uma variável}
+
+Uma variável é uma forma de reservar um espaço na memória do computador para armazenar um valor. Esse espaço recebe um nome (o identificador da variável), que passa a ser usado no código para ler ou alterar o valor armazenado.
+
+\begin{infobox}{Variável}
+Uma variável é um espaço nomeado na memória, capaz de armazenar um valor (chamado literal) que pode, em geral, ser alterado ao longo da execução do programa. O valor guardado em uma variável pode ser de diferentes tipos: texto (string), número, booleano, objeto, entre outros.
+\end{infobox}
+
+Para tornar isso concreto, considere um botão HTML simples:
+
+\begin{codebox}{HTML}
+<button id="botao">Preencha o formulário</button>
+\end{codebox}
+
+Com JavaScript, é possível capturar uma referência a esse botão, registrar um evento de clique nele e, a cada clique, pedir ao usuário um nome, guardá-lo em uma variável e exibi-lo na tela:
+
+\begin{codebox}{JavaScript}
+const botao = document.querySelector("#botao");
+
+botao.addEventListener("click", function () {
+  let nome = prompt("Qual é o seu nome?");
+  alert("Olá, " + nome + "! Bom te ver.");
+});
+\end{codebox}
+
+Note que, a cada clique no botão, o usuário pode digitar um nome diferente, e a variável nome passa a conter aquele novo valor — daí o termo ”variável”: o conteúdo armazenado pode variar ao longo da execução do programa.
+
+\section{Declarando variáveis: var, let e const}
+
+O JavaScript oferece três palavras reservadas para declarar variáveis: var, let e const. Embora as três sirvam, em essência, para o mesmo propósito, elas se comportam de maneiras bastante diferentes, e entender essas diferenças é fundamental para evitar erros sutis.
+
+\subsection{var: a forma antiga}
+
+Historicamente, var foi a única forma de declarar variáveis em JavaScript. Hoje, seu uso não é mais recomendado, principalmente por causa de seu comportamento de escopo, que pode gerar código confuso e propenso a erros.
+
+\begin{codebox}{JavaScript}
+var idade = 25;
+console.log(idade); // 25
+
+   Uma peculiaridade de var é um mecanismo chamado hoisting (algo como ”iça-
+\end{codebox}
+
+mento”ou ”elevação”), que promove a declaração da variável para o início do escopo em que ela foi definida, embora a atribuição do valor continue ocorrendo apenas na linha original. Isso significa que o código a seguir não gera erro, mesmo referenciando a variável antes da linha onde ela aparentemente é declarada:
+
+\begin{codebox}{JavaScript}
+console.log(minhaVariavel); // undefined (não dá erro!)
+var minhaVariavel = "Olá";
+\end{codebox}
+
+Esse comportamento pode causar confusão, já que o valor exibido é undefined em vez de um erro claro informando que a variável ainda não foi definida. Outra característica pouco desejável de var é que ela permite redeclarar a mesma variável múltiplas vezes no mesmo escopo sem gerar erro algum — o que não faz sentido do ponto de vista de organização do código e pode facilmente introduzir bugs:
+
+\begin{codebox}{JavaScript}
+var cidade = "Alfenas";
+var cidade = "Poços de Caldas"; // nenhum erro, apenas sobrescreve
+console.log(cidade); // "Poços de Caldas"
+\end{codebox}
+
+\subsection{let: a forma recomendada para valores que mudam}
+
+Introduzida no ECMAScript 2015 (também chamado ES6), a palavra reservada let corrige os principais problemas de var. Diferente de var, uma variável declarada com let não pode ser redeclarada no mesmo escopo:
+
+\begin{codebox}{JavaScript}
+let cidade = "Alfenas";
+let cidade = "Poços de Caldas"; // Erro! Identifier 'cidade' has already been declared
+
+
+
+ O valor de uma variável declarada com let pode, no entanto, ser alterado normal-
+\end{codebox}
+
+mente por meio de uma nova atribuição (sem repetir a palavra let):
+
+\begin{codebox}{JavaScript}
+let cidade = "Alfenas";
+cidade = "Poços de Caldas"; // permitido, é apenas uma nova atribuição
+console.log(cidade); // "Poços de Caldas"
+\end{codebox}
+
+\subsection{const: para valores que não mudam}
+
+A palavra reservada const (também introduzida no ES2015) é usada para declarar constantes: valores que, uma vez atribuídos, não podem ser reatribuídos.
+
+\begin{codebox}{JavaScript}
+const diasDaSemana = 7;
+diasDaSemana = 8; // Erro! Assignment to constant variable.
+
+   O uso de const sempre que o valor não precisar mudar é uma boa prática ampla-
+\end{codebox}
+
+mente recomendada, pois deixa explícita a intenção do programador e evita efeitos colaterais indesejados no código — alguém não poderá, por engano, alterar aquele valor mais adiante. É especialmente comum usar const para guardar referências a elementos do DOM, já que a referência em si normalmente não muda, mesmo que o conteúdo do elemento apontado seja atualizado:
+
+\begin{codebox}{JavaScript}
+const paragrafo = document.querySelector("#mensagem");
+paragrafo.textContent = "Isto pode mudar";      // permitido: o conteúdo mudou
+// paragrafo = document.querySelector("#outro"); // Erro: a referência em si é constante
+\end{codebox}
+
+\begin{infobox}{Dica}
+Uma boa regra prática: comece sempre declarando suas variáveis com const. Se, ao longo do código, você perceber que realmente precisa reatribuir aquele valor, troque para let. Evite var em código novo — ele existe hoje principalmente por razões de compatibilidade com códigos antigos.
+\end{infobox}
+
+\section{Escopo: a diferença mais importante entre var e let/const}
+
+Um dos motivos mais importantes para preferir let e const a var é a diferença de escopo entre elas. Variáveis declaradas com var têm escopo de função, enquanto variáveis declaradas com let e const têm escopo de bloco (ou seja, respeitam os limites de qualquer par de chaves \{ \}, como um if, um for ou um while).
+
+\begin{codebox}{JavaScript}
+function testarEscopoVar() {
+  if (true) {
+    var mensagem = "Definida dentro do if";
+  }
+  console.log(mensagem); // "Definida dentro do if" -- var "vaza" do bloco
+}
+
+function testarEscopoLet() {
+  if (true) {
+    let mensagem = "Definida dentro do if";
+  }
+  console.log(mensagem); // Erro! mensagem não está definida aqui fora
+}
+\end{codebox}
+
+No primeiro exemplo, embora mensagem tenha sido declarada dentro do bloco do if, ela continua acessível fora dele, pois var ignora os limites de blocos internos e respeita apenas os limites da função. Já no segundo exemplo, mensagem declarada com let só existe dentro do bloco do if em que foi criada; fora dali, tentar acessá-la gera um erro de referência. Esse comportamento de var é uma fonte clássica de bugs, especialmente em laços de repetição. Considere o exemplo a seguir, um erro muito comum entre iniciantes:
+
+\begin{codebox}{JavaScript}
+for (var i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+// imprime: 3, 3, 3 (e não 0, 1, 2, como se poderia esperar)
+
+   Como var não cria um novo escopo a cada iteração do laço, todas as funções
+\end{codebox}
+
+registradas em setTimeout compartilham a mesma variável i, e por isso todas exibem seu valor final. Trocando var por let, cada iteração do laço passa a ter sua própria cópia da variável i, respeitando a intuição natural do programador:
+
+\begin{codebox}{JavaScript}
+for (let i = 0; i < 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+// imprime: 0, 1, 2
+\end{codebox}
+
+\section{Tipagem dinâmica}
+
+Diferentemente de linguagens fortemente tipadas, como Java, em que é preciso declarar explicitamente o tipo de uma variável (por exemplo, String nome;), o JavaScript é
+
+uma linguagem de tipagem dinâmica. Isso significa que o tipo de uma variável não é declarado explicitamente pelo programador, mas sim inferido automaticamente pelo ambiente de execução, de acordo com o valor atribuído a ela.
+
+\begin{codebox}{JavaScript}
+let valor = "Alfenas";
+console.log(typeof valor); // "string"
+
+valor = 42;
+console.log(typeof valor); // "number" -- a mesma variável mudou de tipo!
+\end{codebox}
+
+O operador typeof permite consultar, em tempo de execução, qual é o tipo atualmente armazenado em uma variável. Essa flexibilidade tem vantagens (menos código repetitivo, maior agilidade para prototipar) e desvantagens (menos verificações em tempo de compilação, o que pode levar a erros que só aparecem quando o programa já está em execução). Para quem prefere um meio-termo entre a flexibilidade do JavaScript e a segurança de tipos de linguagens fortemente tipadas, existe o Type- Script, um superconjunto de JavaScript que adiciona tipos estáticos opcionais e é convertido (transpilado) para JavaScript puro antes de ser executado — um assunto que foge do escopo deste livro introdutório, mas que vale a pena conhecer no futuro.
+
+\section{Convenções de nomenclatura para variáveis}
+
+O JavaScript segue regras específicas — e algumas convenções amplamente adotadas pela comunidade — para nomear variáveis:
+
+\begin{itemize}
+  \item nomes podem conter letras, dígitos, o sinal de underline (\_) e o cifrão (\$);
+\end{itemize}
+
+\begin{itemize}
+  \item nomes não podem começar com um dígito;
+\end{itemize}
+
+\begin{itemize}
+  \item nomes diferenciam maiúsculas de minúsculas (idade e Idade são variáveis distintas);
+\end{itemize}
+
+\begin{itemize}
+  \item não é permitido usar palavras reservadas da linguagem como nome de variável (por exemplo, let, var, function, for).
+\end{itemize}
+
+Por convenção — e não por exigência da linguagem —, o JavaScript adota o estilo camelCase para nomear variáveis: a primeira palavra em letras minúsculas e cada palavra subsequente iniciando com letra maiúscula, sem espaços ou underlines entre elas.
+
+\begin{codebox}{JavaScript}
+let nomeCompleto = "Cris Fernandes";
+let quantidadeDeTentativas = 10;
+let estaLogado = false;
+\end{codebox}
+
+Além de seguir as convenções de estilo, escolher nomes de variáveis descritivos é uma das práticas mais valiosas para a legibilidade do código. Uma variável chamada x ou dado1 conta muito pouco sobre seu propósito; uma variável chamada
+
+quantidadeDeTentativas comunica sua intenção de forma imediata, tornando comentários explicativos frequentemente desnecessários.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Uma variável é um espaço nomeado na memória usado para armazenar um valor que pode mudar ao longo da execução do programa.
+\end{itemize}
+
+\begin{itemize}
+  \item var é a forma antiga de declarar variáveis, com escopo de função e comportamento de hoisting; seu uso não é mais recomendado em código novo.
+\end{itemize}
+
+\begin{itemize}
+  \item let é a forma recomendada para variáveis cujo valor precisa mudar, com escopo de bloco e sem permitir redeclaração no mesmo escopo.
+\end{itemize}
+
+\begin{itemize}
+  \item const é usada para valores que não devem ser reatribuídos após a declaração, sendo a opção preferencial sempre que possível.
+\end{itemize}
+
+\begin{itemize}
+  \item A diferença de escopo entre var (função) e let/const (bloco) é a principal razão para preferir as formas modernas de declaração.
+\end{itemize}
+
+\begin{itemize}
+  \item O JavaScript é uma linguagem de tipagem dinâmica: o tipo de uma variável é inferido a partir do valor atribuído, podendo mudar ao longo da execução.
+\end{itemize}
+
+\begin{itemize}
+  \item Boas convenções de nomenclatura, como o uso de camelCase e nomes descritivos, tornam o código mais legível e reduzem a necessidade de comentários.
+\end{itemize}

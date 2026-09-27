@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8lfp5406nqal"]
+
+[ext_resource type="PackedScene" uid="uid://san70ewrn4ap" path="res://Scenes/Player/Guns/Gun_base/gun_base.tscn" id="1_o4u7d"]
+[ext_resource type="PackedScene" uid="uid://bd5f6b20sgsdt" path="res://Scenes/Projectile/projectile_for_player_2.tscn" id="2_6pce3"]
+[ext_resource type="Texture2D" uid="uid://dghldkhxouqn5" path="res://Assets/Textures/Armas_E_Personagens/1 Icons/g65.png" id="3_kdp6l"]
+
+[node name="G65" instance=ExtResource("1_o4u7d")]
+scale = Vector2(1.5, 1.5)
+init_damage = 45
+init_fire_rate = 2.0
+init_fire_range = 1000.0
+pierce = 10
+projectile_scene = ExtResource("2_6pce3")
+
+[node name="Sprite2D" parent="." index="0"]
+rotation = 0.7853982
+texture = ExtResource("3_kdp6l")

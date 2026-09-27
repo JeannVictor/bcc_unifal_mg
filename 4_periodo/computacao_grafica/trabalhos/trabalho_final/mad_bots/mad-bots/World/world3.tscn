@@ -1,0 +1,67 @@
+[gd_scene load_steps=14 format=3 uid="uid://w84fgw1lgr3q"]
+
+[ext_resource type="Texture2D" uid="uid://n46nr2jx4xmw" path="res://Assets/Maps/bloquete.png" id="1_dry5x"]
+[ext_resource type="PackedScene" uid="uid://bktn2d8pc84ta" path="res://Scenes/Player/player_test.tscn" id="2_7x3dl"]
+[ext_resource type="PackedScene" uid="uid://bk54nw0n6l0nk" path="res://Scenes/Utility/EnemySpawner/enemy_spawner.tscn" id="3_sc3oo"]
+[ext_resource type="Script" uid="uid://bq30v575devcx" path="res://Scenes/Utility/EnemySpawner/spawn_info.gd" id="4_42ucu"]
+[ext_resource type="PackedScene" uid="uid://brs8com3enq5y" path="res://Scenes/Enemys/3swordsman.tscn" id="5_87gar"]
+[ext_resource type="PackedScene" uid="uid://20imgnfiatm" path="res://Scenes/Enemys/3destroyer.tscn" id="6_3degx"]
+[ext_resource type="AudioStream" uid="uid://curh860ixkge2" path="res://Assets/Audio/Music/police_theme_loopable.mp3" id="6_vk6jq"]
+[ext_resource type="PackedScene" uid="uid://cw7fphffgyt4c" path="res://Scenes/Enemys/3black-drone.tscn" id="13_08iey"]
+[ext_resource type="PackedScene" uid="uid://dv4aitbx0run0" path="res://Scenes/Enemys/3infantryman.tscn" id="14_snr2g"]
+
+[sub_resource type="Resource" id="Resource_pfq4i"]
+script = ExtResource("4_42ucu")
+time_end = 300
+enemy = ExtResource("5_87gar")
+enemy_num = 2
+enemy_spawn_delay = 3
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_0mmq2"]
+script = ExtResource("4_42ucu")
+time_end = 300
+enemy = ExtResource("6_3degx")
+enemy_num = 2
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_fi7xm"]
+script = ExtResource("4_42ucu")
+time_end = 300
+enemy = ExtResource("13_08iey")
+enemy_num = 4
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_hxu6l"]
+script = ExtResource("4_42ucu")
+time_end = 300
+enemy = ExtResource("14_snr2g")
+enemy_num = 2
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[node name="World3" type="Node2D"]
+
+[node name="Parallax2D" type="Parallax2D" parent="."]
+z_index = -4096
+scroll_offset = Vector2(251, -426)
+repeat_size = Vector2(32, 32)
+repeat_times = 81
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
+texture = ExtResource("1_dry5x")
+
+[node name="Player_test" parent="." instance=ExtResource("2_7x3dl")]
+
+[node name="EnemySpawner" parent="." instance=ExtResource("3_sc3oo")]
+spawns = Array[ExtResource("4_42ucu")]([SubResource("Resource_pfq4i"), SubResource("Resource_0mmq2"), SubResource("Resource_fi7xm"), SubResource("Resource_hxu6l")])
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("6_vk6jq")
+volume_db = -15.0
+autoplay = true
+bus = &"Music"
+parameters/looping = true

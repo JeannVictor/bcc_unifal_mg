@@ -1,0 +1,4 @@
+jupyter
+kafka-python
+requests
+fastavro

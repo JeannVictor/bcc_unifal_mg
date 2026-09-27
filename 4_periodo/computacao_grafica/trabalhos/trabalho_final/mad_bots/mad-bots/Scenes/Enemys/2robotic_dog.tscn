@@ -1,0 +1,196 @@
+[gd_scene load_steps=16 format=3 uid="uid://txrtkeewadsu"]
+
+[ext_resource type="PackedScene" uid="uid://dnv2ikg1u4ni2" path="res://Scenes/Enemys/Enemy_base/enemy_base.tscn" id="1_02bb6"]
+[ext_resource type="Texture2D" uid="uid://djdv2ra5d2dla" path="res://Assets/Textures/Enemys/RoboticDog/Run.png" id="2_ay3rv"]
+[ext_resource type="Texture2D" uid="uid://okist6w7iqwm" path="res://Assets/Textures/Enemys/RoboticDog/Attack.png" id="3_rsgc8"]
+[ext_resource type="Texture2D" uid="uid://jl1bik2g8shf" path="res://Assets/Textures/Enemys/RoboticDog/Hurt.png" id="4_i4gw8"]
+[ext_resource type="Texture2D" uid="uid://ckwk8v1vt6w86" path="res://Assets/Textures/Enemys/RoboticDog/Death.png" id="5_ke7ul"]
+[ext_resource type="PackedScene" uid="uid://fj4ep7j7o1s8" path="res://Scenes/Enemys/Attacks/Melee/delayed_attack_melee.tscn" id="6_elcoh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c47cb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r54rm"]
+size = Vector2(53, 31)
+
+[sub_resource type="Animation" id="Animation_vydri"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteAttack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteHurt:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteDeath:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_yecin"]
+resource_name = "attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_r71i4"]
+resource_name = "death"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.052121695, 0.105097845, 0.16063735, 0.21446796, 0.27086192),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_3ynvt"]
+resource_name = "taking_damage"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_hgurc"]
+resource_name = "walk"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [5, 2, 3, 4, 0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3o4gi"]
+_data = {
+&"RESET": SubResource("Animation_vydri"),
+&"attack": SubResource("Animation_yecin"),
+&"death": SubResource("Animation_r71i4"),
+&"taking_damage": SubResource("Animation_3ynvt"),
+&"walk": SubResource("Animation_hgurc")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y81ei"]
+size = Vector2(69, 41)
+
+[node name="RoboticDog" instance=ExtResource("1_02bb6")]
+scale = Vector2(1.5, 1.5)
+collision_layer = 260
+collision_mask = 259
+attack_path = NodePath("Delayed_Attack_Melee")
+speed = 400.0
+max_health = 100
+drop_reward = 1
+invincibility_time = 0.05
+
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_c47cb")
+
+[node name="SpriteWalk" parent="." index="1"]
+texture = ExtResource("2_ay3rv")
+offset = Vector2(0, -15)
+hframes = 6
+
+[node name="SpriteAttack" parent="." index="2"]
+texture = ExtResource("3_rsgc8")
+offset = Vector2(0, -15)
+hframes = 6
+
+[node name="SpriteHurt" parent="." index="3"]
+texture = ExtResource("4_i4gw8")
+offset = Vector2(0, -15)
+hframes = 2
+frame = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+texture = ExtResource("5_ke7ul")
+offset = Vector2(0, -15)
+hframes = 6
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(0.5, -2.5)
+shape = SubResource("RectangleShape2D_r54rm")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_3o4gi")
+}
+
+[node name="Delayed_Attack_Melee" parent="." index="7" instance=ExtResource("6_elcoh")]
+damage = 5
+knockback_force = 50
+
+[node name="CollisionShape2D" parent="Delayed_Attack_Melee/Attack_area" index="0"]
+position = Vector2(0.5, -2.5)
+shape = SubResource("RectangleShape2D_y81ei")
+
+[editable path="HurtBox"]
+[editable path="Delayed_Attack_Melee"]
+[editable path="Delayed_Attack_Melee/Attack_area"]

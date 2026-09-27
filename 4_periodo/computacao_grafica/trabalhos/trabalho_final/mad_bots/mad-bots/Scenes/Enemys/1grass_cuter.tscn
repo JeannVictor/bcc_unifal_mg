@@ -1,0 +1,200 @@
+[gd_scene load_steps=16 format=3 uid="uid://0o80pjuhygd8"]
+
+[ext_resource type="PackedScene" uid="uid://dnv2ikg1u4ni2" path="res://Scenes/Enemys/Enemy_base/enemy_base.tscn" id="1_lg3pc"]
+[ext_resource type="Texture2D" uid="uid://58whbgcji7uu" path="res://Assets/Textures/Enemys/GrassCuter/Walk.png" id="2_up0wm"]
+[ext_resource type="Texture2D" uid="uid://bxgbt27eap4ui" path="res://Assets/Textures/Enemys/GrassCuter/Attack.png" id="3_nqeig"]
+[ext_resource type="Texture2D" uid="uid://dqsgy1n1bkm1" path="res://Assets/Textures/Enemys/GrassCuter/Hurt.png" id="4_x2ykd"]
+[ext_resource type="Texture2D" uid="uid://65au3al64mb8" path="res://Assets/Textures/Enemys/GrassCuter/Death.png" id="5_qv5qw"]
+[ext_resource type="PackedScene" uid="uid://fj4ep7j7o1s8" path="res://Scenes/Enemys/Attacks/Melee/delayed_attack_melee.tscn" id="6_s25ro"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tmjgh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6dp1g"]
+size = Vector2(45, 39)
+
+[sub_resource type="Animation" id="Animation_w36im"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteHurt:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteDeath:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteAttack:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_sknjb"]
+resource_name = "attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_3pt8m"]
+resource_name = "death"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.23333333, 0.36666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_v45gk"]
+resource_name = "taking_damage"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_wx5pn"]
+resource_name = "walk"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yroka"]
+_data = {
+&"RESET": SubResource("Animation_w36im"),
+&"attack": SubResource("Animation_sknjb"),
+&"death": SubResource("Animation_3pt8m"),
+&"taking_damage": SubResource("Animation_v45gk"),
+&"walk": SubResource("Animation_wx5pn")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_luvwt"]
+size = Vector2(49, 42)
+
+[node name="GrassCuter" instance=ExtResource("1_lg3pc")]
+scale = Vector2(2, 2)
+collision_layer = 260
+collision_mask = 263
+attack_path = NodePath("Delayed_Attack_Melee")
+speed = 400.0
+max_health = 100
+drop_reward = 1
+invincibility_time = 0.05
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(3, -8)
+shape = SubResource("RectangleShape2D_tmjgh")
+
+[node name="SpriteWalk" parent="." index="1"]
+visible = false
+texture = ExtResource("2_up0wm")
+offset = Vector2(10, -20)
+hframes = 4
+
+[node name="SpriteAttack" parent="." index="2"]
+visible = true
+texture = ExtResource("3_nqeig")
+offset = Vector2(10, -20)
+
+[node name="SpriteHurt" parent="." index="3"]
+visible = true
+position = Vector2(1.1666665, -0.8333285)
+scale = Vector2(1.5833334, 1.5833334)
+texture = ExtResource("4_x2ykd")
+offset = Vector2(10, -20)
+hframes = 2
+frame = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+texture = ExtResource("5_qv5qw")
+offset = Vector2(10, -20)
+hframes = 4
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(3.5, -12.5)
+shape = SubResource("RectangleShape2D_6dp1g")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_yroka")
+}
+
+[node name="Delayed_Attack_Melee" parent="." index="7" instance=ExtResource("6_s25ro")]
+damage = 10
+knockback_force = 50
+
+[node name="CollisionShape2D" parent="Delayed_Attack_Melee/Attack_area" index="0"]
+position = Vector2(3.5, -13)
+shape = SubResource("RectangleShape2D_luvwt")
+
+[editable path="HurtBox"]
+[editable path="Delayed_Attack_Melee"]
+[editable path="Delayed_Attack_Melee/Attack_area"]

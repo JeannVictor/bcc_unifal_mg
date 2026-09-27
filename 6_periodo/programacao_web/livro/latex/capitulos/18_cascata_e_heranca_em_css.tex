@@ -1,0 +1,247 @@
+\chapter{Cascata e Herança em CSS}
+
+\section{O Efeito Cascata: a Ordem Importa}
+
+Vamos começar com o exemplo mais simples possível: um documento HTML com um único elemento de título.
+
+\begin{codebox}{HTML}
+<h1>Este é o elemento de título</h1>
+\end{codebox}
+
+Suponha que a folha de estilo associada a esse documento contenha duas regras que, ambas, têm como alvo o mesmo elemento h1:
+
+\begin{codebox}{CSS}
+h1 {
+  color: red;
+}
+
+h1 {
+  color: blue;
+}
+\end{codebox}
+
+Qual cor vencerá: vermelho ou azul? A resposta é azul. Isso ocorre porque ambas as regras possuem exatamente a mesma especificidade (as duas usam um simples seletor de elemento h1), e, nesse caso de empate, a regra definida por último na folha de estilo é a que prevalece. Esse é precisamente o efeito cascata: as regras ”escorrem”de cima para baixo, e quando duas regras de igual peso competem pelo mesmo elemento, a que vem mais abaixo no arquivo vence.
+
+\begin{infobox}{Cascata}
+O termo cascata descreve a ordem de prioridade das regras CSS aplicadas a um elemento. Quando duas regras têm a mesma especificidade, a posição da regra na folha de estilo (qual delas vem depois) decide o resultado final.
+\end{infobox}
+
+\section{Especificidade: Quando a Ordem Não é Suficiente}
+
+A cascata, sozinha, não resolve todos os conflitos. Considere agora um cenário em que as duas regras conflitantes têm seletores diferentes:
+
+\begin{codebox}{HTML}
+ <h1 class="marren">Este é o elemento de título</h1>
+\end{codebox}
+
+\begin{codebox}{CSS}
+ .marren {
+   color: red;
+ }
+
+ h1 {
+   color: blue;
+ }
+\end{codebox}
+
+Mesmo o seletor de classe .marren tendo sido escrito antes do seletor de elemento h1 na folha de estilo, o resultado final será a cor vermelha — e não azul, como a simples ordem de cascata poderia sugerir. Isso acontece porque, aqui, entra em jogo um segundo fator: a especificidade.
+
+Especificidade Especificidade é o mecanismo pelo qual o navegador decide qual regra aplicar quando várias regras, com seletores diferentes, têm como alvo o mesmo elemento. De forma geral, um seletor de elemento (como h1) é considerado menos específico — ele seleciona todos os elementos daquele tipo na página. Já um seletor de classe (como .marren) é mais específico, pois seleciona apenas os elementos que possuem aquele valor exato de atributo class. Por isso, o seletor de classe obtém uma pontuação de especificidade mais alta e vence o conflito, independentemente de sua posição na folha de estilo.
+
+\subsection{Calculando a Especificidade}
+
+O cálculo de especificidade pode ser pensado como quatro colunas de dígitos, na ordem de importância crescente: unidade (seletores de elemento e pseudo-elementos), dezena (seletores de classe e pseudo-classes), centena (seletores de ID) e milhar (estilos em linha, aplicados diretamente com o atributo style).
+
+\begin{codebox}{CSS}
+/* especificidade: 0-0-1 (um elemento) */
+a {
+  background-color: pink;
+}
+\end{codebox}
+
+/* especificidade: 0-1-1 (um ID + um elemento) */ \#alvo a \{ background-color: purple; \}
+
+/* especificidade: 0-1-4 (um ID + quatro elementos) */ \#alvo div ul li a \{ color: yellow; \}
+
+Cada tipo de seletor conta apenas para a sua própria coluna. Um número muito grande de seletores de elemento (a coluna de unidades) nunca supera um único seletor de classe (a coluna de dezenas), pois as colunas são comparadas da mais significativa para a menos significativa, uma de cada vez — assim como comparamos números decimais.
+
+\begin{codebox}{CSS}
+/* Especificidade 0-0-4: quatro elementos (div, ul, li, a) */
+div ul li a {
+  color: white;
+}
+\end{codebox}
+
+/* Especificidade 0-1-0: apenas uma classe */ .link-especial \{ color: black; \} /* .link-especial VENCE, mesmo com muito menos seletores,
+
+\begin{infobox}{porque uma classe pesa mais do que qualquer quantidade}
+de seletores de elemento */
+\end{infobox}
+
+\begin{infobox}{Dica}
+Existem calculadoras de especificidade CSS disponíveis online, muito úteis quando você estiver lidando com folhas de estilo grandes e complexas, nas quais o cálculo manual se torna trabalhoso. Se um estilo que você aplicou parece não estar ”pegando”quando você recarrega a página, é bastante provável que exista um conflito de especificidade em jogo — considere comentar temporariamente uma das regras conflitantes para isolar o problema.
+\end{infobox}
+
+\section{Herança em CSS}
+
+O terceiro conceito fundamental deste capítulo é a herança. Algumas propriedades CSS, quando definidas em um elemento pai, são automaticamente repassadas para todos os seus elementos filhos — a menos que um valor diferente seja explicitamente definido em algum filho específico.
+
+\begin{codebox}{HTML}
+ <body>
+   <p>Primeiro parágrafo.</p>
+   <p>Segundo parágrafo com <span>uma palavra especial</span>.</p>
+ </body>
+\end{codebox}
+
+\begin{codebox}{CSS}
+ body {
+   color: blue;
+ }
+\end{codebox}
+
+Como color é uma propriedade herdada, ao definir a cor azul no elemento body (o pai de todo o conteúdo visível da página), tanto os dois parágrafos quanto o span dentro do segundo parágrafo também ficarão azuis, por herança — mesmo sem que nenhuma regra tenha sido escrita diretamente para p ou span. É possível, é claro, sobrescrever esse valor herdado em um elemento filho específico:
+
+\begin{codebox}{CSS}
+ body {
+   color: blue;
+ }
+
+ span {
+   color: black;
+ }
+\end{codebox}
+
+Agora, apenas o conteúdo dentro do span ficará preto, enquanto o restante do texto permanece azul, herdado do body.
+
+\subsection{Nem Toda Propriedade é Herdada}
+
+É fundamental entender que nem todas as propriedades CSS seguem esse comportamento de herança. Um exemplo clássico é a propriedade width: se você definir width: 30\% em um elemento pai, seus elementos filhos não herdarão automaticamente essa largura de 30\% relativa ao pai. Da mesma forma, as propriedades do modelo de caixa — margin, padding e border — também não são herdadas.
+
+\begin{infobox}{Dica}
+Para descobrir se uma determinada propriedade CSS é herdada por padrão, consulte sua página de referência na MDN (pesquisando ”nome-da-propriedade CSS
+\end{infobox}
+
+MDN”no Google). A documentação sempre indica explicitamente, em uma seção de definição formal, se aquela propriedade é herdada ou não.
+
+\subsection{Valores Universais para Controlar a Herança}
+
+O CSS oferece quatro valores especiais, aceitos por qualquer propriedade, que permitem controlar explicitamente o comportamento de herança: inherit, initial, revert e unset.
+
+\begin{codebox}{CSS}
+/* inherit: força a propriedade a herdar o valor do elemento pai,
+   mesmo que ela normalmente não seja uma propriedade herdada */
+.forcar-heranca a {
+  color: inherit;
+}
+\end{codebox}
+
+/* initial: usa o valor inicial padrão da especificação CSS para aquela propriedade (por exemplo, preto para "color") */ .resetar-cor a \{ color: initial; \}
+
+/* unset: comporta-se como "inherit" se a propriedade for normalmente herdada, ou como "initial" caso contrário */ .comportamento-natural a \{ color: unset; \}
+
+\begin{infobox}{Dica}
+Na prática, unset costuma ser o valor mais útil e mais utilizado no dia a dia, pois ele ”faz a coisa certa”automaticamente: se a propriedade normalmente herda do pai, ele herda; caso contrário, ele reverte ao valor inicial da especificação. O valor revert, mais recente, é semelhante a unset, mas retorna ao estilo padrão do próprio navegador (em vez do valor inicial da especificação) quando a propriedade não é herdada.
+\end{infobox}
+
+\section{A Propriedade Abreviada all}
+
+Existe ainda uma propriedade CSS especial chamada all, que permite desfazer, de uma única vez, todas as propriedades aplicadas a um elemento por uma regra específica, retornando-as a um dos valores universais discutidos acima.
+
+\begin{codebox}{CSS}
+blockquote {
+  background-color: red;
+  border: 2px solid green;
+
+
+
+}
+
+.blockquote-limpo {
+  all: unset;
+}
+\end{codebox}
+
+Nesse exemplo, um elemento blockquote que também possua a classe blockquote-limpo terá todas as suas propriedades (incluindo background-color e border, definidas pela primeira regra) desfeitas de uma só vez, como se a regra do seletor de elemento nunca tivesse sido aplicada.
+
+\section{A Importância: o Modificador !important}
+
+Além da posição na folha de estilo e da especificidade, existe um terceiro fator que pode alterar completamente o resultado de um conflito: a importância, especificada com o modificador !important.
+
+\begin{codebox}{CSS}
+#vencedor {
+  background-color: red;
+  border: 1px solid black;
+}
+
+.forcar {
+  background-color: red !important;
+  border: none !important;
+}
+\end{codebox}
+
+O modificador !important, adicionado logo após o valor de uma propriedade, faz com que essa declaração específica sobrescreva qualquer outra regra conflitante, mesmo que a regra concorrente possua especificidade maior (como um seletor de ID) e mesmo que venha depois na folha de estilo.
+
+\begin{infobox}{Dica}
+Recomenda-se fortemente nunca usar !important, a menos que você tenha absoluta certeza de que é realmente necessário. Esse modificador quebra o funcionamento normal da cascata, tornando problemas de depuração muito mais difíceis de resolver — especialmente em folhas de estilo grandes, mantidas por várias pessoas. A única forma de sobrescrever uma declaração marcada com !important é usando outra declaração também marcada com !important, com especificidade igual ou maior, definida posteriormente na cascata — o que rapidamente se torna insustentável. Uma situação legítima para seu uso é quando você trabalha com um sistema de gestão de conteúdo (CMS) e não tem acesso para editar a folha de estilo principal, precisando sobrescrever um estilo que não pode ser alterado de nenhuma outra forma.
+\end{infobox}
+
+\section{Exemplo Resolvido: Removendo uma Cor de Fundo sem Especificar uma Cor}
+
+Para consolidar os conceitos deste capítulo, vamos resolver um exercício prático que ilustra bem o uso combinado de cascata, especificidade e dos valores universais de herança. Enunciado: considere o seguinte documento HTML, contendo dois links, e a seguinte folha de estilo, que aplica uma cor de fundo azul a esses links:
+
+\begin{codebox}{HTML}
+<ul>
+  <li><a href="#" id="link-um">Link 1</a></li>
+  <li><a href="#" id="link-dois">Link 2</a></li>
+</ul>
+\end{codebox}
+
+CSS — estado inicial \#link-um, \#link-dois \{ background-color: blue; \}
+
+O objetivo do exercício é criar uma nova regra CSS capaz de eliminar a cor de fundo azul desses links — porém, com uma restrição importante: a solução não pode especificar explicitamente nenhuma cor (não é permitido, por exemplo, simplesmente escrever background-color: transparent ou background-color: white). Solução: a resposta está exatamente nos valores universais de propriedade estudados neste capítulo. Como background-color é uma propriedade que não é herdada, podemos usar tanto initial quanto unset para resetá-la ao seu comportamento padrão (que é, precisamente, a ausência de cor de fundo — tecnicamente, um valor transparente): CSS — solução \#link-um, \#link-dois \{ background-color: blue; \}
+
+a \{ background-color: unset; \}
+
+Repare que essa regra final usa apenas um seletor de elemento (a), com especificidade 0-0-1 — muito menor do que a especificidade 0-1-0 dos dois seletores de ID definidos anteriormente. Ainda assim, o resultado funciona como esperado: isso ocorre porque unset não está competindo pela especificidade da propriedade em si, mas sim resetando o valor daquele elemento específico para seu comportamento natural, aproveitando o fato de que background-color não é herdada.
+
+119
+
+\begin{infobox}{Dica}
+Também seria possível resolver esse mesmo exercício utilizando initial no lugar de unset, com o mesmo resultado prático nesse caso específico — já que, como background-color não é uma propriedade herdada, unset se comporta exatamente como initial. Na prática, unset costuma ser preferido por ser um valor universal mais recente e mais previsível quando aplicado a diferentes tipos de propriedades ao longo de um projeto.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item A cascata determina que, entre regras de mesma especificidade, a que aparece por último na folha de estilo prevalece.
+\end{itemize}
+
+\begin{itemize}
+  \item A especificidade é calculada em quatro níveis (do menos ao mais específico): seletores de elemento, seletores de classe/pseudo-classe, seletores de ID e estilo em linha; níveis mais altos sempre vencem, independentemente da quantidade de seletores do nível inferior.
+\end{itemize}
+
+\begin{itemize}
+  \item Herança é o mecanismo pelo qual algumas propriedades (como color e font-family) são repassadas automaticamente de um elemento pai para seus filhos; outras (como width, margin, padding e border) não seguem essa regra.
+\end{itemize}
+
+\begin{itemize}
+  \item Os valores universais inherit, initial, revert e unset permitem controlar explicitamente o comportamento de herança de qualquer propriedade CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item A propriedade abreviada all permite resetar de uma só vez todas as propriedades aplicadas a um elemento.
+\end{itemize}
+
+\begin{itemize}
+  \item O modificador !important sobrescreve qualquer outra regra conflitante, mas deve ser evitado ao máximo, pois compromete a previsibilidade da cascata.
+\end{itemize}
+
+\begin{itemize}
+  \item Propriedades não herdadas podem ser ”removidas”de um elemento usando initial ou unset, sem a necessidade de especificar um novo valor concreto.
+\end{itemize}
+
+Parte IV
+
+\begin{codebox}{JavaScript}
+
+\end{codebox}

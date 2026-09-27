@@ -1,0 +1,232 @@
+\chapter{O Modelo de Caixa CSS (Box Model)}
+
+\section{Caixas em Bloco e Caixas em Linha}
+
+Antes de entrar no modelo de caixa propriamente dito, é importante relembrar uma distinção já mencionada nos capítulos de HTML: alguns elementos são de bloco (block) e outros são em linha (inline). Essa classificação também se aplica diretamente ao CSS, determinando como cada caixa se comporta em relação ao fluxo de disposição dos elementos na tela.
+
+\begin{itemize}
+  \item Uma caixa em bloco ocupa uma linha inteira por si só, dentro do espaço disponível (viewport), e força um salto para a próxima linha no elemento seguinte. Exemplos de elementos HTML que são caixas em bloco por padrão: div, p, ul, h1 a h6.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma caixa em linha não quebra para uma nova linha — ela ocupa apenas o espaço necessário para seu conteúdo, na mesma linha em que está posicionada, e normalmente está inserida dentro de uma caixa em bloco. Exemplos: a, span, em, strong.
+\end{itemize}
+
+Uma diferença fundamental entre os dois tipos: propriedades de largura (width) e altura (height) não têm efeito sobre uma caixa em linha — quem determina essas dimensões é a caixa em bloco que a envolve. Já propriedades como padding, margin e border podem ser aplicadas a ambos os tipos, embora com efeitos distintos, conforme veremos mais adiante neste capítulo.
+
+\subsection{A Propriedade display}
+
+É possível alterar esse comportamento padrão usando a propriedade display, transformando um elemento originalmente em bloco para se comportar como em linha, e vice-versa:
+
+\begin{codebox}{CSS}
+/* Transforma um elemento normalmente em linha (span) em bloco */
+span.destaque {
+  display: block;
+}
+\end{codebox}
+
+/* Transforma um elemento normalmente em bloco (li) em elemento com layout flexível interno */ ul.menu \{ display: flex; \}
+
+A propriedade display controla, na verdade, dois aspectos distintos e complementares: o display externo (se a caixa se comporta como bloco ou como linha, em relação aos elementos ao redor) e o display interno (como os elementos dentro daquela caixa são organizados — o padrão é chamado de fluxo normal, mas valores como flex alteram completamente essa disposição interna).
+
+\section{As Camadas do Modelo de Caixa}
+
+O modelo de caixa CSS (CSS Box Model) descreve como cada elemento HTML é representado como uma caixa composta por quatro camadas concêntricas: o conteúdo (content), o preenchimento interno (padding), a borda (border) e a margem (margin).
+
+\begin{infobox}{margin (margem)}
+border (borda) padding (preenchimento)
+\end{infobox}
+
+content (conteúdo)
+
+O conteúdo é o texto ou elemento em si; o padding é a distância entre o conteúdo e a borda; a border é a linha visível (ou invisível) ao redor do preenchimento; e a margin é o espaço externo à borda, responsável por afastar essa caixa de outras caixas vizinhas no layout.
+
+\begin{infobox}{Margem não é ”parte”da caixa visível}
+Um detalhe frequentemente confundido por iniciantes: a margem é um espaço externo à caixa, usado apenas para separar elementos entre si — ela não recebe cor de fundo (background-color) nem borda. Já o padding é um espaço interno, e por isso herda a cor de fundo do próprio elemento.
+\end{infobox}
+
+\section{As Propriedades padding, border e margin}
+
+Vamos consolidar essas três propriedades com um exemplo prático completo:
+
+\begin{codebox}{HTML}
+<div class="caixa">Conteúdo de exemplo</div>
+\end{codebox}
+
+\begin{codebox}{CSS}
+.caixa {
+  width: 300px;
+  height: 100px;
+  padding: 20px;
+  border: 5px solid black;
+  margin: 30px;
+  background-color: lightgray;
+}
+\end{codebox}
+
+Cada uma dessas três propriedades — padding, border e margin — também aceita valores individuais para cada um dos quatro lados de uma caixa (topo, direita, baixo e esquerda), tanto na forma longa quanto na forma abreviada (shorthand):
+
+\begin{codebox}{CSS}
+/* Forma longa: um lado por vez */
+.caixa-detalhada {
+  padding-top: 10px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+
+    margin-top: 20px;
+    margin-right: 0;
+    margin-bottom: 20px;
+    margin-left: 0;
+
+    border-top: 1px solid black;
+    border-right: 2px dashed gray;
+    border-bottom: 1px solid black;
+    border-left: 2px dashed gray;
+}
+\end{codebox}
+
+/* Forma abreviada: sentido horário, começando pelo topo */ .caixa-resumida \{ padding: 10px 15px 10px 15px; margin: 20px 0; border: 2px dotted blue; \}
+
+\begin{infobox}{Dica}
+A margem, diferentemente do padding, pode receber valores negativos. Uma margem negativa aproxima a caixa de seus vizinhos, podendo até causar sobreposição entre elementos — um efeito às vezes desejado, mas que exige cuidado ao ser utilizado.
+\end{infobox}
+
+\section{Colapso de Margens (Margin Collapsing)}
+
+Um comportamento importante — e por vezes surpreendente para iniciantes — é o chamado colapso de margens. Quando duas margens verticais de elementos adjacentes se encontram, elas não são simplesmente somadas; em vez disso, o CSS aplica um algoritmo específico:
+
+\begin{itemize}
+  \item Se ambas as margens forem positivas, o valor resultante é o maior dos dois valores (e não a soma).
+  \item Se uma margem for positiva e a outra negativa, o valor resultante é a soma algébrica (o valor positivo menos o valor absoluto do negativo).
+  \item Se ambas as margens forem negativas, o valor resultante é o mais negativo dos dois (o de maior valor absoluto). CSS .paragrafo-um \{ margin-bottom: 50px; \}
+\end{itemize}
+
+.paragrafo-dois \{ margin-top: 30px; \}
+
+Nesse exemplo, a margem final entre os dois parágrafos não será de 80px (a soma). Como ambos os valores são positivos, o resultado será o maior valor entre eles: 50px.
+
+\section{A Propriedade box-sizing}
+
+Agora chegamos a um ponto crucial, que costuma gerar bastante confusão entre quem está começando: como o navegador calcula a largura e a altura totais de uma caixa, quando existem padding e border envolvidos.
+
+\subsection{O Modelo Padrão (content-box)}
+
+No modelo de caixa padrão do CSS (chamado content-box), as propriedades width e height definem apenas as dimensões da área de conteúdo — sem contar o padding nem a border. Isso significa que, para saber a largura total ocupada pela caixa na tela, é preciso somar manualmente o padding (dos dois lados) e a border (dos dois lados) ao valor de width.
+
+\begin{codebox}{CSS}
+.caixa-padrao {
+  width: 350px;
+  height: 150px;
+  padding: 25px;
+  border: 5px solid black;
+  box-sizing: content-box; /* valor padrão dos navegadores */
+}
+\end{codebox}
+
+Nesse exemplo, embora width esteja definido como 350px, a largura total da caixa, visível na tela, será:
+
+350 + (25 × 2) + (5 × 2) = 350 + 50 + 10 = 410px E a altura total será:
+
+150 + (25 × 2) + (5 × 2) = 150 + 50 + 10 = 210px
+
+\begin{infobox}{Dica}
+A margem não entra nesse cálculo de dimensões da caixa — ela fica, por definição, do lado de fora da caixa (border-box), servindo apenas para afastar a caixa de seus vizinhos no layout.
+\end{infobox}
+
+\subsection{O Modelo Alternativo (border-box)}
+
+Para simplificar esses cálculos — e evitar ter que somar manualmente padding e border toda vez que se define uma largura — o CSS oferece um modelo alternativo, ativado com a propriedade box-sizing: border-box. Nesse modelo, o valor definido em width e height já representa a largura e altura totais da caixa, incluindo padding e border.
+
+\begin{codebox}{CSS}
+.caixa-alternativa {
+  width: 350px;
+  height: 150px;
+  padding: 25px;
+  border: 5px solid black;
+  box-sizing: border-box;
+}
+\end{codebox}
+
+Nesse segundo caso, a caixa ocupará exatamente 350px de largura e 150px de altura na tela — o próprio navegador se encarrega de reduzir proporcionalmente a área de conteúdo interna para acomodar o padding e a border dentro desses limites.
+
+\begin{infobox}{Dica}
+É extremamente comum que desenvolvedores optem por aplicar box-sizing: border-box a todos os elementos do documento, de uma só vez, logo no início da folha de estilo, justamente para evitar ter que ficar calculando manualmente
+\end{infobox}
+
+as dimensões totais de cada caixa:
+
+\begin{codebox}{CSS}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+\end{codebox}
+
+\section{Ferramentas do Navegador para Inspecionar o Box Model}
+
+Os navegadores modernos — especialmente Chrome e Firefox — oferecem ferramentas de desenvolvedor (DevTools) excelentes para inspecionar visualmente o modelo de caixa de qualquer elemento na página. Ao clicar com o botão direito sobre um elemento e escolher ”Inspecionar”, é possível visualizar um diagrama exatamente igual ao apresentado neste capítulo, com os valores reais de margin, border, padding e da área de conteúdo daquele elemento específico.
+
+\begin{infobox}{Dica}
+Essa ferramenta é indispensável para depuração de layout. Sempre que um elemento parecer estar com um tamanho ou posicionamento inesperado, inspecione seu box model diretamente pelo navegador — muitas vezes o problema está relacionado a uma margem ou padding não considerado, ou a uma confusão entre os modelos content-box e border-box.
+\end{infobox}
+
+\section{O Valor Misto inline-block}
+
+Além de block e inline, a propriedade display aceita um terceiro valor bastante útil: inline-block. Esse valor combina características dos dois mundos: o elemento não quebra para uma nova linha (como um elemento em linha), mas respeita integralmente as propriedades width, height, padding e margin (como um elemento em bloco).
+
+\begin{codebox}{HTML}
+<nav class="menu">
+  <a href="/" class="link-menu">Início</a>
+  <a href="/sobre" class="link-menu">Sobre</a>
+  <a href="/contato" class="link-menu">Contato</a>
+</nav>
+\end{codebox}
+
+\begin{codebox}{CSS}
+.link-menu {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: navy;
+  color: white;
+
+
+
+    text-decoration: none;
+}
+
+.link-menu:hover {
+  background-color: darkblue;
+}
+\end{codebox}
+
+Nesse exemplo, o elemento a — que por padrão é um elemento em linha e, portanto, ignora padding vertical de forma consistente — passa a respeitar plenamente o padding definido, aumentando a área clicável do link muito além do texto original, sem forçar uma quebra de linha entre um link e o próximo. Essa técnica é extremamente comum em barras de navegação e botões estilizados a partir de links.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Toda caixa CSS é composta por quatro camadas concêntricas: conteúdo, padding (preenchimento interno), border (borda) e margin (margem externa).
+\end{itemize}
+
+\begin{itemize}
+  \item Elementos podem ser de bloco (ocupam uma linha inteira) ou em linha (ocupam apenas o espaço do conteúdo), e esse comportamento pode ser alterado com a propriedade display.
+\end{itemize}
+
+\begin{itemize}
+  \item No modelo padrão (content-box), width/height definem apenas a área de conteúdo; padding e border são somados à parte para obter as dimensões totais da caixa.
+\end{itemize}
+
+\begin{itemize}
+  \item No modelo alternativo (box-sizing: border-box), width/height já representam a dimensão total da caixa, incluindo padding e border — simplificando bastante os cálculos de layout.
+\end{itemize}
+
+\begin{itemize}
+  \item Margens verticais adjacentes sofrem colapso: o valor final não é a soma das margens, mas segue regras específicas dependendo dos sinais dos valores envolvidos.
+\end{itemize}
+
+\begin{itemize}
+  \item As ferramentas de desenvolvedor do navegador (DevTools) permitem inspecionar visualmente o box model de qualquer elemento, sendo essenciais para depuração de layout.
+\end{itemize}
+
+\begin{itemize}
+  \item O valor inline-block combina características de bloco e de linha, sendo muito usado para aumentar a área clicável de links em menus de navegação.
+\end{itemize}

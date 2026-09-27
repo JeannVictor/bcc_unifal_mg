@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BlueVelvet Music</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<header>
+    <div class="header-content">
+        <h1>Gerenciar Categorias
+            <small id="userWelcome">Bem-vindo</small>
+        </h1>
+        <div class="header-actions">
+            <span id="userInfo" class="user-info"></span>
+        </div>
+</header>
+
+<main>
+    <div class="dashboard-container">
+        <div class="toolbar">
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="Buscar categoria por nome...">
+                <button id="searchBtn" class="search-btn">Buscar</button>
+            </div>
+
+            <div class="actions-section">
+                <button id="addCategoryBtn" class="btn-primary">Nova Categoria</button>
+                <button id="sortBtn" class="btn-secondary">Ordenar A-Z</button>
+                <button id="exportBtn" class="btn-success">Exportar CSV</button>
+                <button id="resetBtn" class="btn-danger" title="Apenas para testes">Reset</button>
+            </div>
+        </div>
+
+        <div class="filters-info-container">
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter">
+                        <option value="all">Todas</option>
+                        <option value="enabled">Ativas</option>
+                        <option value="disabled">Inativas</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="typeFilter">Tipo:</label>
+                    <select id="typeFilter">
+                        <option value="all">Todas</option>
+                        <option value="root">Categorias Raiz</option>
+                        <option value="sub">Subcategorias</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="itemsPerPage">Por Página:</label>
+                    <select id="itemsPerPage">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dashboard-info">
+                <div class="info-card">
+                    <span class="info-label">Total</span>
+                    <span id="totalCategories" class="info-value">0</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">Ativas</span>
+                    <span id="activeCount" class="info-value">0</span>
+                </div>
+                <div class="info-card">
+                    <span class="info-label">Página</span>
+                    <span id="currentPageInfo" class="info-value">1/1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="categoryTable">
+                <thead>
+                <tr>
+                    <th width="8%">ID</th>
+                    <th width="42%">Nome</th>
+                    <th width="15%">Status</th>
+                    <th width="15%">Tipo</th>
+                    <th width="20%">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="5" style="text-align: center;">Carregando categorias...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-container">
+            <div class="pagination" id="pagination"></div>
+            <div class="pagination-stats">
+                Mostrando <span id="showingStart">0</span>-<span id="showingEnd">0</span> de <span
+                    id="totalItems">0</span> categorias
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="modal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nova Categoria</h2>
+            <button id="closeModalBtn" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="categoryName">Nome da Categoria *</label>
+                    <input type="text" id="categoryName" name="name" required
+                           placeholder="Digite o nome da categoria">
+                    <small class="error-message" id="nameError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="parentCategory">Categoria Pai (Opcional)</label>
+                    <select id="parentCategory" name="parentId">
+                        <option value="">Nenhuma (Categoria Raiz)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="switch-container">
+                        <span class="switch-label">Status da Categoria:</span>
+                        <label class="switch">
+                            <input type="checkbox" id="categoryEnabled" name="enabled" checked>
+                            <span class="slider">
+                                    <span class="slider-text on">ATIVA</span>
+                                    <span class="slider-text off">INATIVA</span>
+                                </span>
+                        </label>
+                    </label>
+                    <div class="switch-description">
+                        <small>Quando inativa, a categoria não será visível para os clientes</small>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="cancelBtn" class="btn-secondary">Cancelar</button>
+            <button type="button" id="saveCategoryBtn" class="btn-primary">Salvar Categoria</button>
+        </div>
+    </div>
+</div>
+
+<div id="detailsModal" class="modal hidden">
+    <div class="modal-content details-modal">
+        <div class="modal-header">
+            <h2>Detalhes da Categoria</h2>
+            <button id="closeDetailsModalBtn" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="details-content">
+                <div class="detail-row">
+                    <span class="detail-label">ID:</span>
+                    <span class="detail-value" id="detailId">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Nome:</span>
+                    <span class="detail-value" id="detailName">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value" id="detailStatus">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Categoria Pai:</span>
+                    <span class="detail-value" id="detailParent">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tem Subcategorias:</span>
+                    <span class="detail-value" id="detailHasChildren">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Data de Criação:</span>
+                    <span class="detail-value" id="detailCreated">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Última Atualização:</span>
+                    <span class="detail-value" id="detailUpdated">-</span>
+                </div>
+            </div>
+
+            <div class="hierarchy-visual" id="hierarchyVisual" style="display: none;">
+                <h3>Estrutura Hierárquica</h3>
+                <div class="hierarchy-item">
+                    <span class="hierarchy-icon">Raiz</span>
+                    <span id="hierarchyRoot" class="hierarchy-name"></span>
+                    <span class="hierarchy-arrow">↓</span>
+                </div>
+                <div class="subcategories-section" id="subcategoriesSection">
+                    <h4>Subcategorias</h4>
+                    <div class="subcategories-list" id="subcategoriesList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+        </div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal hidden">
+    <div class="modal-content confirm-modal">
+        <div class="modal-header">
+            <h2 id="confirmTitle">Confirmar Ação</h2>
+            <button id="closeConfirmModalBtn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmCancel" class="btn-secondary">Cancelar</button>
+            <button id="confirmOk" class="btn-danger">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner"></div>
+    <p>Carregando...</p>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+
+</html>

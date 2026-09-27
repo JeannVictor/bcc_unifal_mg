@@ -1,0 +1,161 @@
+\chapter{Conceitos Fundamentais de Redes de Computadores}
+
+\section{Protocolos: a base da comunicação em rede}
+
+Um dos conceitos mais importantes em redes de computadores é o de protocolo.
+
+\begin{infobox}{Protocolo}
+Um protocolo é um conjunto de regras que devem ser seguidas por duas máquinas conectadas em rede para que seja possível trocar mensagens entre elas.
+\end{infobox}
+
+Como aplicações web funcionam, por natureza, de forma distribuída, é impossível discutir programação web sem discutir os conceitos de redes de computadores e seus respectivos protocolos. Existem diversos protocolos de comunicação em uso — POP3, SMTP, IMAP, FTP, UDP, entre outros —, mas para o desenvolvedor web os protocolos mais importantes da pilha TCP/IP (ou do modelo de referência ISO-OSI) são o HTTP e sua versão segura, o HTTPS.
+
+\subsection{HTTP e HTTPS}
+
+O HTTP (HyperText Transfer Protocol) foi projetado para transportar documentos escritos em linguagens como HTML. Seu funcionamento básico envolve no mínimo duas partes interagindo: um cliente (tipicamente um navegador web) e um servidor (um software chamado servidor web). O cliente faz uma requisição a um recurso hospedado no servidor, e o servidor devolve esse recurso como resposta, para ser renderizado no cliente. Esse modelo é chamado de arquitetura cliente-servidor. Toda essa comunicação na World Wide Web acontece sobre HTTP ou sobre sua versão mais segura, o HTTPS — representada pelo ícone de cadeado na barra de endereço do navegador. Quando o HTTPS é usado, a comunicação entre cliente e servidor é criptografada: mesmo que alguém intercepte o tráfego, o conteúdo permanece ilegível sem a chave de descriptografia adequada. Sem HTTPS, ferramentas de interceptação de tráfego — usadas tanto por profissionais bem-intencionados quanto por atacantes — conseguem visualizar exatamente as informações trocadas. Além da mensagem em si, o protocolo HTTP transporta informações adicionais chamadas cabeçalhos (headers). Os cabeçalhos fornecem metadados sobre a mensagem e sobre o próprio protocolo, e são fundamentais para o desenvolvedor backend: muitos comportamentos possíveis em nível de programação de servidor só são alcançáveis quando se compreende exatamente como os cabeçalhos HTTP funcionam.
+
+\begin{infobox}{Verbos HTTP}
+Além dos cabeçalhos, o HTTP define verbos (também chamados métodos), sendo os mais usados GET, POST, PUT e DELETE. Todo o estilo arquitetural de APIs RESTful se apoia sobre esses verbos para representar operações de leitura, criação, atualização e remoção de recursos.
+\end{infobox}
+
+Hoje já é comum o uso do HTTP/2, embora muitas aplicações ainda rodem sobre HTTP/1.1. Um grande avanço do HTTP/2 é a multiplexação: na versão 1.x, se uma página precisasse de vários arquivos diferentes (um script, uma folha de estilo, uma imagem), o navegador precisava abrir uma conexão TCP separada para cada um deles. Com o HTTP/2, uma única conexão é suficiente para obter todos os recursos, reduzindo a sobrecarga de estabelecer múltiplas conexões. Já existem discussões avançadas em torno do HTTP/3, que deverá se tornar, no futuro, o novo padrão para transferência de hipertexto na web.
+
+\subsection{A pilha TCP/IP}
+
+O TCP/IP é o conjunto de protocolos — na verdade, mais do que apenas TCP e IP — que serve de base para a comunicação em redes modernas. Antes da popularização do TCP/IP, nas décadas de 1960 e 1970, redes de computadores tendiam a ser conexões diretas ponto a ponto. O TCP/IP permitiu que diferentes topologias de rede pudessem se comunicar entre si de forma padronizada.
+
+\begin{itemize}
+  \item TCP (Transmission Control Protocol): protocolo da camada de transporte, responsável por quebrar as mensagens em pacotes menores e garantir a entrega confirmada entre origem e destino;
+\end{itemize}
+
+\begin{itemize}
+  \item IP (Internet Protocol): protocolo da camada de rede, responsável por endereçar a origem e o destino da transmissão;
+\end{itemize}
+
+\begin{itemize}
+  \item HTTP: protocolo da camada de aplicação (ou apresentação), responsável por definir como o conteúdo é transportado entre cliente e servidor.
+\end{itemize}
+
+Quando duas máquinas trocam mensagens em rede, essas mensagens não são enviadas de uma só vez: são quebradas em unidades menores chamadas pacotes. Cada pacote pode seguir caminhos diferentes até o destino, graças a algoritmos de roteamento que redirecionam o tráfego caso parte da rede esteja congestionada, aumentando a eficiência da transmissão. O destino final reconstitui a mensagem original a partir dos pacotes recebidos. Endereços IP identificam unicamente uma máquina dentro de uma rede. Existem endereços roteáveis (acessíveis diretamente pela internet) e não roteáveis (válidos apenas dentro de uma rede local), sendo estes últimos tipicamente das faixas 192.168.x.x e 10.x.x.x — endereços comuns em redes domésticas e corporativas. A figura a seguir ilustra como o HTTP se apoia sobre o TCP e o IP para que a comunicação cliente-servidor aconteça na prática.
+
+\begin{infobox}{Cliente           Requisição HTTP             Servidor}
+(navegador web) Resposta HTTP (servidor web)
+\end{infobox}
+
+HTTP / HTTPS (aplicação)
+
+TCP (transporte)
+
+IP (rede)
+
+Pilha de protocolos TCP/IP
+
+\section{Identificando recursos: URI, URL e URN}
+
+Para localizar um recurso na web — um arquivo, um documento HTML, um vídeo — usamos o conceito de URL (Uniform Resource Locator). Formalmente, existem algumas distinções mais refinadas entre URI, URL e URN, mas para fins práticos de desenvolvimento web basta entender:
+
+\begin{infobox}{URL}
+Segundo a definição da Mozilla Developer Network, uma URL é um localizador que segue um padrão e aponta para um recurso específico na web. Uma URL identifica o quê (o recurso) e onde (sua localização).
+\end{infobox}
+
+\begin{codebox}{Código}
+O recurso identificado pode ser um documento HTML, uma imagem, um vídeo, um
+script ou qualquer outro conteúdo acessível via web. A localização, por sua vez, nor-
+malmente corresponde a um endereço IP — mas como decorar sequências de números
+seria impraticável, usamos o conceito de servidor de nomes, que mapeia endereços
+IP para nomes de domínio legíveis, como www.google.com.
+Uma URL típica é composta pelas seguintes partes (algumas obrigatórias, outras
+opcionais):
+Estrutura de uma URL
+http://www.exemplo.com:80/pdf/tubarao.html?param1=valor1&param2=valor2#secao2
+\_______/\________________/\_/\____________/\____________________________/\_____/
+protocolo      domínio    porta    caminho              query string        âncora
+\end{codebox}
+
+\begin{itemize}
+  \item Protocolo (http:// ou https://): indica a versão do protocolo de comunicação usada;
+\end{itemize}
+
+\begin{itemize}
+  \item Nome de domínio (www.exemplo.com): identifica o servidor que hospeda o recurso; poderia ser um endereço IP diretamente, mas o nome de domínio é traduzido para IP por um servidor DNS;
+\end{itemize}
+
+\begin{itemize}
+  \item Porta (:80): opcional, pois o HTTP usa a porta 80 por padrão (e o HTTPS a porta 443). Uma mesma máquina pode ter várias portas abertas, cada uma
+\end{itemize}
+
+associada a uma aplicação diferente — é comum, por exemplo, servidores de aplicação escutarem na porta 8080;
+
+\begin{itemize}
+  \item Caminho (/pdf/tubarao.html): indica onde, dentro do servidor, está o recurso desejado. Vale notar que, com a popularização da computação em nuvem, esse ”caminho”nem sempre corresponde a um local físico real — pode estar em um servidor virtual;
+  \item Query string (?param1=valor1\&param2=valor2): parâmetros passados ao recurso, no formato chave-valor separados por \&. É comum, por exemplo, quando um formulário HTML é enviado usando o método GET;
+  \item Âncora (\#secao2): aponta para um ponto específico dentro do próprio documento, útil para páginas longas onde se deseja direcionar o usuário diretamente a uma seção.
+\end{itemize}
+
+\section{Servidores de nomes (DNS)}
+
+O DNS (Domain Name System) é o sistema responsável por traduzir nomes de domínio legíveis (como google.com) em endereços IP (como 216.239.36.117). Sem o DNS, seria necessário memorizar sequências numéricas para acessar qualquer site. O sistema de DNS funciona de forma hierárquica: existem servidores DNS raiz, servidores de domínio de topo (top-level domain, como .com, .br, .edu) e servidores autoritativos, responsáveis por uma zona específica da internet. Quando digitamos um endereço como unifal-mg.edu.br, uma cadeia de consultas percorre essa hierarquia — do servidor raiz, passando pelo domínio .br, até o servidor DNS autoritativo da própria instituição — até que o endereço IP correspondente seja obtido.
+
+\begin{infobox}{Dica}
+Registrar um domínio próprio significa, na prática, contratar autoridade sobre um namespace legível (por exemplo, meusite.com), associando esse nome a um endereço IP por meio de um provedor de DNS. Hoje já existem diversas extensões de domínio de topo disponíveis além das tradicionais (.com, .br, .edu), como .tech ou .space.
+\end{infobox}
+
+\section{Servidores web e servidores de aplicação}
+
+Embora os termos “servidor web” e “servidor de aplicação” sejam às vezes usados como sinônimos, existe uma diferença importante entre eles:
+
+\begin{infobox}{Servidor web vs. servidor de aplicação}
+• Um servidor web tem como objetivo principal servir conteúdo estático — arquivos HTML, CSS e JavaScript prontos, sem processamento adicional no momento da requisição;
+\end{infobox}
+
+\begin{itemize}
+  \item Um servidor de aplicação estende essa funcionalidade, gerando conteúdo
+\end{itemize}
+
+dinâmico: ao receber uma requisição, ele normalmente consulta um banco de dados, executa alguma lógica sobre esses dados e incorpora o resultado dentro de documentos HTML antes de enviá-los ao navegador.
+
+Desenvolvedores back-end precisam aprender a instalar, configurar, iniciar e parar diversos servidores de aplicação ao longo da carreira. Um desenvolvedor Java, por exemplo, tem à disposição servidores como WildFly, GlassFish, Payara ou Tomcat; cada linguagem de back-end (PHP, Python, Ruby etc.) possui seu próprio ecossistema de servidores de aplicação compatíveis.
+
+\section{A World Wide Web, computação em nuvem e CDNs}
+
+É importante não confundir internet com World Wide Web (WWW). A internet é a rede física de computadores, existente desde a década de 1960 (originalmente para fins militares, com a ARPANET). A WWW, por sua vez, é uma aplicação que roda sobre essa rede física, utilizando o protocolo HTTP para tornar informações acessíveis, compartilháveis e associadas umas às outras por meio de hiperlinks. Um documento HTML é formado por links que associam esse documento a outros documentos — presentes no mesmo site ou em qualquer outro lugar do mundo. É justamente essa rede de ligações que dá à web o nome de ”teia”(web significa teia de aranha em inglês): as informações estão interligadas ao redor de todo o planeta, acessíveis a partir de um navegador web instalado nas máquinas dos clientes. Vale destacar que a essência da WWW não depende de estética — CSS não é necessário para que a web, em sua forma mais básica, funcione; o que a torna única é a capacidade de associar documentos entre si.
+
+\subsection{Computação em nuvem}
+
+Não é mais possível falar de desenvolvimento web sem falar em cloud computing (computação em nuvem). A nuvem é, essencialmente, uma infraestrutura de servidores físicos, gerenciados por grandes provedores (Google, Amazon, Microsoft, entre outros), que disponibilizam máquinas virtuais e serviços sob demanda, eliminando a necessidade de configurar e manter infraestrutura própria. Isso inclui questões como escalabilidade diante de picos de requisições simultâneas, que passam a ser resolvidas pela plataforma contratada. Os principais provedores de nuvem hoje são Amazon Web Services (AWS), Google Cloud Platform, Microsoft Azure e Alibaba Cloud.
+
+\subsection{CDN — Content Delivery Network}
+
+Outro conceito relevante é o de CDN (Content Delivery Network, ou rede de entrega de conteúdo). Quanto mais distante geograficamente um servidor estiver do cliente, maior tende a ser o tempo de carregamento de um recurso. Para reduzir esse problema, é comum replicar um mesmo site em vários servidores espalhados pelo mundo, de
+
+forma que cada usuário seja atendido pelo servidor mais próximo geograficamente, melhorando o desempenho de carregamento.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Um protocolo define as regras de comunicação entre máquinas em rede; HTTP e HTTPS são os protocolos mais relevantes da web para o desenvolvedor.
+\end{itemize}
+
+\begin{itemize}
+  \item A pilha TCP/IP organiza a comunicação em camadas: IP endereça, TCP transporta de forma confiável (quebrando dados em pacotes) e HTTP define como o conteúdo é trocado entre cliente e servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma URL identifica e localiza um recurso na web, sendo composta por protocolo, domínio, porta (opcional), caminho, query string e âncora.
+\end{itemize}
+
+\begin{itemize}
+  \item O DNS traduz nomes de domínio legíveis em endereços IP, operando de forma hierárquica através de servidores raiz, de topo e autoritativos.
+\end{itemize}
+
+\begin{itemize}
+  \item Servidores web servem conteúdo estático; servidores de aplicação geram conteúdo dinâmico, normalmente consultando bancos de dados.
+\end{itemize}
+
+\begin{itemize}
+  \item A World Wide Web não é sinônimo de internet: é uma aplicação, baseada em HTTP e hiperlinks, que roda sobre a rede física da internet.
+\end{itemize}
+
+\begin{itemize}
+  \item Computação em nuvem e CDNs são hoje parte indissociável do desenvolvimento e da implantação de aplicações web modernas.
+\end{itemize}

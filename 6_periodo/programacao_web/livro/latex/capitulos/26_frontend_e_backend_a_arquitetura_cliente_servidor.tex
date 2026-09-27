@@ -1,0 +1,83 @@
+\chapter{Frontend e Backend: a Arquitetura Cliente-Servidor}
+
+Até este ponto do livro, o leitor explorou a construção de páginas com HTML, a estilização com CSS e a interatividade proporcionada pelo JavaScript. Essas três tecnologias formam o que se convencionou chamar de frontend: a parte de uma aplicação web com a qual o usuário efetivamente interage. A partir deste capítulo, inicia-se a Parte V do livro, dedicada ao backend — a camada da aplicação que processa regras de negócio, acessa bancos de dados e sustenta tudo aquilo que o frontend exibe. Compreender essa divisão e a forma como as duas partes colaboram é o primeiro passo para se tornar um desenvolvedor web completo.
+
+\section{Programação web: muito além do que se vê na tela}
+
+Quando alguém pensa em programação web, a associação mais imediata costuma ser com aquilo que aparece visualmente em um site: botões, formulários, imagens, animações. Essa é uma percepção natural, mas incompleta. Programação web é, de forma mais ampla, o processo de criar aplicações e sites que podem ser acessados pela internet, independentemente da plataforma utilizada para o acesso — desde que exista uma conexão com a rede, a aplicação pode ser consumida por um computador, um notebook, um smartphone, um relógio inteligente ou qualquer outro dispositivo conectado. Para construir esse tipo de aplicação, o desenvolvedor lança mão de diversas linguagens de programação, linguagens de marcação e tecnologias variadas, que se dividem essencialmente em dois grandes grupos: aquelas voltadas para o que o usuário vê e manipula diretamente (o frontend) e aquelas que operam nos bastidores, de forma invisível ao usuário final (o backend).
+
+\begin{infobox}{Frontend e Backend}
+O frontend é a camada de uma aplicação web responsável pela estrutura, pelo design e pela interação direta com o usuário. O backend é a camada responsável pela lógica de negócio, pela integração com bancos de dados, pela autenticação de usuários e por todo o processamento que ocorre sem que o usuário o perceba diretamente.
+\end{infobox}
+
+\section{Uma analogia do cotidiano: o restaurante}
+
+Antes de tratar do assunto em termos estritamente técnicos, é útil recorrer a uma situação do dia a dia que não envolve tecnologia alguma: a experiência de ir a um restaurante. Imagine o leitor chegando a um restaurante, sentando-se à mesa e recebendo o cardápio — que pode ser físico ou digital, acessado até mesmo por QR Code. Depois de escolher o prato, o cliente chama o garçom, faz o pedido, aguarda, recebe a refeição, come, conversa e, ao final, solicita a conta, paga e vai embora. Nesse processo inteiro, nenhum site foi utilizado para realizar o pedido de comida. Ainda assim, esse cenário revela com clareza o paralelo entre frontend e backend: o frontend é a parte visível do restaurante, e o backend é a parte invisível — não porque seja irrelevante, mas porque o cliente, enquanto consumidor, normalmente não tem acesso a ela. No frontend do restaurante estão a área de atendimento (mesas, decoração, iluminação, tudo que compõe a experiência visual e estética do salão), o menu (o cardápio, que deve ser claro e atraente) e os garçons, que funcionam como a interface entre o cliente e a cozinha. É o garçom quem recebe o pedido do cliente, leva-o até a cozinha e, quando o prato está pronto, retorna à mesa para entregá-lo. Repare que, em nenhum momento, o cliente fala diretamente com o chef, e em nenhum momento o chef entrega o prato diretamente ao cliente: existe sempre um intermediário. Esse detalhe será importante mais adiante, quando se discutir o papel das APIs na comunicação entre sistemas. Já no backend do restaurante está a cozinha, onde os pratos são de fato preparados; o sistema de pedidos, que organiza e prioriza as refeições a serem feitas (por exemplo, distribuindo pedidos entre cozinhas especializadas em diferentes tipos de culinária); a gestão de estoque, que controla os ingredientes disponíveis e sinaliza quando é necessário reabastecer; e o faturamento e pagamento, responsável por processar o valor recebido e permitir que ele seja reinvestido no próprio negócio — seja para repor o estoque, melhorar a estrutura do restaurante ou remunerar os funcionários. A integração entre essas partes segue uma sequência lógica: o cliente escolhe o prato no menu e faz o pedido ao garçom (frontend); o garçom leva o pedido à cozinha, onde o chef prepara a refeição (transição para o backend); o prato pronto é levado de volta ao cliente pelo garçom (interação entre backend e frontend); e, por fim, o pagamento é processado e uma confirmação é entregue ao cliente.
+
+\section{Frontend e backend em termos técnicos}
+
+Transportando essa analogia para o universo da programação, o frontend é a camada que interage diretamente com o usuário: é tudo aquilo que ele vê e com que ele interage, incluindo a estrutura, o design e a interatividade da aplicação. As tecnologias mais comuns associadas ao frontend são:
+
+\begin{itemize}
+  \item HTML (HyperText Markup Language): responsável pela estrutura básica da página, por meio de tags como main, header, article, p e div;
+\end{itemize}
+
+\begin{itemize}
+  \item CSS (Cascading Style Sheets): responsável pela estilização — cores, fontes, layout, alinhamento e espaçamento dos elementos;
+\end{itemize}
+
+\begin{itemize}
+  \item JavaScript: linguagem de programação que confere interatividade à página, permitindo animações, validações de formulário e manipulação dinâmica de conteúdo.
+\end{itemize}
+
+Em um site de comércio eletrônico como os que o leitor certamente já utilizou, o frontend corresponde ao layout das páginas (página inicial, listagem de produtos, página de um produto específico, carrinho de compras, lista de desejos), aos botões de interação (adicionar ao carrinho, alterar quantidade, calcular frete), às animações (como o efeito de scroll infinito, comum em catálogos modernos) e aos formulários (cadastro, login, autenticação de dois fatores). O backend, por sua vez, é a parte da aplicação que não é visível ao usuário. Ele lida com a lógica de negócio, a integração com bancos de dados, a autenticação de usuários e diversas outras responsabilidades críticas para o funcionamento correto do sistema. Um ponto importante — e que será retomado repetidamente ao longo desta parte do livro — é que o backend nunca deve confiar cegamente nos dados que chegam do frontend. Mesmo que o frontend realize validações (por exemplo, verificando se um campo obrigatório foi preenchido), o backend precisa revalidar essas informações, porque nem sempre é possível garantir de onde os dados efetivamente vieram, nem se algum agente malicioso os alterou no caminho. Entre as tecnologias comuns de backend estão as linguagens de programação (Java, Python, Ruby, PHP, Node.js, Go, C\#, entre outras), os sistemas de banco de dados (MySQL, PostgreSQL, MongoDB, SQL Server, MariaDB) e os servidores de aplicação (Apache HTTP Server, Nginx). Retomando o exemplo do e-commerce, cabe ao backend determinar como os produtos são exibidos com base nos dados armazenados (nome, descrição, quantidade em estoque), processar pagamentos via Pix, cartão de crédito, débito ou boleto, e gerenciar as contas de usuário, incluindo a validação de login e senha — algo que o frontend, por si só, jamais teria condições de fazer com segurança.
+
+\section{A arquitetura cliente-servidor}
+
+A relação entre frontend e backend é formalizada, do ponto de vista arquitetural, pelo modelo cliente-servidor. Nesse modelo, o cliente — tipicamente o navegador executando o frontend — envia requisições para o servidor, que representa o backend. O servidor processa essa requisição, eventualmente consultando ou alterando dados em um banco de dados, e devolve uma resposta ao cliente, que atualiza a interface de acordo com o resultado recebido. A figura a seguir ilustra essa arquitetura de forma simplificada: o navegador do usuário se comunica com o servidor de backend, que por sua vez se comunica com o banco de dados para persistir ou recuperar informações.
+
+\begin{infobox}{Requisição HTTP                   Consulta / Persistência}
+Cliente (Frontend) Servidor (Backend) Banco de Dados HTML, CSS, JavaScript Spring Boot / Java MySQL, PostgreSQL... Resposta (JSON) Dados
+\end{infobox}
+
+Observe que o cliente nunca acessa o banco de dados diretamente: toda comunicação passa obrigatoriamente pelo servidor de backend, exatamente como, no restaurante, o cliente nunca fala diretamente com o chef, mas sempre por meio do garçom.
+
+Essa intermediação é o que garante segurança, controle e consistência à aplicação — é o backend quem decide o que pode ou não ser feito com os dados armazenados.
+
+\begin{infobox}{Dica}
+Ao longo desta parte do livro, o leitor construirá aplicações backend em Java utilizando o framework Spring Boot. É fundamental ter em mente, desde já, que o backend nunca existe isoladamente: ele é sempre uma das pontas de uma conversa entre cliente e servidor, e essa conversa segue convenções bem estabelecidas, que serão detalhadas no próximo capítulo, dedicado às APIs.
+\end{infobox}
+
+\section{A integração entre frontend e backend}
+
+A comunicação entre frontend e backend geralmente ocorre por meio de APIs (Application Programming Interfaces, ou interfaces de programação de aplicações). Quando o usuário clica em um botão para adicionar um produto ao carrinho, por exemplo, o frontend dispara uma requisição para o servidor (o backend), que processa essa ação e devolve uma resposta — que pode indicar sucesso (o produto foi adicionado) ou falha (o produto está esgotado, ou ocorreu um erro de conexão). Essa resposta é então utilizada pelo frontend para atualizar a interface e informar o usuário sobre o resultado da operação. Esse mecanismo de comunicação — as APIs — será justamente o assunto do próximo capítulo. Sem ele, não haveria como um frontend construído em HTML, CSS e JavaScript conversar de forma organizada com um backend escrito em Java, Python ou qualquer outra linguagem. É a API que estabelece o ”contrato”dessa conversa, permitindo que as duas partes evoluam de forma relativamente independente, desde que respeitem esse contrato compartilhado.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Programação web abrange tanto o frontend (o que o usuário vê e manipula) quanto o backend (a lógica que opera nos bastidores).
+\end{itemize}
+
+\begin{itemize}
+  \item A analogia do restaurante ilustra bem a divisão: o salão, o menu e o garçom representam o frontend; a cozinha, o estoque e o faturamento representam o backend.
+\end{itemize}
+
+\begin{itemize}
+  \item O frontend é construído com HTML, CSS e JavaScript; o backend utiliza linguagens como Java, Python, PHP ou Node.js, além de bancos de dados e servidores de aplicação.
+\end{itemize}
+
+\begin{itemize}
+  \item O backend nunca deve confiar cegamente em dados vindos do frontend — validações devem ser refeitas no servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item A arquitetura cliente-servidor formaliza essa divisão: o cliente envia requisições, o servidor processa e consulta o banco de dados, e devolve uma resposta.
+\end{itemize}
+
+\begin{itemize}
+  \item O cliente nunca acessa o banco de dados diretamente; toda comunicação passa pelo backend, que atua como intermediário e guardião das regras de negócio.
+\end{itemize}
+
+\begin{itemize}
+  \item A integração entre frontend e backend é viabilizada por APIs, tema que será aprofundado no próximo capítulo.
+\end{itemize}

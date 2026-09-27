@@ -1,0 +1,35 @@
+EXERCÍCIO PARA CASA #01: INSTALAÇÃO E GESTÃO DE MÚLTIPLOS KITS DE DESENVOLVIMENTO JAVA
+======================================================================================
+
+RELATÓRIO DE EXECUÇÃO DOS PASSOS
+--------------------------------
+
+1. VERIFICAÇÃO DE JDKs INSTALADOS ANTERIORMENTE
+-----------------------------------------------
+- Comando executado: java -version
+- Resultado obtido: "command not found"
+- Conclusão: Nenhum JDK estava instalado previamente ou configurado corretamente.
+
+2. DOWNLOAD DAS VERSÕES DO OpenJDK
+----------------------------------
+- Plataforma escolhida: Windows
+- JDKs baixados do site Adoptium/Temurin:
+  * OpenJDK 23 (última versão)
+  * OpenJDK 17 (LTS)
+- Arquivos obtidos:
+  * OpenJDK23U-jdk_x64_windows_hotspot_23.0.1_6.msi
+  * OpenJDK17U-jdk_x64_windows_hotspot_17.0.9_9.msi
+
+3. INSTALAÇÃO DOS JDKs
+----------------------
+- JDK 23:
+  * Instalado em: C:\Program Files\Java\jdk-23
+  * Opções selecionadas: Instalação padrão
+- JDK 17:
+  * Instalado em: C:\Program Files\Java\jdk-17
+  * Opções selecionadas: Instalação padrão
+---------
+- Todos os passos foram executados com sucesso.
+- Ambos JDKs (versões 23 e 17) estão devidamente instalados.
+- O sistema permite alternar entre as versões conforme necessidade.
+- A configuração atende aos requisitos do exercício proposto.

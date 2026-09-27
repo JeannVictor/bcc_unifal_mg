@@ -1,0 +1,134 @@
+\chapter{Desvendando o DOM (Document Object Model)}
+
+Até este ponto, o leitor já sabe que um navegador web recebe um documento HTML de um servidor e o exibe dentro do seu viewport. Essa afirmação, porém, é incompleta. Antes de qualquer coisa aparecer na tela, o navegador realiza um passo intermediário fundamental: ele lê o documento HTML recebido e constrói, em memória, uma representação estrutural e hierárquica desse documento. Essa representação é chamada de DOM — Document Object Model, ou Modelo de Objetos do Documento. Compreender o DOM é uma das etapas mais importantes no início dos estudos de desenvolvimento web, porque é essa estrutura — e não o arquivo HTML em si — que as linguagens CSS e JavaScript efetivamente manipulam. Quando se aplica um estilo ou se adiciona interatividade a uma página, não se está alterando o arquivo de texto que chegou ao navegador; está-se alterando a árvore que representa esse arquivo na memória do navegador.
+
+\section{O que é o DOM}
+
+\begin{infobox}{Document Object Model}
+O DOM é uma representação estrutural e hierárquica dos elementos presentes em um documento web e do relacionamento entre esses elementos. Ele é criado automaticamente pelo navegador no momento em que este recebe um documento HTML para renderização, e é essa árvore — não o arquivo original — que fica disponível para ser lida e modificada por CSS e JavaScript.
+\end{infobox}
+
+Sempre que o leitor digita um endereço na barra de navegação e o navegador recebe um documento HTML como resposta, ocorre o seguinte processo: o navegador realiza o parsing (a leitura e interpretação) do texto HTML e, para cada elemento de marcação encontrado, cria um nó correspondente. Esses nós são então conectados uns aos outros de acordo com a relação de aninhamento presente no HTML original, formando uma estrutura em árvore. É por essa razão que, no dia a dia da programação web, expressões como “percorrer o DOM”, “navegar pelo DOM” ou “buscar um elemento no DOM” são tão comuns. Uma das atividades centrais de qualquer desenvolvedor front-end é localizar um elemento específico (ou um conjunto de elementos) dentro dessa árvore, para então aplicar um estilo CSS ou associar um comportamento em JavaScript a ele.
+
+\section{Da marcação HTML à árvore de nós}
+
+\begin{codebox}{Código}
+Para entender como o HTML se transforma em DOM, é preciso lembrar que cada
+elemento HTML é normalmente formado por uma tag de abertura, um conteúdo e uma
+tag de encerramento (por exemplo, <h1>Título</h1>). Quando o navegador realiza
+o parsing desse elemento, ele cria um nó na árvore do DOM para representá-lo. A
+relação de aninhamento entre as tags do documento — um elemento dentro de outro
+— se traduz diretamente em relações de parentesco entre nós: pais, filhos e irmãos,
+exatamente como em qualquer estrutura de árvore estudada em outras disciplinas de
+ciência da computação.
+Considere um documento HTML mínimo, com apenas um elemento html, contendo
+head e body, e dentro do body um header, um nav e um link. A Figura 7.1 mostra
+lado a lado o trecho de código HTML e a árvore DOM que o navegador cria a partir
+dele.
+\end{codebox}
+
+Um HTML simples e sua árvore DOM
+
+\begin{codebox}{HTML}
+   <!DOCTYPE html>
+   <html>
+     <head>
+       <title>Meu Site</title>
+     </head>
+     <body>
+       <header>
+          <nav>
+            <ul>
+              <li><a href="#">Início</a></li>
+            </ul>
+          </nav>
+       </header>
+     </body>
+   </html>
+\end{codebox}
+
+Observe a raiz da árvore: o elemento html é o único elemento que não possui pai — ele é o ancestral de todos os demais nós do documento. A partir dele, a árvore se ramifica em head e body, e cada um desses se ramifica novamente, até chegar aos elementos mais internos, que não possuem filhos (as chamadas “folhas” da árvore). O elemento a (âncora, usado para links), por exemplo, é filho de li, que é filho de ul, que é filho de nav, que é filho de header, que é filho de body.
+
+\section{A metáfora da caixa: introdução ao Box Model}
+
+Uma forma extremamente útil de visualizar cada nó do DOM é enxergá-lo como uma caixa. Cada elemento HTML, ao ser transformado em nó, passa a ter propriedades associáveis como largura, altura, espaçamento interno e externo. Essa associação entre elemento e caixa é a base conceitual do que, mais adiante no estudo de CSS, será
+
+html
+
+head body
+
+title header
+
+nav
+
+ul
+
+li
+
+a
+
+Figura 7.1: Correspondência entre elementos HTML e nós da árvore DOM. Cada elemento de marcação vira um nó; o aninhamento no código vira uma relação de parentesco na árvore.
+
+formalizado como box model (modelo de caixas) — um dos conceitos mais importantes para quem deseja estruturar layouts corretamente. Por ora, basta reter a ideia: pensar em cada nó do DOM como uma caixa retangular, que pode conter outras caixas menores dentro de si, facilita enormemente a compreensão de como CSS e JavaScript atuam sobre a página.
+
+\begin{infobox}{Dica}
+Ao projetar uma página nova, é uma boa prática — mesmo que seja apenas um rascunho mental ou em papel — esboçar a hierarquia de elementos HTML que você pretende usar antes de escrever o código. Pensar “isto é uma caixa dentro daquela caixa” ajuda a decidir a estrutura de divs, sections e demais elementos de bloco antes mesmo de abrir o editor.
+\end{infobox}
+
+\section{Como CSS e JavaScript interagem com o DOM}
+
+Uma vez que o DOM existe, ele se torna o alvo de duas linguagens complementares:
+
+\begin{itemize}
+  \item CSS define regras que selecionam nós da árvore (por exemplo, todos os elementos p, ou o elemento com determinada classe) e aplicam propriedades visuais — cor, fonte, espaçamento — a esses nós.
+\end{itemize}
+
+\begin{itemize}
+  \item JavaScript localiza nós específicos na árvore e adiciona comportamento a eles, como reagir a um clique, alterar texto dinamicamente ou até criar e inserir novos nós na árvore em tempo de execução.
+\end{itemize}
+
+Um exemplo simples ilustra bem essa segunda interação: um botão HTML pode ter um event listener (um “ouvinte de evento”) associado a ele em JavaScript. Quando
+
+o usuário clica no botão, o navegador dispara um evento de clique; o código JavaScript captura esse evento e, em resposta, cria um novo elemento — por exemplo, um parágrafo — e o insere na árvore do DOM. Nesse instante, o DOM literalmente cresce: um novo nó passa a existir na árvore, e o navegador imediatamente re-renderiza a área afetada do viewport para refletir essa mudança. É importante entender que esse novo parágrafo nunca existiu no arquivo HTML original — ele foi criado dinamicamente, apenas na árvore em memória. O CSS, por sua vez, segue um conceito de herança: um estilo aplicado a um elemento pai tende a ser herdado por seus elementos filhos, a menos que o filho declare explicitamente uma propriedade diferente, sobrescrevendo o valor herdado. Esse comportamento em cascata — que dá nome à sigla CSS (Cascading Style Sheets, Folhas de Estilo em Cascata) — só faz sentido porque existe uma árvore de nós com relações de parentesco bem definidas por trás da página.
+
+\section{O conceito de eventos}
+
+Segundo a definição do MDN (Mozilla Developer Network), eventos são “sinalizações de ocorrências que acontecem no sistema que você está desenvolvendo, das quais o sistema o informa para que você possa responder a elas, caso deseje”. Em outras palavras, um evento é qualquer acontecimento dentro do navegador — uma ação do usuário (clicar, passar o mouse, digitar) ou algo disparado pelo próprio navegador (a página terminou de carregar, uma conexão falhou) — que pode ser capturado e tratado por código. O processo de reagir a um evento é chamado de tratamento de eventos (event handling) e segue, de forma resumida, três passos:
+
+1. Identificar qual elemento (ou nó do DOM) deve ser observado.
+
+2. Determinar qual evento deve ser escutado nesse elemento (clique, passar o mouse, envio de formulário etc.).
+
+3. Definir a lógica — o algoritmo — que deve ser executada quando o evento ocorrer.
+
+Esse tripé é a base de praticamente toda a interatividade que se constrói em páginas web modernas, e será revisitado repetidamente ao longo dos estudos de JavaScript.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O DOM é a representação em memória, estruturada como árvore, que o navegador cria a partir de um documento HTML recebido do servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item CSS e JavaScript não manipulam o arquivo HTML original: eles leem e alteram a árvore DOM.
+\end{itemize}
+
+\begin{itemize}
+  \item Cada elemento de marcação HTML vira um nó na árvore; o aninhamento das tags define as relações de parentesco (pai, filho, irmão) entre os nós.
+\end{itemize}
+
+\begin{itemize}
+  \item Pensar em cada nó como uma “caixa” é a introdução intuitiva ao futuro conceito de box model do CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item Adicionar ou remover elementos via JavaScript significa, na prática, adicionar ou remover nós da árvore DOM em tempo real.
+\end{itemize}
+
+\begin{itemize}
+  \item O CSS aplica estilo aos nós selecionados e propaga esse estilo por herança aos elementos filhos, salvo sobrescrita explícita.
+\end{itemize}
+
+\begin{itemize}
+  \item Eventos são ocorrências que podem ser capturadas e tratadas por código, formando a base da interatividade em páginas web.
+\end{itemize}

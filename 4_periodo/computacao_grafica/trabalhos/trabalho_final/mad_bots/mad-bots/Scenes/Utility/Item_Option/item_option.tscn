@@ -1,0 +1,178 @@
+[gd_scene load_steps=10 format=3 uid="uid://c4l1p3sbfsv0o"]
+
+[ext_resource type="Texture2D" uid="uid://byvnc6hxb7l0k" path="res://Assets/Textures/GUI/GUI_expecificas/item_option.png" id="1_tpgge"]
+[ext_resource type="Script" uid="uid://b47ahdctcd11v" path="res://Scenes/Utility/Item_Option/item_option.gd" id="2_7s8j4"]
+[ext_resource type="FontFile" uid="uid://jtemo7px1tum" path="res://Assets/Font/CyberpunkCraftpixPixel.otf" id="2_u6ysw"]
+[ext_resource type="Texture2D" uid="uid://6s5dtstfuxg7" path="res://Assets/Textures/GUI/GUI_expecificas/item_frame_item_option.png" id="3_jaksr"]
+[ext_resource type="Texture2D" uid="uid://v1fhpkgohe1n" path="res://Assets/Textures/GUI/GUI_expecificas/item_option_rarity.png" id="6_d37p2"]
+[ext_resource type="Texture2D" uid="uid://damx66op5ty0k" path="res://Assets/Textures/GUI/GUI_expecificas/description_item_option.png" id="6_jaksr"]
+[ext_resource type="Texture2D" uid="uid://dkx2ich612wxu" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio3.png" id="7_86wpl"]
+[ext_resource type="Texture2D" uid="uid://bq0w0baqqj8vj" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio7.png" id="8_d37p2"]
+[ext_resource type="Texture2D" uid="uid://blyg0magdimux" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio2.png" id="9_25yoe"]
+
+[node name="ItemOption" type="TextureRect"]
+offset_right = 366.0
+offset_bottom = 100.0
+texture = ExtResource("1_tpgge")
+expand_mode = 1
+script = ExtResource("2_7s8j4")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.09
+anchor_right = 0.164
+anchor_bottom = 0.56100005
+offset_left = -2.7380009
+offset_top = 3.0
+offset_right = -0.024002075
+offset_bottom = 2.899994
+grow_vertical = 2
+texture = ExtResource("3_jaksr")
+expand_mode = 1
+
+[node name="itemIcon" type="TextureRect" parent="TextureRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021000002
+anchor_top = 0.021000002
+anchor_right = 0.97900003
+anchor_bottom = 0.97900003
+offset_left = 0.012999952
+offset_top = 0.012999952
+offset_right = -0.013000488
+offset_bottom = -0.013000488
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+
+[node name="TextureName" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.18
+anchor_top = 0.13000001
+anchor_right = 0.73200005
+anchor_bottom = 0.5
+offset_left = 0.11999512
+offset_right = 0.08798218
+offset_bottom = 1.0
+texture = ExtResource("6_jaksr")
+expand_mode = 1
+flip_h = true
+
+[node name="lbl_name" type="Label" parent="TextureName"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.030000001
+anchor_right = 0.9850001
+anchor_bottom = 1.001
+offset_left = -0.060002327
+offset_top = -0.9729996
+offset_right = 0.02998352
+offset_bottom = -0.011001587
+theme_override_fonts/font = ExtResource("2_u6ysw")
+theme_override_font_sizes/font_size = 14
+text = "Name
+"
+vertical_alignment = 1
+
+[node name="TextureRarity" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.81700003
+anchor_top = 0.05
+anchor_right = 0.9620001
+anchor_bottom = 0.33
+offset_left = -0.022003174
+offset_right = -0.092041016
+texture = ExtResource("6_d37p2")
+expand_mode = 1
+
+[node name="lbl_rarity" type="Label" parent="TextureRarity"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.019000001
+anchor_top = 0.036000002
+anchor_right = 0.84400004
+anchor_bottom = 0.46400002
+offset_left = -1.0069925
+offset_top = -1.008
+offset_right = 8.268005
+offset_bottom = 15.007999
+theme_override_fonts/font = ExtResource("2_u6ysw")
+theme_override_font_sizes/font_size = 10
+text = "rarity"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureDescription" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.044000003
+anchor_top = 0.62
+anchor_right = 0.929
+anchor_bottom = 0.97
+offset_left = -0.104002
+offset_right = 10.985992
+texture = ExtResource("6_jaksr")
+expand_mode = 1
+
+[node name="lbl_description" type="RichTextLabel" parent="TextureDescription"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.019000001
+anchor_top = 0.086
+anchor_right = 0.99000007
+anchor_bottom = 0.88600004
+offset_left = 0.052999496
+offset_top = -0.00999999
+offset_right = 0.3499756
+offset_bottom = 1.9899979
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 11
+bbcode_enabled = true
+text = "Item Description"
+fit_content = true
+autowrap_mode = 2
+
+[node name="decoration1" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.814
+anchor_top = 0.33
+anchor_right = 0.90200007
+anchor_bottom = 0.62
+offset_left = 0.07598877
+offset_right = -0.13201904
+texture = ExtResource("7_86wpl")
+expand_mode = 1
+
+[node name="decoration2" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.99700004
+anchor_top = 0.17
+anchor_right = 1.085
+anchor_bottom = 0.81000006
+offset_left = 0.09799194
+offset_right = -0.11001587
+texture = ExtResource("8_d37p2")
+
+[node name="decoration3" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.73300004
+anchor_top = 0.13000001
+anchor_right = 0.81700003
+anchor_bottom = 0.45000002
+offset_left = 30.721985
+offset_right = 31.977997
+offset_bottom = -1.4363403
+rotation = 1.5707964
+texture = ExtResource("9_25yoe")
+expand_mode = 1
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

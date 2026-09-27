@@ -1,0 +1,49 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka-aula3
+    hostname: kafka-aula3
+    ports:
+      - "9092:9092"       # listener interno (entre containers)
+      - "9094:9094"       # listener externo (para o notebook rodando no host)
+    environment:
+      # --- Modo KRaft: Kafka roda sem precisar de ZooKeeper ---
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-aula3:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-aula3:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-aula3
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=aula3-dce540
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-aula3:9092
+      - KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://schema-registry:8081
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.7.1
+    container_name: schema-registry-aula3
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8081"       # API REST do Schema Registry (usada pelo notebook, via localhost:8081)
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka-aula3:9092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+volumes:
+  kafka_data:

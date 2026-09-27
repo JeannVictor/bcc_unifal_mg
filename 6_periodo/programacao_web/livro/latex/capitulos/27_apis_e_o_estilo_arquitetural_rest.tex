@@ -1,0 +1,167 @@
+\chapter{APIs e o Estilo Arquitetural REST}
+
+\section{A origem e a problemática das APIs}
+
+Antes da popularização da internet, era comum que aplicações funcionassem de forma inteiramente offline ou local. Com a evolução tecnológica e a expansão do acesso à rede — não apenas por computadores, mas também por notebooks, smartphones e dispositivos da chamada internet das coisas (relógios inteligentes, assistentes de voz como Alexa e Google Home, entre outros) — passou a ser cada vez mais comum a existência de aplicações que funcionam exclusivamente por meio da internet, consumidas por navegadores independentemente da plataforma. Esse cenário gerou duas necessidades centrais: primeiro, a necessidade de disponibilizar software que pudesse ser acessado pela web, independentemente da plataforma do usuário; segundo, a necessidade de empresas alimentarem seus próprios sistemas, disponibilizando serviços que pudessem ser consumidos tanto por usuários finais quanto por outras aplicações. A partir dessas necessidades, surgiram diversas soluções de software voltadas a permitir a comunicação entre sistemas — sistema com sistema, e sistema com usuário — e esse conjunto de soluções ficou conhecido como API.
+
+\section{O que é uma API}
+
+\begin{infobox}{API}
+API é a sigla para Application Programming Interface (Interface de Programação de Aplicações): um conjunto de regras e definições que facilita a interação entre diferentes softwares, permitindo que aplicativos se comuniquem entre si, requisitando e compartilhando dados ou funcionalidades de maneira padronizada.
+\end{infobox}
+
+Uma API é baseada em um contrato claro: quem consome a API sabe exatamente o que precisa enviar e o que receberá como resposta. Imagine, por exemplo, uma aplicação A escrita em Java, com um conjunto de rotinas documentadas e bem definidas. Uma aplicação B, escrita em C\#, pode consumir os serviços de A sem conhecer ab-
+
+solutamente nada sobre sua implementação interna — se ela usa Java puro, Spring Boot, Jakarta EE ou Quarkus é irrelevante para quem consome a API. Basta que a requisição siga o contrato estabelecido para que a resposta esperada seja recebida. As APIs podem ser implementadas de diversas formas, incluindo o padrão REST (o foco deste capítulo), o protocolo SOAP (Simple Object Access Protocol) e o modelo RPC (Remote Procedure Call). Antes de detalhar o REST, no entanto, é indispensável compreender os verbos HTTP, que fornecem a base para qualquer comunicação via HTTP.
+
+\section{Os verbos (ou métodos) HTTP}
+
+Os verbos HTTP são comandos usados para indicar qual ação o cliente deseja realizar sobre um recurso específico de um servidor. Eles existem para viabilizar aplicações que seguem o padrão CRUD — as quatro operações básicas que podem ser realizadas sobre qualquer recurso: Create (criar), Retrieve (recuperar), Update (atualizar) e Delete (remover).
+
+\subsection{GET: recuperando informações}
+
+O verbo GET corresponde ao Retrieve do CRUD. Ele é utilizado para solicitar informações de um recurso sem alterar seu estado no servidor — é, portanto, uma operação de leitura pura. Todo navegador realiza requisições GET o tempo todo: ao digitar um endereço na barra de navegação ou realizar uma busca no Google, o navegador está executando uma requisição GET.
+
+\begin{infobox}{HTTP}
+GET /api/products HTTP/1.1 Host: api.bluevelvet.com Accept: application/json
+\end{infobox}
+
+\subsection{POST: criando novos recursos}
+
+O verbo POST envia dados ao servidor para a criação de um novo recurso, alterando, portanto, o estado do servidor. É comumente utilizado para enviar formulários, cadastrar novos usuários ou criar registros em um banco de dados. Diferentemente do GET, o POST não expõe seus dados na URL, mas sim no corpo (body) da requisição — o que é essencial quando informações sensíveis, como senhas, estão envolvidas.
+
+\begin{infobox}{HTTP}
+POST /api/products HTTP/1.1 Host: api.bluevelvet.com Content-Type: application/json
+\end{infobox}
+
+\{
+
+\begin{infobox}{"name": "CD Player Retro",}
+"shortDescription": "Toca-discos compacto", "brand": "Elgin",
+\end{infobox}
+
+"listPrice": 349.90 \}
+
+\subsection{PUT: substituindo um recurso por completo}
+
+O verbo PUT atualiza um recurso existente, substituindo-o integralmente pelos dados fornecidos na requisição. Isso significa que, ao usar PUT, o cliente deve enviar todos os campos do recurso — mesmo aqueles que não mudaram — pois o servidor tratará a requisição como uma substituição completa, e não como uma alteração pontual. HTTP PUT /api/products/10 HTTP/1.1 Host: api.bluevelvet.com Content-Type: application/json
+
+\{
+
+\begin{infobox}{"name": "CD Player Retro Prata",}
+"shortDescription": "Toca-discos compacto edicao especial", "brand": "Elgin", "listPrice": 379.90 \}
+\end{infobox}
+
+\subsection{PATCH: atualizações parciais}
+
+O verbo PATCH realiza alterações parciais em um recurso já existente, modificando apenas um campo ou um subconjunto de campos, sem exigir que o restante das informações seja reenviado. É comum, por exemplo, permitir que um usuário atualize apenas o apelido ou o endereço de e-mail de seu cadastro por meio de PATCH, mantendo inalterados campos sensíveis como CPF ou data de nascimento. HTTP PATCH /api/products/10 HTTP/1.1 Host: api.bluevelvet.com Content-Type: application/json
+
+\{ "listPrice": 399.90 \}
+
+\subsection{DELETE: removendo um recurso}
+
+O verbo DELETE remove um recurso do servidor, sendo utilizado para excluir itens como produtos, comentários ou publicações. HTTP DELETE /api/products/10 HTTP/1.1 Host: api.bluevelvet.com
+
+Vale destacar uma discussão relevante na literatura: em muitos sistemas reais, uma exclusão não é imediatamente definitiva. Um produto removido de uma loja pode simplesmente ser marcado como indisponível, e uma conta de usuário ”deletada”pode permanecer inativa por um período antes da exclusão definitiva (como ocorre, por exemplo, com o Google Drive, que move itens para uma lixeira antes de excluí-los permanentemente). Alguns autores argumentam que, tecnicamente, essas operações deveriam ser tratadas como PATCH (já que apenas um campo, como uma flag de ”inativo”, é alterado). Contudo, do ponto de vista de quem consome a API, essa é uma regra de negócio interna que não precisa ser exposta: o consumidor apenas precisa saber que solicitou a remoção do recurso, e o verbo DELETE continua sendo o mais adequado semanticamente para expressar essa intenção.
+
+\subsection{HEAD e OPTIONS}
+
+Além dos cinco verbos principais, existem dois métodos HTTP adicionais de uso mais específico. O HEAD recupera apenas os cabeçalhos de um recurso, sem o corpo da resposta, sendo útil para obter metadados sem transferir todo o conteúdo. O OPTIONS retorna quais métodos HTTP são suportados pelo servidor para um recurso específico, sendo frequentemente utilizado em situações de CORS (Cross-Origin Resource Sharing) — um mecanismo de segurança que restringe o acesso a recursos de uma página a requisições originadas do mesmo domínio (ou de domínios explicitamente autorizados), protegendo a aplicação contra interações indevidas vindas de outros domínios.
+
+\section{O estilo arquitetural REST}
+
+\begin{infobox}{REST}
+REST (Representational State Transfer, ou Transferência de Estado Representacional) é um conjunto de convenções que permite a comunicação entre sistemas diferentes, geralmente via HTTP, utilizando os verbos GET, POST, PUT, PATCH e DELETE. Uma API que segue o padrão REST é chamada de RESTful.
+\end{infobox}
+
+O REST se apoia em cinco características principais:
+
+\begin{itemize}
+  \item Arquitetura stateless (sem estado): cada requisição do cliente contém todas as informações necessárias para que o servidor a processe; o servidor não guarda nenhuma informação sobre requisições anteriores. Uma requisição é sempre independente da anterior.
+\end{itemize}
+
+\begin{itemize}
+  \item Recursos identificáveis: cada recurso (um usuário, um produto, um comentário) é identificado por uma URL única, geralmente no formato /recursos/\{id\}. Por convenção, o nome do recurso é sempre utilizado no plural: /users, /products, /comments.
+\end{itemize}
+
+\begin{itemize}
+  \item Uso dos métodos HTTP: as operações CRUD são mapeadas diretamente para os verbos HTTP correspondentes (GET, POST, PUT/PATCH, DELETE).
+\end{itemize}
+
+\begin{itemize}
+  \item Formato de dados padronizado: a troca de informações costuma ocorrer em JSON (JavaScript Object Notation) ou XML (Extensible Markup Language). O JSON é hoje amplamente preferido por ser mais leve e mais legível que o XML.
+\end{itemize}
+
+\begin{itemize}
+  \item Independência de estado entre requisições: reforçando a primeira característica, o servidor não mantém memória de interações passadas — cada chamada é autocontida.
+\end{itemize}
+
+Um exemplo clássico de API REST pública utilizada para fins didáticos é o JSON- Placeholder, que expõe recursos como /posts, /users e /comments. Uma requisição a /posts retorna a lista completa de publicações; uma requisição a /posts/50 retorna especificamente o post de identificador 50; e uma requisição a /posts/50/comments retorna os comentários associados a esse post específico — tudo seguindo o mesmo padrão de URL previsível, sem que o consumidor precise conhecer detalhes internos da implementação.
+
+\begin{infobox}{Resposta JSON de uma API REST}
+Uma requisição GET /api/products/10 poderia retornar a seguinte resposta, representando um único produto da loja: JSON \{ "id": 10, "name": "CD Player Retro", "shortDescription": "Toca-discos compacto", "fullDescription": "Toca-discos compacto com entrada USB e Bluetooth", "brand": "Elgin", "category": "Eletronicos", "listPrice": 349.90, "discount": 20.00, "isEnabled": true, "inStock": true, "creationTime": "2026-01-10", "updateTime": "2026-03-02" \}
+\end{infobox}
+
+\subsection{Vantagens de se construir APIs REST}
+
+Três vantagens justificam a ampla adoção do REST no mercado. A primeira é a simplicidade: uma vez compreendido o padrão, torna-se fácil implementar, entender e utilizar qualquer API que o siga. A segunda é a flexibilidade: por ser um padrão simples e amplamente adotado, o REST permite a integração entre plataformas e serviços distintos — inclusive entre APIs que conversam com outras APIs, formando cadeias de comunicação. A terceira é a escalabilidade: como as operações CRUD já estão bem definidas desde o início, adicionar novos endpoints à medida que a aplicação cresce se torna uma tarefa simples, sem exigir mudanças estruturais profundas.
+
+\section{Códigos de status HTTP}
+
+Toda resposta HTTP inclui um código de status — um número de três dígitos que indica o resultado da requisição. O primeiro dígito indica a classe geral da resposta:
+
+\begin{itemize}
+  \item 1xx — Informativo: o servidor recebeu a requisição e está processando-a (por exemplo, 100 Continue).
+\end{itemize}
+
+\begin{itemize}
+  \item 2xx — Sucesso: a requisição foi processada com êxito (por exemplo, 200 OK, 201 Created, 204 No Content).
+\end{itemize}
+
+\begin{itemize}
+  \item 3xx — Redirecionamento: o cliente precisa realizar passos adicionais para completar a requisição (por exemplo, 301 Moved Permanently).
+\end{itemize}
+
+\begin{itemize}
+  \item 4xx — Erro do cliente: houve um erro do lado de quem fez a requisição, como dados inválidos ou ausência de credenciais (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 422 Unprocessable Entity).
+\end{itemize}
+
+\begin{itemize}
+  \item 5xx — Erro do servidor: a requisição estava correta, mas o servidor não conseguiu processá-la, geralmente por uma falha interna (500 Internal Server Error).
+\end{itemize}
+
+\begin{infobox}{Dica}
+O código 404 Not Found é, provavelmente, o mais conhecido entre todos os status HTTP: ele indica que o recurso solicitado não foi encontrado — podendo nunca ter existido ou ter sido removido em algum momento. Já o 500 Internal Server Error costuma indicar uma falha não mapeada dentro da própria aplicação, e normalmente exige investigação de logs do servidor para ser diagnosticado.
+\end{infobox}
+
+Compreendidos os verbos HTTP, o padrão REST e os códigos de status, o leitor já possui a base conceitual necessária para avançar ao desenvolvimento prático de APIs. Os próximos capítulos apresentarão o ecossistema Spring e, em seguida, a implementação concreta de um controlador REST em Java.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item APIs surgiram da necessidade de permitir comunicação padronizada entre sistemas distintos, independentemente de plataforma ou linguagem.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma API é definida por um contrato claro: o que deve ser enviado e o que será recebido como resposta.
+\end{itemize}
+
+\begin{itemize}
+  \item Os verbos HTTP (GET, POST, PUT, PATCH, DELETE) mapeiam diretamente para as operações CRUD (Create, Retrieve, Update, Delete).
+\end{itemize}
+
+\begin{itemize}
+  \item REST é um estilo arquitetural baseado em cinco características: ausência de estado, recursos identificáveis por URL, uso dos métodos HTTP, formato de dados padronizado (geralmente JSON) e independência entre requisições.
+\end{itemize}
+
+\begin{itemize}
+  \item APIs que seguem o padrão REST são chamadas de RESTful, e trazem simplicidade, flexibilidade e escalabilidade ao desenvolvimento.
+\end{itemize}
+
+\begin{itemize}
+  \item Códigos de status HTTP (1xx a 5xx) comunicam o resultado de uma requisição, distinguindo sucesso, erro do cliente e erro do servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item Esses conceitos formam a base necessária para a implementação de controladores REST, tema dos próximos capítulos.
+\end{itemize}

@@ -1,0 +1,488 @@
+EXERCÍCIO — PAINEL DE ADMINISTRAÇÃO E DASHBOARD DO WORDPRESS
+================================================================
+
+OBJETIVO
+--------
+Conhecer o painel de administração do WordPress (Dashboard) e suas
+principais opções, utilizando o website Hello World criado no exercício
+anterior com WordPress + LAMP no Ubuntu.
+
+O objetivo principal é explorar as opções e entender para que serve cada
+uma delas. Não é necessário alterar configurações importantes.
+
+
+1. ACESSAR O PAINEL ADMINISTRATIVO
+----------------------------------
+
+Para o primeiro website criado no exercício anterior:
+
+    http://localhost/wordpress1/wp-admin
+
+Faça login utilizando o usuário e a senha definidos durante a instalação.
+
+Caso a pasta do WordPress tenha outro nome, substitua "wordpress1" pelo
+nome correspondente.
+
+
+2. O QUE É O DASHBOARD?
+-----------------------
+
+O Dashboard é a área administrativa do WordPress.
+
+É através dele que o administrador consegue controlar o website, incluindo:
+
+    - criar e editar conteúdo;
+    - criar páginas;
+    - criar posts;
+    - administrar imagens e outros arquivos;
+    - gerenciar comentários;
+    - alterar a aparência;
+    - instalar e administrar plugins;
+    - administrar usuários;
+    - alterar configurações;
+    - verificar atualizações.
+
+
+3. MENU PRINCIPAL DO WORDPRESS
+------------------------------
+
+As principais opções encontradas no menu lateral são:
+
+    Painel
+    Posts
+    Mídia
+    Páginas
+    Comentários
+    Aparência
+    Plugins
+    Usuários
+    Ferramentas
+    Configurações
+
+Algumas opções podem variar dependendo da versão do WordPress, do tema
+utilizado e dos plugins instalados.
+
+
+4. PAINEL
+---------
+
+A seção Painel é a página principal do Dashboard.
+
+Normalmente apresenta:
+
+    - informações resumidas sobre o site;
+    - atalhos para criação de conteúdo;
+    - atividades recentes;
+    - rascunhos;
+    - comentários;
+    - informações sobre o WordPress;
+    - atualizações.
+
+Subseção importante:
+
+    Painel -> Atualizações
+
+Permite verificar atualizações disponíveis para:
+
+    - WordPress;
+    - plugins;
+    - temas.
+
+Para este exercício, basta conhecer a opção. Não é necessário atualizar
+tudo sem necessidade.
+
+
+5. POSTS
+--------
+
+A seção Posts é utilizada principalmente para artigos e conteúdos que
+podem ser publicados de forma cronológica.
+
+Principais opções:
+
+    Posts -> Todos os posts
+    Posts -> Adicionar novo
+    Posts -> Categorias
+    Posts -> Tags
+
+Categorias servem para organizar posts, por exemplo:
+
+    Programação
+    Tecnologia
+    Linux
+    WordPress
+
+Tags são palavras-chave relacionadas ao conteúdo, por exemplo:
+
+    linux
+    wordpress
+    apache
+    php
+
+DIFERENÇA ENTRE POST E PÁGINA
+-----------------------------
+
+Post:
+    Normalmente utilizado para artigos, notícias e conteúdos publicados
+    de maneira cronológica.
+
+Página:
+    Normalmente utilizada para conteúdos mais permanentes, como:
+
+        Sobre
+        Contato
+        Serviços
+        Página inicial
+
+
+6. MÍDIA
+--------
+
+A seção Mídia permite administrar arquivos utilizados pelo website.
+
+Exemplos:
+
+    - imagens;
+    - vídeos;
+    - áudios;
+    - PDFs;
+    - outros arquivos.
+
+Principais opções:
+
+    Mídia -> Biblioteca
+    Mídia -> Adicionar nova
+
+A Biblioteca mostra os arquivos já enviados para o WordPress.
+
+
+7. PÁGINAS
+----------
+
+A seção Páginas permite criar e administrar páginas do website.
+
+Principais opções:
+
+    Páginas -> Todas as páginas
+    Páginas -> Adicionar nova
+
+Foi através dessa área que poderia ser criada uma página chamada:
+
+    Hello World
+
+Exemplos de páginas comuns:
+
+    Sobre
+    Contato
+    Serviços
+    Página inicial
+
+
+8. COMENTÁRIOS
+--------------
+
+A seção Comentários permite administrar os comentários feitos pelos
+visitantes.
+
+O administrador pode:
+
+    - aprovar comentários;
+    - responder;
+    - editar;
+    - marcar como spam;
+    - excluir.
+
+
+9. APARÊNCIA
+------------
+
+A seção Aparência controla principalmente aspectos visuais do website.
+
+Dependendo da versão do WordPress e do tema, podem aparecer opções como:
+
+    - Temas;
+    - Editor;
+    - Personalizar;
+    - Menus;
+    - Widgets.
+
+TEMAS
+-----
+
+Um tema define principalmente a aparência e a estrutura visual do site.
+
+Exemplo:
+
+    WordPress
+        |
+        +-- Tema
+              |
+              +-- Layout
+              +-- Cores
+              +-- Tipografia
+              +-- Estrutura visual
+
+
+10. PLUGINS
+-----------
+
+Plugins são extensões que adicionam ou modificam funcionalidades do
+WordPress.
+
+Exemplos de funcionalidades que podem ser adicionadas por plugins:
+
+    - formulários;
+    - SEO;
+    - segurança;
+    - cache;
+    - comércio eletrônico;
+    - galerias;
+    - integração com APIs;
+    - backups.
+
+Principais opções:
+
+    Plugins -> Plugins instalados
+    Plugins -> Adicionar novo
+
+CONCEITO IMPORTANTE:
+
+    Plugin = extensão que adiciona ou modifica funcionalidades do WordPress.
+
+
+11. USUÁRIOS
+------------
+
+A seção Usuários permite administrar as contas que possuem acesso ao
+WordPress.
+
+É possível:
+
+    - visualizar usuários;
+    - adicionar usuários;
+    - editar usuários;
+    - excluir usuários.
+
+Principais níveis de usuário:
+
+    Administrador
+    Editor
+    Autor
+    Colaborador
+    Assinante
+
+O Administrador possui o maior nível de acesso.
+
+
+12. FERRAMENTAS
+---------------
+
+A seção Ferramentas reúne funcionalidades administrativas adicionais.
+
+Dependendo da instalação, podem existir ferramentas para:
+
+    - importação;
+    - exportação;
+    - diagnóstico;
+    - saúde do site;
+    - configurações técnicas.
+
+Uma opção importante é:
+
+    Ferramentas -> Saúde do site
+
+Ela permite verificar problemas relacionados à configuração do WordPress.
+
+
+13. CONFIGURAÇÕES
+-----------------
+
+A seção Configurações concentra diversas configurações gerais do
+WordPress.
+
+CONFIGURAÇÕES -> GERAL
+----------------------
+
+Configurações básicas do site:
+
+    - título do site;
+    - descrição;
+    - endereço;
+    - idioma;
+    - fuso horário;
+    - formato de data;
+    - formato de hora.
+
+
+CONFIGURAÇÕES -> ESCRITA
+------------------------
+
+Configurações relacionadas à publicação de conteúdo.
+
+
+CONFIGURAÇÕES -> LEITURA
+------------------------
+
+Configura como o conteúdo será apresentado.
+
+Por exemplo, a página inicial pode mostrar:
+
+    Posts recentes
+
+ou:
+
+    Uma página estática
+
+
+CONFIGURAÇÕES -> DISCUSSÃO
+--------------------------
+
+Configurações relacionadas aos comentários.
+
+
+CONFIGURAÇÕES -> MÍDIA
+----------------------
+
+Configurações relacionadas ao tratamento das imagens e outros arquivos.
+
+
+CONFIGURAÇÕES -> LINKS PERMANENTES
+----------------------------------
+
+Define a estrutura das URLs das páginas e posts.
+
+Exemplo de estrutura pouco amigável:
+
+    ?p=123
+
+Exemplo de estrutura amigável:
+
+    /meu-post/
+
+
+14. ROTEIRO PARA REALIZAR O EXERCÍCIO
+-------------------------------------
+
+[ ] Acessar o painel:
+
+        http://localhost/wordpress1/wp-admin
+
+[ ] Fazer login.
+
+[ ] Explorar a seção Painel.
+
+[ ] Explorar Posts.
+
+[ ] Explorar Mídia.
+
+[ ] Explorar Páginas.
+
+[ ] Explorar Comentários.
+
+[ ] Explorar Aparência.
+
+[ ] Explorar Plugins.
+
+[ ] Explorar Usuários.
+
+[ ] Explorar Ferramentas.
+
+[ ] Explorar Configurações.
+
+[ ] Entender a finalidade geral de cada seção.
+
+IMPORTANTE:
+Não é necessário alterar configurações importantes. O exercício pede
+principalmente análise e familiarização com o painel.
+
+
+15. VISÃO GERAL DO DASHBOARD
+----------------------------
+
+                         WORDPRESS
+                             |
+                     PAINEL ADMINISTRATIVO
+                             |
+          +------------------+------------------+
+          |                  |                  |
+       CONTEÚDO          APARÊNCIA        FUNCIONALIDADES
+          |                  |                  |
+      +---+---+              |             +----+----+
+      |   |   |              |             |         |
+    Posts Páginas Mídia     Temas        Plugins   Usuários
+          |
+     Comentários
+
+                    CONFIGURAÇÕES
+                          |
+             +------------+-------------+
+             |            |             |
+           Geral        Leitura      Escrita
+             |
+       Discussão / Mídia
+             |
+      Links permanentes
+
+
+16. RESUMO PARA ANOTAÇÃO
+------------------------
+
+Dashboard do WordPress:
+    É a área administrativa responsável pelo gerenciamento do website.
+
+Através do Dashboard é possível administrar:
+
+    - conteúdo;
+    - páginas;
+    - posts;
+    - mídias;
+    - comentários;
+    - aparência;
+    - plugins;
+    - usuários;
+    - ferramentas;
+    - configurações.
+
+Uma forma simples de memorizar:
+
+    Posts    -> artigos e conteúdos cronológicos
+    Páginas  -> conteúdo mais permanente
+    Mídia    -> arquivos
+    Aparência -> visual do site
+    Plugins  -> funcionalidades extras
+    Usuários -> contas e permissões
+    Configurações -> comportamento geral do site
+
+
+17. OBSERVAÇÃO SOBRE A VERSÃO DO WORDPRESS
+------------------------------------------
+
+A interface pode ser diferente daquela apresentada nos slides do professor.
+
+Isso é normal.
+
+O WordPress muda sua interface ao longo das versões e temas/plugins também
+podem adicionar novas opções.
+
+Para este exercício, o mais importante é reconhecer a função de cada área,
+e não necessariamente encontrar uma interface visual idêntica à dos slides.
+
+
+URLS IMPORTANTES
+----------------
+
+Website:
+
+    http://localhost/wordpress1
+
+Painel administrativo:
+
+    http://localhost/wordpress1/wp-admin
+
+Página principal do servidor:
+
+    http://localhost
+
+
+FIM DO EXERCÍCIO
+================

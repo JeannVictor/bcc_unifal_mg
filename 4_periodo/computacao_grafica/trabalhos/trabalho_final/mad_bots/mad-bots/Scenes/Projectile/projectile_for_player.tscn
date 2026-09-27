@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://c6f5u7q2t4m2t"]
+
+[ext_resource type="PackedScene" uid="uid://dn55nwjvi8ywu" path="res://Scenes/Projectile/Projectile_base/projectile.tscn" id="1_5377b"]
+[ext_resource type="Texture2D" uid="uid://bxo8yigvka0s5" path="res://Assets/Textures/Armas_E_Personagens/Tiros/3.png" id="2_636dm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bo2gv"]
+size = Vector2(7, 2)
+
+[node name="ProjectileForPlayer" instance=ExtResource("1_5377b")]
+scale = Vector2(2.5, 2.5)
+collision_layer = 8
+collision_mask = 964
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_bo2gv")
+
+[node name="Sprite2D" parent="." index="1"]
+position = Vector2(0.25, 0)
+scale = Vector2(1.0714285, 1)
+texture = ExtResource("2_636dm")

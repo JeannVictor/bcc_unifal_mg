@@ -1,0 +1,332 @@
+\chapter{Elementos Adicionais de Texto e Estrutura Semântica em HTML}
+
+\section{Citações em HTML}
+
+Quando você utiliza uma ideia que não é sua, é fundamental citar a fonte — tanto por uma questão ética quanto, em muitos contextos, por uma questão legal. O HTML oferece elementos específicos para marcar citações.
+
+\subsection{Citação em Bloco: o Elemento blockquote}
+
+O elemento blockquote é usado quando você cita, na íntegra, um conteúdo mais extenso — um trecho completo de outra fonte, e não apenas uma palavra ou frase isolada.
+
+\begin{codebox}{HTML}
+ <p>Segundo a documentação da Mozilla:</p>
+ <blockquote cite="https://developer.mozilla.org/pt-BR/">
+   <p>A MDN Web Docs é um recurso aberto e colaborativo para
+      desenvolvedores, por desenvolvedores, documentando tecnologias
+      web, incluindo CSS, HTML e JavaScript.</p>
+ </blockquote>
+\end{codebox}
+
+O atributo cite indica de onde a citação foi extraída. É importante notar que esse atributo não é visível na tela — ele existe apenas como metadado, útil caso você (ou algum script) queira acessá-lo programaticamente.
+
+\subsection{Citação em Linha: o Elemento q}
+
+Quando a citação é apenas um trecho dentro de um parágrafo maior — e não o parágrafo inteiro — utiliza-se o elemento q (quotation), que é um elemento em linha (inline).
+
+\begin{codebox}{HTML}
+<p>
+  De acordo com a documentação da MDN, um dos objetivos do projeto é
+  <q cite="https://developer.mozilla.org/">fornecer um recurso completo
+  e confiável para desenvolvedores web de todos os níveis</q>.
+</p>
+\end{codebox}
+
+Muitos navegadores adicionam automaticamente aspas ao redor do conteúdo de um elemento q, mesmo sem que você as digite manualmente — outra vantagem de usar marcação semântica ao invés de digitar as aspas você mesmo.
+
+\subsection{O Elemento cite}
+
+Existe ainda um terceiro elemento relacionado a citações, o cite, que não deve ser confundido com o atributo cite de blockquote e q. O elemento cite é usado para indicar o título de uma obra — um livro, um artigo, uma música.
+
+\begin{infobox}{Dica}
+Nenhum desses três recursos (elemento blockquote, elemento q ou atributo cite) torna a referência clicável automaticamente. Uma boa prática recomendada é envolver o elemento cite (ou o texto da fonte) dentro de um elemento de âncora (a), permitindo que o leitor acesse a fonte original com um clique:
+\end{infobox}
+
+\begin{codebox}{HTML}
+<blockquote cite="https://developer.mozilla.org/">
+  <p>Este é um exemplo de citação em bloco.</p>
+</blockquote>
+<p>
+  — <a href="https://developer.mozilla.org/">
+      <cite>MDN Web Docs</cite>
+    </a>
+</p>
+\end{codebox}
+
+\section{Abreviações, Endereços e Outras Marcações Textuais}
+
+\subsection{Abreviações: o Elemento abbr}
+
+O elemento abbr marca abreviações e siglas, utilizando o atributo title para fornecer a forma expandida do termo. A vantagem prática é que, ao passar o mouse sobre a sigla, o navegador exibe automaticamente um tooltip com o significado completo.
+
+\begin{codebox}{HTML}
+<p>
+  Nós usamos <abbr title="HyperText Markup Language">HTML</abbr>
+  para estruturar nossos documentos web.
+
+
+
+ </p>
+\end{codebox}
+
+\begin{infobox}{Dica}
+O HTML já teve um elemento acronym, específico para acrônimos (siglas que se pronunciam como palavras). Esse elemento se tornou obsoleto e não é mais suportado de forma consistente pelos navegadores modernos — utilize sempre abbr, tanto para siglas quanto para acrônimos.
+\end{infobox}
+
+\subsection{Endereços: o Elemento address}
+
+O elemento address marca um trecho de texto que representa informações de contato — endereço residencial, comercial ou de correspondência de uma pessoa ou organização.
+
+\begin{codebox}{HTML}
+ <address>
+   Maria Oliveira<br>
+   Rua das Palmeiras, 456<br>
+   Manchester, Reino Unido
+ </address>
+\end{codebox}
+
+Repare no uso do elemento br (line break), que insere uma quebra de linha simples — lembre-se de que o HTML ignora espaços em branco e quebras de linha do códigofonte, então, sem o br, todo esse texto apareceria em uma única linha corrida.
+
+\begin{infobox}{Dica}
+O elemento address deve conter apenas informações de contato relacionadas ao autor do documento (ou da seção em que está inserido) — não o utilize para qualquer endereço genérico mencionado no texto, como o endereço de uma empresa citada em uma notícia.
+\end{infobox}
+
+\subsection{Superescrito e Subescrito}
+
+Os elementos sup (superescrito) e sub (subescrito) posicionam o conteúdo ligeiramente acima ou abaixo da linha do texto, respectivamente — úteis para datas por extenso, fórmulas químicas e expressões matemáticas.
+
+\begin{codebox}{HTML}
+ <p>Meu aniversário é no dia 25<sup>th</sup> de maio.</p>
+ <p>A fórmula química da cafeína é 
+   C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>.<
+ <p>Considere a equação x<sup>2</sup> + 2x + 1 = 0.</p>
+\end{codebox}
+
+\subsection{Representação de Código-Fonte}
+
+Ao escrever documentação técnica, é comum precisar representar código-fonte, comandos de teclado e saídas de terminal. O HTML oferece elementos específicos para cada um desses casos: code (código genérico), var (variáveis), kbd (keyboard, entradas de teclado) e samp (sample output, saída de um programa).
+
+\begin{codebox}{HTML}
+<pre><code>
+let x = 42;
+console.log(x);
+</code></pre>
+
+<p>
+  A variável <var>x</var> armazena o valor calculado.
+</p>
+
+<p>
+  Para copiar, pressione <kbd>Ctrl</kbd> + <kbd>C</kbd>.
+</p>
+
+<p>
+  A saída do comando foi: <samp>Build concluído com sucesso.</samp>
+</p>
+\end{codebox}
+
+Note o uso do elemento pre (preformatted text) envolvendo o code: diferentemente do restante do HTML, o pre preserva espaços em branco e quebras de linha exatamente como foram digitados no código-fonte — essencial para exibir trechos de código com indentação correta.
+
+\subsection{Datas e Horários: o Elemento time}
+
+Como sites e aplicações web são utilizados no mundo inteiro, com formatos de data distintos entre culturas, o elemento time permite indicar, de forma padronizada e não ambígua, o valor de uma data ou horário através do atributo datetime, enquanto o conteúdo visível do elemento pode ser escrito da forma mais amigável para o leitor humano.
+
+\begin{codebox}{HTML}
+<p>
+  Publicado em <time datetime="2016-01-20">20 de janeiro de 2016</time>.
+</p>
+<p>
+  O evento começa às <time datetime="2016-01-20T19:30">19h30</time>.
+</p>
+\end{codebox}
+
+\section{Estrutura Semântica de Documentos}
+
+Até aqui, vimos elementos que marcam trechos específicos de texto dentro de um parágrafo. Agora avançamos para um nível mais amplo: os elementos que estruturam as grandes áreas de uma página web — cabeçalho, navegação, conteúdo principal, barra lateral e rodapé. Todo site, independentemente do seu propósito, costuma compartilhar essas mesmas grandes divisões. A figura a seguir ilustra visualmente como essas tags se organizam em uma página típica.
+
+\begin{infobox}{header}
+logotipo, título do site
+\end{infobox}
+
+\begin{infobox}{nav}
+menu de navegação principal
+\end{infobox}
+
+\begin{infobox}{main}
+article / section conteúdo principal aside barra lateral, article / section conteúdo relacionado mais conteúdo
+\end{infobox}
+
+\begin{infobox}{footer}
+direitos autorais, contato
+\end{infobox}
+
+\subsection{O Elemento header}
+
+O elemento header representa um cabeçalho introdutório, que normalmente contém o logotipo, o título do site ou da seção, e eventualmente um menu de navegação ou um campo de busca. É importante entender que header pode aparecer mais de uma vez no documento: um header diretamente dentro do body representa o cabeçalho do site inteiro, mas um header dentro de um article ou section representa o cabeçalho específico daquela seção.
+
+\begin{codebox}{HTML}
+<header>
+  <h1>Minha Empresa</h1>
+  <img src="logo.png" alt="Logotipo da Minha Empresa">
+  <nav>
+    <ul>
+      <li><a href="/">Início</a></li>
+      <li><a href="/sobre">Sobre</a></li>
+      <li><a href="/contato">Contato</a></li>
+    </ul>
+  </nav>
+</header>
+\end{codebox}
+
+\subsection{O Elemento nav}
+
+O elemento nav agrupa os links de navegação principal do site. É importante reserválo apenas para os menus mais importantes — links secundários, presentes apenas em rodapés ou em contextos específicos, não precisam necessariamente estar dentro de um nav.
+
+\subsection{O Elemento main}
+
+O elemento main envolve o conteúdo principal e único daquela página específica — ou seja, o conteúdo que não se repete em outras páginas do site (diferentemente do cabeçalho e do rodapé, que normalmente são os mesmos em todas as páginas). Deve haver, no máximo, um elemento main por página.
+
+\subsection{Os Elementos article e section}
+
+Dentro do main, o conteúdo costuma ser subdividido em article e/ou section. A distinção entre eles não é rígida e depende do contexto:
+
+\begin{itemize}
+  \item article representa um conteúdo autocontido e independente, que faria sentido mesmo se distribuído isoladamente (por exemplo, uma postagem de blog, uma notícia, um comentário de usuário).
+\end{itemize}
+
+\begin{itemize}
+  \item section agrupa um conjunto de conteúdo tematicamente relacionado, mas que não necessariamente é independente — por exemplo, uma seção sobre ”música”e, mais abaixo na mesma página, outra seção sobre ”culinária”.
+\end{itemize}
+
+\begin{codebox}{HTML}
+<main>
+  <article>
+    <header>
+       <h2>Como aprender CSS do zero</h2>
+    </header>
+    <p>Neste artigo, vamos abordar os fundamentos do CSS...</p>
+  </article>
+
+  <section>
+    <h2>Comentários dos leitores</h2>
+    <article>
+      <p>Ótimo artigo, me ajudou muito!</p>
+    </article>
+  </section>
+</main>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Uma boa prática é sempre iniciar cada section (ou article) com um elemento de título (h1 a h6), da mesma forma que fizemos no capítulo anterior ao estruturar capítulos e subseções de um texto.
+\end{infobox}
+
+\subsection{O Elemento aside}
+
+O elemento aside representa um conteúdo que está relacionado ao conteúdo principal, mas que não é o foco central da página — uma barra lateral, uma nota explicativa, um bloco de anúncios ou links relacionados.
+
+\begin{codebox}{HTML}
+<aside>
+  <h2>Artigos relacionados</h2>
+  <ul>
+    <li><a href="/artigo-1">Introdução ao HTML</a></li>
+    <li><a href="/artigo-2">Primeiros passos com CSS</a></li>
+  </ul>
+</aside>
+\end{codebox}
+
+\subsection{O Elemento footer}
+
+O elemento footer representa o rodapé — normalmente contendo informações de contato, direitos autorais, links de política de acessibilidade ou de privacidade. Assim como o header, ele pode aparecer tanto em nível global (rodapé do site inteiro) quanto dentro de uma section ou article específico.
+
+\begin{codebox}{HTML}
+<footer>
+  <p>&copy; 2026 Minha Empresa. Todos os direitos reservados.</p>
+  <p><a href="/politica-privacidade">Política de Privacidade</a></p>
+</footer>
+\end{codebox}
+
+\section{Um Exemplo Completo e a Questão da Acessibilidade}
+
+Juntando todos esses elementos, uma página típica pode ser esboçada da seguinte forma:
+
+\begin{codebox}{HTML}
+<body>
+  <header>
+    <h1>Blog de Tecnologia</h1>
+    <nav>
+       <ul>
+         <li><a href="/">Início</a></li>
+         <li><a href="/artigos">Artigos</a></li>
+       </ul>
+    </nav>
+  </header>
+
+   <main>
+     <article>
+       <h2>Entendendo o Box Model do CSS</h2>
+       <p>O modelo de caixa é um dos conceitos mais importantes...</p>
+     </article>
+
+     <aside>
+
+
+
+         <h2>Sobre o autor</h2>
+         <p>Desenvolvedor front-end apaixonado por acessibilidade.</p>
+       </aside>
+     </main>
+
+  <footer>
+    <p>&copy; 2026 - Todos os direitos reservados.</p>
+  </footer>
+</body>
+\end{codebox}
+
+Vale destacar por que essa estruturação semântica importa tanto: estima-se que entre 4\% e 5\% da população mundial tenha algum tipo de deficiência visual — e, considerando outras formas de deficiência, esse número pode chegar a cerca de 15\% da população global. Ao usar elementos genéricos como div e span em vez dos elementos semânticos apropriados, o desenvolvedor perde a oportunidade de comunicar corretamente o significado de cada parte do documento para leitores de tela e outras tecnologias assistivas.
+
+\subsection{Quando Usar div e span}
+
+Nem sempre existe um elemento HTML semântico adequado para o que se deseja representar — afinal, o HTML precisa ser genérico o suficiente para servir a qualquer tipo de site, e não conhece conceitos de nicho como ”carrinho de compras”. Nesses casos, é aceitável usar os elementos genéricos e não semânticos div (para blocos) e span (para conteúdo em linha), em conjunto com o atributo class para que o CSS ou o JavaScript possam localizá-los.
+
+\begin{codebox}{HTML}
+<div class="carrinho-compras">
+  <ul>
+    <li>Produto A - R$ 29,90</li>
+    <li>Produto B - R$ 59,90</li>
+  </ul>
+  <p>Total: R$ 89,80</p>
+</div>
+\end{codebox}
+
+\begin{infobox}{Dica}
+O problema não é usar div e span em si — é usá-los sem perceber que eles não carregam nenhum poder semântico, quando existiria um elemento mais apropriado disponível. Sempre pergunte primeiro: ”existe um elemento HTML semântico que descreve melhor este conteúdo?”Só recorra a div/span quando a resposta for não.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Citações usam blockquote (em bloco) ou q (em linha), com o atributo cite indicando a fonte; o elemento cite é reservado para títulos de obras.
+\end{itemize}
+
+\begin{itemize}
+  \item Elementos como abbr, address, sup/sub, code/var/kbd/samp e time cobrem casos textuais específicos com forte valor semântico e de acessibilidade.
+\end{itemize}
+
+\begin{itemize}
+  \item A estrutura de uma página web é organizada nos elementos header, nav, main, article, section, aside e footer.
+\end{itemize}
+
+\begin{itemize}
+  \item header e footer podem existir tanto em nível global (o cabeçalho/rodapé do site) quanto em nível local (dentro de uma section ou article específico).
+\end{itemize}
+
+\begin{itemize}
+  \item A diferença entre article e section não é rígida: article é conteúdo autocontido e independente; section agrupa conteúdo tematicamente relacionado.
+\end{itemize}
+
+\begin{itemize}
+  \item div e span são elementos não semânticos, úteis apenas quando não existe uma alternativa semântica adequada disponível em HTML.
+\end{itemize}
+
+\begin{itemize}
+  \item A escolha correta de elementos semânticos impacta diretamente a acessibilidade do site para leitores de tela e outras tecnologias assistivas.
+\end{itemize}

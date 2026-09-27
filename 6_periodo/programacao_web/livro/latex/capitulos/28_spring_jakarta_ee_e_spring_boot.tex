@@ -1,0 +1,185 @@
+\chapter{Spring, Jakarta EE e Spring Boot}
+
+\section{O que é o Spring}
+
+O Spring não é apenas um framework de backend: é um verdadeiro ecossistema, composto por dezenas de projetos e soluções que resolvem diferentes problemas enfrentados por um desenvolvedor backend ao longo do ciclo de desenvolvimento. A proposta central do Spring é permitir que o desenvolvedor construa aplicações Java com simplicidade e flexibilidade, escolhendo, dentro desse ecossistema, apenas os módulos necessários para resolver o problema em questão.
+
+\begin{infobox}{Ecossistema Spring}
+O Spring é um conjunto modular de projetos — conhecido como ecossistema Spring — em que cada módulo resolve uma classe específica de problema, podendo ser incluído no projeto de forma independente dos demais.
+\end{infobox}
+
+Entre os principais projetos desse ecossistema, destacam-se:
+
+\begin{itemize}
+  \item Spring Core: o núcleo do framework, contendo o contêiner de injeção de dependência que implementa o padrão de Inversão de Controle (IoC), além do gerenciamento do ciclo de vida dos beans e mecanismos de extensão como o Spring AOP (Programação Orientada a Aspectos).
+\end{itemize}
+
+\begin{itemize}
+  \item Spring MVC / Spring Web: fornece uma arquitetura Model-View-Controller para desenvolvimento web, com gerenciamento de requisições e respostas HTTP e suporte a templates e views.
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Data: oferece uma camada de abstração para acesso a dados, simplificando operações CRUD e suportando tanto bancos relacionais (MySQL, PostgreSQL, MariaDB) quanto não relacionais (MongoDB), além de recursos como paginação de consultas.
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Security: fornece autenticação e autorização de usuários, controle de acesso a recursos e funcionalidades, além de mecanismos de criptografia e proteção contra ataques.
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Cloud: voltado ao desenvolvimento de aplicações escaláveis, com suporte a microsserviços, nuvem e contêineres.
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Integration: facilita a integração entre sistemas usando protocolos de mensagens, sendo especialmente útil em fluxos de trabalho reativos — embora, na prática, seja um dos módulos mais complexos de se dominar.
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Batch: voltado ao processamento de dados em lote, com suporte a jobs e steps, gerenciamento de execução e novas tentativas em caso de falha — útil, por exemplo, para rotinas noturnas que verificam boletos pendentes de pagamento.
+\end{itemize}
+
+A ideia central por trás de todo esse ecossistema é permitir que o desenvolvedor concentre seu tempo nas regras de negócio da aplicação, e não em códigos repetitivos de infraestrutura — como conexão com bancos de dados ou integração com sistemas de mensageria (Kafka, RabbitMQ). Por essa razão, o Spring é frequentemente descrito como um ”canivete suíço”para desenvolvedores Java: ele resolve problemas de gerenciamento de objetos, injeção de dependência, acesso a diferentes bancos de dados e construção de APIs REST, entre muitos outros.
+
+\subsection{Por que utilizar o Spring}
+
+Seis razões justificam a ampla adoção do Spring no mercado:
+
+\begin{itemize}
+  \item Simplifica o desenvolvimento: reduz a necessidade de configuração manual extensa, concentrando as configurações essenciais em arquivos como application.properties ou application.yml.
+\end{itemize}
+
+\begin{itemize}
+  \item Maturidade: por ser um projeto consolidado há mais de duas décadas, seus colaboradores já compreendem profundamente o que funciona e o que não funciona, incorporando esse aprendizado continuamente ao framework.
+\end{itemize}
+
+\begin{itemize}
+  \item Modularidade: cada módulo do Spring é independente; o desenvolvedor inclui apenas os módulos que precisa, sem sobrecarregar o projeto com dependências desnecessárias.
+\end{itemize}
+
+\begin{itemize}
+  \item Evolução constante: o Spring está em constante atualização, acompanhando as demandas do mercado — por exemplo, evoluindo da versão 2.x para a 3.x do Spring Boot em poucos anos.
+\end{itemize}
+
+\begin{itemize}
+  \item Licença open source: o código-fonte é aberto, permitindo inspeção e contribuição da comunidade.
+\end{itemize}
+
+\begin{itemize}
+  \item Empregabilidade: o Spring é utilizado por empresas como Netflix, Trip Advisor, Hotmart, PagSeguro, Santander, Itaú, JP Morgan, American Express, Amazon, Walmart e PayPal, entre muitas outras, tornando-o uma das tecnologias mais demandadas no mercado de trabalho de desenvolvimento Java.
+\end{itemize}
+
+Vale notar que, nos primórdios do Spring, a configuração era fortemente baseada em arquivos XML — prática comum na época na comunidade Java, mas considerada verbosa e pouco amigável por muitos desenvolvedores. Atualmente, o Spring favorece a
+
+configuração baseada em anotações e em arquivos simples como .properties ou .yml, tornando o processo de configuração muito mais enxuto (embora alguns módulos, como o Spring Integration, ainda dependam de XML em certos cenários).
+
+\section{Spring versus Jakarta EE}
+
+O Jakarta EE — anteriormente conhecido como Java EE — é outro framework amplamente utilizado para o desenvolvimento de aplicações empresariais em Java. Embora Spring e Jakarta EE compartilhem objetivos semelhantes, existem diferenças significativas entre eles, que vale a pena compreender antes de se decidir por um ou outro em um projeto real.
+
+\begin{itemize}
+  \item Origem: o Spring foi desenvolvido pela SpringSource (hoje parte da VMware), surgindo como uma alternativa ao modelo de programação do Java EE, buscando resolver problemas de complexidade e excesso de configuração. O Jakarta EE, por sua vez, é um padrão originalmente mantido pela Oracle sob o nome Java EE, atualmente gerido pela Eclipse Foundation.
+\end{itemize}
+
+\begin{itemize}
+  \item Arquitetura: o Spring adota uma abordagem modular e leve, permitindo que o desenvolvedor escolha exatamente os módulos que deseja usar. O Jakarta EE se baseia em especificações mais rígidas e padronizadas, resultando em uma plataforma mais monolítica. O Jakarta EE inclui especificações como Servlets, Enterprise JavaBeans (EJB) e a Java Persistence API (JPA) — sendo esta última, inclusive, frequentemente utilizada mesmo em projetos que adotam o Spring como framework principal, o que mostra que as duas tecnologias não são mutuamente excludentes.
+\end{itemize}
+
+\begin{itemize}
+  \item Injeção de dependência: o Spring é conhecido por seu contêiner de Inversão de Controle (IoC) e por oferecer ampla flexibilidade na configuração de componentes — especialmente a injeção via construtor, combinada ao uso da biblioteca Lombok. O Jakarta EE historicamente dependia do EJB para injeção de dependência, mas evoluiu para adotar o CDI (Contexts and Dependency Injection) como sua principal tecnologia nesse aspecto.
+\end{itemize}
+
+\begin{itemize}
+  \item Configuração: o Spring favorece anotações como @Autowired, @Entity, @Repository, @Service e @RestController. O Jakarta EE, embora historicamente dependesse fortemente de XML, também tem avançado no sentido de adotar configuração baseada em anotações, principalmente com o CDI.
+\end{itemize}
+
+\begin{itemize}
+  \item Licenciamento: o Spring adota uma licença de código aberto mais permissiva, enquanto o Jakarta EE utiliza licenças que podem variar conforme a implementação específica adotada.
+\end{itemize}
+
+Na prática, a escolha entre Spring e Jakarta EE costuma depender das preferências da equipe, dos requisitos do projeto e do histórico tecnológico da organização — e algumas empresas até combinam elementos dos dois. De forma geral, o Spring tende a ser mais adequado para aplicações menores e mais ágeis, como microsserviços, enquanto o Jakarta EE, apesar de exigir uma configuração inicial mais robusta, pode
+
+ser mais indicado para aplicações empresariais de grande porte. Para os fins deste livro — e para a maioria dos projetos de porte pequeno a médio — o Spring, e mais especificamente o Spring Boot, será a escolha adotada.
+
+\section{Spring Boot: simplicidade sobre configuração}
+
+\begin{infobox}{Spring Boot}
+Spring Boot é uma extensão do Spring Framework que simplifica significativamente o processo de criação de aplicações Java, fornecendo uma maneira rápida e fácil de construir aplicativos autônomos e prontos para produção, com a mínima configuração possível.
+\end{infobox}
+
+O princípio central que sustenta o Spring Boot é conhecido como convention over configuration (convenção sobre configuração): em vez de exigir que o desenvolvedor configure manualmente cada detalhe de uma conexão de banco de dados, por exemplo, o Spring Boot já assume um conjunto de convenções padronizadas que funcionam para a grande maioria dos casos, exigindo apenas que o desenvolvedor forneça informações mínimas, como URL, porta, usuário e senha do banco.
+
+\subsection{Características principais do Spring Boot}
+
+\begin{itemize}
+  \item Starter POMs: artefatos Maven (ou Gradle) pré-configurados que simplificam a inclusão de dependências comuns, permitindo inicializar um novo projeto em poucos segundos.
+\end{itemize}
+
+\begin{itemize}
+  \item Autoconfiguração: o Spring Boot analisa o ambiente em que a aplicação está sendo executada e configura automaticamente os componentes necessários, reduzindo a quantidade de configuração manual e de código repetitivo (boilerplate) — entendido aqui como todo trecho de código que se repete de forma quase idêntica em diferentes contextos, como a estrutura básica de um documento HTML.
+\end{itemize}
+
+\begin{itemize}
+  \item Aplicativos autônomos (standalone): graças à inclusão de servidores embutidos, como o Tomcat, uma aplicação Spring Boot pode ser executada sem a necessidade de um servidor de aplicação externo instalado separadamente.
+\end{itemize}
+
+\begin{itemize}
+  \item Monitoramento e gerenciamento: o Spring Boot Actuator oferece endpoints HTTP prontos para verificação de saúde (health), métricas e informações do ambiente da aplicação — atualmente apoiado pela biblioteca Micrometer.
+\end{itemize}
+
+\begin{itemize}
+  \item Integração com o ecossistema Spring: o Spring Boot é totalmente compatível com Spring Data, Spring Security, Spring Cloud e demais módulos, permitindo que o desenvolvedor incorpore essas funcionalidades conforme a necessidade do projeto.
+\end{itemize}
+
+\begin{itemize}
+  \item Integração com frontends modernos: aplicações Spring Boot se integram facilmente a frameworks e bibliotecas de frontend como Angular, React e Vue.js, permitindo a construção de aplicações web completas.
+\end{itemize}
+
+\section{Iniciando um projeto Spring Boot}
+
+Diferentemente de um projeto Java tradicional — no qual basta criar uma classe com um método main — um projeto Spring Boot é iniciado por meio de uma ferramenta chamada Spring Initializr. Trata-se de uma aplicação web (ou de uma funcionalidade integrada a determinadas IDEs, como o IntelliJ IDEA Ultimate) que gera o esqueleto inicial do projeto, já com as dependências e configurações necessárias para começar o desenvolvimento. Existem duas formas principais de utilizar o Spring Initializr:
+
+\begin{itemize}
+  \item Diretamente pela IDE, no caso de IDEs com suporte nativo (como o IntelliJ IDEA Ultimate), acessando o menu de criação de novo projeto e selecionando a opção Spring Initializr;
+\end{itemize}
+
+\begin{itemize}
+  \item Pelo site oficial do Spring Initializr, disponível em https://start.spring.io, que oferece uma interface gráfica equivalente, permitindo selecionar o gerenciador de dependências (Maven ou Gradle), a linguagem (Java, Kotlin ou Groovy), a versão do Spring Boot, informações do projeto (grupo, artefato, nome do pacote), a versão do Java e as dependências iniciais desejadas.
+\end{itemize}
+
+Ao final do processo, a ferramenta gera um arquivo compactado (ZIP) contendo toda a estrutura inicial do projeto, que pode então ser extraído e aberto na IDE de preferência do desenvolvedor.
+
+\begin{infobox}{Dica}
+No momento da escolha da versão do Java, é recomendável optar por uma versão LTS (Long Term Support), ou seja, uma versão com suporte de longo prazo garantido pela comunidade e pelo próprio Spring. No período em que este material foi produzido, o Java 21 era a versão LTS mais recente, ainda que versões mais novas já estivessem disponíveis.
+\end{infobox}
+
+Com a estrutura inicial do projeto criada e compreendida, o leitor está pronto para avançar à implementação prática. O próximo capítulo apresentará, passo a passo, a construção de um controlador REST real, no contexto de um estudo de caso: a loja fictícia BlueVelvet Music Store.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O Spring é um ecossistema modular de projetos — não apenas um framework — do qual o desenvolvedor seleciona somente os módulos necessários (Spring Core, Spring MVC, Spring Data, Spring Security, entre outros).
+\end{itemize}
+
+\begin{itemize}
+  \item O objetivo do Spring é permitir que o desenvolvedor foque nas regras de negócio, delegando ao framework grande parte da configuração de infraestrutura.
+\end{itemize}
+
+\begin{itemize}
+  \item O Spring se popularizou por sua simplicidade, maturidade, modularidade, evolução constante, licença open source e altíssima empregabilidade.
+\end{itemize}
+
+\begin{itemize}
+  \item O Jakarta EE (antigo Java EE) é a principal alternativa ao Spring, com arquitetura mais rígida e monolítica, mas ambos podem conviver no mesmo projeto (como no caso da JPA).
+\end{itemize}
+
+\begin{itemize}
+  \item O Spring Boot é uma extensão do Spring que aplica o princípio de ”convenção sobre configuração”, simplificando drasticamente a criação de aplicações prontas para produção.
+\end{itemize}
+
+\begin{itemize}
+  \item Recursos como Starter POMs, autoconfiguração, servidores embutidos (Tomcat) e o Spring Boot Actuator tornam o desenvolvimento mais ágil e com menos código repetitivo.
+\end{itemize}
+
+\begin{itemize}
+  \item Projetos Spring Boot são iniciados por meio do Spring Initializr, seja pela IDE ou pelo site oficial (start.spring.io).
+\end{itemize}

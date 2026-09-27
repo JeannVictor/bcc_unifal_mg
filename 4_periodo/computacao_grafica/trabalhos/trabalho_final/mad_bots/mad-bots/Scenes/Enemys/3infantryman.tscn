@@ -1,0 +1,195 @@
+[gd_scene load_steps=16 format=3 uid="uid://dv4aitbx0run0"]
+
+[ext_resource type="PackedScene" uid="uid://bpuhk31jpn0dm" path="res://Scenes/Enemys/Enemy_Sniper/enemy_sniper.tscn" id="1_hk52d"]
+[ext_resource type="Texture2D" uid="uid://hi5ihmr2m4dt" path="res://Assets/Textures/Enemys/Infantryman/Walk.png" id="2_rt5pa"]
+[ext_resource type="Texture2D" uid="uid://blvrnc3ll5xsh" path="res://Assets/Textures/Enemys/Infantryman/Attack_1.png" id="3_smjcl"]
+[ext_resource type="Texture2D" uid="uid://ch3v84j6yyvxt" path="res://Assets/Textures/Enemys/Infantryman/Hurt.png" id="4_jfoca"]
+[ext_resource type="Texture2D" uid="uid://c8akix2uq6xq1" path="res://Assets/Textures/Enemys/Infantryman/Dead.png" id="5_1jid1"]
+[ext_resource type="PackedScene" uid="uid://bmf55wueli5ef" path="res://Scenes/Enemys/Attacks/Long_Range/long_range.tscn" id="6_es3a4"]
+[ext_resource type="PackedScene" uid="uid://cniobi6oklidm" path="res://Scenes/Projectile/projectile_for_enemy2.tscn" id="7_hk52d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rt5pa"]
+size = Vector2(20, 51)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smjcl"]
+size = Vector2(39, 106)
+
+[sub_resource type="Animation" id="Animation_8hibm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteHurt:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteDeath:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteWalk:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_qh8lf"]
+resource_name = "attack"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.033333335, 0.06666667, 0.1, 0.13333334, 0.16666667, 0.2, 0.23333333, 0.26666668, 0.3, 0.33333334, 0.36666667, 0.4, 0.43333334, 0.46666667, 0.5, 0.53333336),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+}
+
+[sub_resource type="Animation" id="Animation_es3a4"]
+resource_name = "death"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_1jid1"]
+resource_name = "taking_damage"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_jfoca"]
+resource_name = "walk"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666667, 0.33333334, 0.5, 0.6666667, 0.8333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t0o36"]
+_data = {
+&"RESET": SubResource("Animation_8hibm"),
+&"attack": SubResource("Animation_qh8lf"),
+&"death": SubResource("Animation_es3a4"),
+&"taking_damage": SubResource("Animation_1jid1"),
+&"walk": SubResource("Animation_jfoca")
+}
+
+[node name="Infantryman" instance=ExtResource("1_hk52d")]
+scale = Vector2(1.5, 1.5)
+collision_layer = 68
+collision_mask = 67
+repel_hysteresis = 10.0
+attack_path = NodePath("Long_Range")
+speed = 100.0
+max_health = 100
+drop_reward = 1
+invincibility_time = 0.05
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(0, -24.5)
+shape = SubResource("RectangleShape2D_rt5pa")
+
+[node name="SpriteWalk" parent="." index="1"]
+texture = ExtResource("2_rt5pa")
+hframes = 6
+
+[node name="SpriteAttack" parent="." index="2"]
+texture = ExtResource("3_smjcl")
+hframes = 17
+
+[node name="SpriteHurt" parent="." index="3"]
+texture = ExtResource("4_jfoca")
+hframes = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+texture = ExtResource("5_1jid1")
+hframes = 5
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(-6.5, -20)
+shape = SubResource("RectangleShape2D_smjcl")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_t0o36")
+}
+
+[node name="Long_Range" parent="." index="7" instance=ExtResource("6_es3a4")]
+projectile_scene = ExtResource("7_hk52d")
+fire_rate = 1.0
+pierce = 0
+projectile_speed = 700.0
+knockback_amount = 50.0
+
+[node name="Marker2D" parent="Long_Range" index="1"]
+position = Vector2(53, -42)
+
+[node name="DelayTimer" parent="Long_Range" index="2"]
+wait_time = 0.46
+
+[editable path="HurtBox"]
+[editable path="Long_Range"]

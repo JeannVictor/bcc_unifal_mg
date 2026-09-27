@@ -1,0 +1,125 @@
+\chapter{Escrevendo, Implantando e Acessando Websites}
+
+\section{O que é preciso para começar}
+
+Depois de conhecer as três linguagens fundamentais da web, é hora de colocar a mão na massa e entender, na prática, as diferentes formas de escrever, implantar e acessar um documento web. Para desenvolver documentos web, o mínimo necessário é:
+
+\begin{itemize}
+  \item um editor de texto capaz de salvar arquivos em formato de texto puro (plain text), sem formatação rica — exemplos incluem o Bloco de Notas no Windows, o nano no Linux ou o TextEdit no macOS;
+\end{itemize}
+
+\begin{itemize}
+  \item um navegador web — Edge, Chrome, Firefox, Safari ou qualquer outro, todos funcionam para os fins deste curso e já trazem embutido um conjunto de ferramentas de desenvolvedor úteis para depurar e testar páginas.
+\end{itemize}
+
+\begin{infobox}{Dica}
+Ao desenvolver páginas web, é comum manter duas janelas abertas simultaneamente: uma com o editor de código e outra com o navegador, exibindo o resultado enquanto o código é alterado. Quem possui mais de um monitor pode dedicar um a cada finalidade; caso contrário, uma boa opção é dividir a tela ao meio ou simplesmente alternar entre as janelas conforme necessário.
+\end{infobox}
+
+Um cuidado importante ao usar editores de texto simples (como o TextEdit no macOS): é preciso garantir explicitamente que o documento seja salvo como texto não formatado (plain text), e não como um documento com formatação rica (estilo processador de texto). Caso contrário, ao abrir o arquivo no navegador, ele não será interpretado como HTML e aparecerá com o código bruto na tela, ou de forma incorreta.
+
+\section{Boa prática: separar HTML, CSS e JavaScript}
+
+Como já mencionado no capítulo anterior, embora seja tecnicamente possível escrever HTML, CSS e JavaScript misturados dentro de um único arquivo, a boa prática de desenvolvimento web recomenda manter cada linguagem em seu próprio arquivo:
+
+\begin{itemize}
+  \item um arquivo .html para a estrutura;
+\end{itemize}
+
+\begin{itemize}
+  \item um arquivo .css para os estilos;
+\end{itemize}
+
+\begin{itemize}
+  \item um arquivo .js para o comportamento.
+\end{itemize}
+
+Essa separação deve ser buscada mesmo quando se está experimentando código copiado de terceiros ou de editores online: o ideal é sempre reorganizar o conteúdo em suas partes apropriadas antes de considerá-lo pronto.
+
+\section{Formas de acessar um documento web}
+
+Existem diferentes maneiras de testar e visualizar um documento web durante o desenvolvimento, cada uma com vantagens e limitações. Vale a pena conhecer todas elas, já que aparecerão com frequência ao longo da disciplina.
+
+\subsection{Abrindo diretamente pelo sistema de arquivos}
+
+A forma mais simples — e também a menos recomendada — é simplesmente dar um duplo clique no arquivo .html para abri-lo diretamente no navegador. Ao fazer isso, repare que a barra de endereço do navegador exibe algo como file:///Users/nome/Desktop/arquivo.html: isso indica que o navegador está acessando o arquivo diretamente pelo sistema de arquivos local, e não através de um servidor web.
+
+\begin{infobox}{Dica}
+Testar páginas web abrindo diretamente pelo sistema de arquivos é uma prática ruim porque o navegador perde acesso às características do protocolo HTTP, e alguns links relativos ou requisições podem não funcionar corretamente. Além disso, o endereço exibido é um caminho absoluto, que muda conforme o sistema operacional e a estrutura de pastas de cada máquina — ou seja, não é portável. Ainda assim, essa forma funciona para testes rápidos e simples, e é normal usá-la ocasionalmente.
+\end{infobox}
+
+\subsection{Editores online}
+
+Outra alternativa é usar editores online, como CodePen ou JSBin. A grande vantagem desses ambientes é não exigir nenhuma instalação local, além de permitir compartilhar facilmente o trabalho através de uma URL, útil para colaboração e revisão com colegas. Ao usar um editor como o CodePen, geralmente já existem painéis separados para HTML, CSS e JavaScript — reforçando naturalmente a boa prática de manter as linguagens organizadas. É possível também explorar exemplos públicos feitos por outros desenvolvedores e fazer um fork (cópia para a própria conta) de qualquer projeto interessante, desde que se possua uma conta gratuita na plataforma. Sem estar logado, ainda é possível editar e testar o código temporariamente, mas não será possível salvar as alterações.
+
+\subsection{Servidor web local instalado na máquina}
+
+Uma terceira alternativa, mais próxima do que acontece em produção, é instalar um servidor web na própria máquina e implantar (deploy) o documento dentro do diretório que esse servidor observa. O professor demonstra esse processo usando o Nginx, um dos servidores web mais usados atualmente (ao lado do tradicional Apache). De forma resumida, o processo de implantação local envolve:
+
+1. Instalar o servidor web (por exemplo, via gerenciador de pacotes: brew install nginx no macOS);
+
+2. Iniciar o servidor (brew services start nginx, ou apenas nginx para rodá-lo sem registrá-lo como serviço permanente);
+
+3. Verificar se o servidor está escutando na porta correta (por padrão, o Nginx costuma escutar na porta 8080 em instalações via Homebrew) usando um comando como netstat -an | grep 8080;
+
+4. Copiar os arquivos do projeto (desenvolvidos, por exemplo, na área de trabalho) para o diretório raiz do servidor (no caso do Nginx no macOS, tipicamente /usr/local/var/www);
+
+5. Acessar o navegador em http://localhost:8080 para visualizar o resultado.
+
+\begin{infobox}{Dica}
+Se, ao acessar o endereço do servidor, aparecer uma mensagem de erro 404 Not Found, isso significa que o recurso solicitado não foi encontrado no caminho esperado — geralmente porque o arquivo ainda não foi copiado para o diretório correto, ou porque há um erro de digitação no caminho. O código 404 é um dos chamados códigos de status HTTP, que serão estudados com mais detalhes adiante no curso.
+\end{infobox}
+
+Repare que, quando os arquivos são servidos por um servidor web de verdade, a barra de endereço do navegador passa a exibir algo como http://localhost:8080/arquivo.html, em vez do caminho absoluto do sistema de arquivos. Isso reflete o fato de que agora se está de fato usando o protocolo HTTP, com todas as suas características disponíveis — diferente do acesso direto via sistema de arquivos. Depois de testado o processo de deploy, é possível parar o servidor normalmente (por exemplo, brew services stop nginx, ou nginx -s stop). É recomendável manter o servidor parado quando não estiver sendo utilizado para desenvolvimento, evitando consumo desnecessário de memória da máquina.
+
+\subsection{Editores de código com servidor embutido (Live Server)}
+
+Por fim, a alternativa mais prática para o dia a dia de desenvolvimento é usar um editor de código mais completo — como o Visual Studio Code, que será adotado ao longo deste curso — combinado com uma extensão como o Live Server.
+
+O Live Server é, na prática, um servidor web bastante simples (não indicado para produção, apenas para testes locais durante o desenvolvimento), que roda tipicamente na porta 5500. Sua grande vantagem é a integração direta com o editor: basta clicar em “Go Live” na barra inferior do Visual Studio Code para que o navegador abra automaticamente exibindo o documento, e qualquer alteração salva no código é refletida quase instantaneamente no navegador, sem necessidade de atualizar a página manualmente. Live Server vs. servidor de produção
+
+É importante diferenciar o papel de cada ferramenta: servidores como Nginx ou Apache são projetados para ambientes de produção, capazes de lidar com tráfego real e configurações avançadas de segurança e desempenho. Já o Live Server é uma ferramenta exclusivamente de desenvolvimento, pensada para agilizar o ciclo de testes locais, sem qualquer pretensão de uso em produção.
+
+\begin{infobox}{Dica}
+Para instalar o Live Server no Visual Studio Code, acesse a aba de extensões (ícone de blocos na barra lateral), procure por ”Live Server”e clique em instalar. Depois disso, basta abrir a pasta do projeto no editor e clicar em ”Go Live”no canto inferior direito da janela para iniciar o servidor local automaticamente.
+\end{infobox}
+
+\section{Resumo comparativo das formas de acesso}
+
+A tabela a seguir resume as quatro formas apresentadas neste capítulo para escrever, testar e visualizar um documento web:
+
+Forma de acesso Vantagens Limitações Sistema de arquivos Simplicidade máxima, não Não usa HTTP de fato; cam- (duplo clique) exige nenhuma instalação inhos absolutos não portáveis; links podem falhar Editor online (Code- Sem instalação; fácil de Requer conexão à internet; sal- Pen, JSBin) compartilhar; ótimo para var exige conta na plataforma experimentação rápida Servidor web local Ambiente muito próximo de Exige instalação e configu- (Nginx, Apache) produção real ração manual; requer redeploy a cada alteração Live Server (extensão Recarregamento au- Não deve ser usado em prode editor) tomático; integração dução; é apenas uma ferradireta com o editor menta de desenvolvimento
+
+Ao longo deste curso, a combinação mais usada será o Visual Studio Code com a extensão Live Server, por unir simplicidade de uso com um fluxo de trabalho ágil e próximo do que se espera de um ambiente moderno de desenvolvimento front-end. Ainda assim, é importante ter praticado e compreendido as demais formas de acesso,
+
+já que situações reais de trabalho — e mesmo a implantação final de um projeto em produção — exigirão o uso de servidores web de verdade, como Nginx ou Apache.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Para escrever documentos web básicos, basta um editor de texto simples (capaz de salvar em texto puro) e um navegador web.
+\end{itemize}
+
+\begin{itemize}
+  \item Abrir um arquivo HTML diretamente pelo sistema de arquivos (duplo clique) funciona para testes rápidos, mas não reflete o comportamento real do protocolo HTTP.
+\end{itemize}
+
+\begin{itemize}
+  \item Editores online como CodePen e JSBin permitem testar e compartilhar código sem nenhuma instalação, com painéis separados para HTML, CSS e JavaScript.
+\end{itemize}
+
+\begin{itemize}
+  \item Servidores web locais, como Nginx, exigem instalação e configuração, mas reproduzem fielmente o ambiente de um servidor de produção real.
+\end{itemize}
+
+\begin{itemize}
+  \item O Live Server, extensão do Visual Studio Code, oferece recarregamento automático do navegador a cada alteração salva, sendo ideal apenas para desenvolvimento, nunca para produção.
+\end{itemize}
+
+\begin{itemize}
+  \item Erros como o código de status HTTP 404 indicam que o recurso solicitado não foi encontrado no caminho especificado do servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item Independentemente da ferramenta usada para testar localmente, a boa prática de separar HTML, CSS e JavaScript em arquivos distintos deve ser sempre respeitada.
+\end{itemize}

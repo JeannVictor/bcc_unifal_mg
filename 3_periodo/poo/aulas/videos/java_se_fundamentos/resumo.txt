@@ -1,0 +1,332 @@
+-----------------------------------------------
+RESUMO DO PAGLIARES
+Curso de Programação Orientada a Objetos e Linguagem de Programação Java
+
+-----------------------------------------------
+EPISÓDIO 0 - PARTE 1
+- Introdução à Tecnologia Java
+
+-----------------------------------------------
+EPISÓDIO 0 - PARTE 2
+- Configuramos o ambiente de Desenvolvimento no Ubuntu
+
+-----------------------------------------------
+EPISÓDIO 1 - CONCEITOS FUNDAMENTAIS
+
+ABSTRAÇÃO - Ocultar os detalhes desnecessários para o software.
+
+CLASSES - Um modelo (template) que incorpora características (representadas por atributos/campos/variáveis de instância) e funcionalidades representadas por métodos (funções).
+
+Classe é constituída de membros (campos, construtores e métodos).
+
+OBJETOS - São entidades criadas a partir de classes (processo conhecido como instanciação). A classe determina a estrutura que os objetos em nível de execução vão compartilhar. Dados específicos estão presentes em cada objeto.
+
+Exemplo:
+Classe Aluno com atributos nome, curso
+
+Objeto 1
+    nome = "Jeann"
+    curso = "Computação"
+Objeto 2 
+    nome = "Gaby"
+    curso = "Medicina"
+    
+Aluno objeto1 = new Aluno();
+Aluno objeto2 = new Aluno();
+
+-----------------------------------------------
+PACOTES
+
+Estruturas da linguagem Java que permitem organizar as classes de nossas aplicações e fornecem um mecanismo simples para reuso de classes. O reuso é conseguido a partir do comando import.
+
+import java.util.*; // todas as classes do pacote
+import java.util.Date; // apenas uma classe
+
+A classe System pertence ao pacote java.lang que é importado por padrão.
+
+Os nomes de pacotes devem ser hierárquicos e em letras minúsculas.
+
+Exemplo: br.com.pagliares.projetox.visao.relatorios
+
+Três cenários de reuso:
+1- Dentro do mesmo projeto
+2- Classes da API do Java SE (via JRE)
+3- Classes de terceiros (ex: .jar)
+
+Compilar classes em pacotes:
+javac -d <diretorioDestino> arquivos.java
+
+-----------------------------------------------
+MODIFICADORES DE ACESSO
+
+4 modificadores de acesso:
+- private
+- public
+- protected
+- package-friendly (default, sem palavra-chave)
+
+PRIVATE - acesso apenas na própria classe.
+PUBLIC - acesso de qualquer lugar no projeto.
+PACKAGE-FRIENDLY - acesso dentro do mesmo pacote.
+PROTECTED - será discutido com herança.
+
+-----------------------------------------------
+JVM, JRE, JDK E PLATAFORMAS JAVA
+
+JVM - Java Virtual Machine - interpreta bytecodes.
+JRE - Java Runtime Environment - JVM + classes essenciais.
+JDK - Java Development Kit - JRE + ferramentas de desenvolvimento.
+
+Plataformas Java:
+- JAVA SE: Aplicações simples (desktop, RMI, etc)
+- JAVA EE: Aplicações corporativas (web, EJB)
+- JAVA ME: Aplicações móveis
+- JAVA FX: Interfaces ricas (RIA)
+
+-----------------------------------------------
+CRIAÇÃO DE OBJETOS COM NEW
+
+Toda classe tem pelo menos um construtor.
+
+Se não for declarado um construtor, Java cria um default.
+
+Construtores não têm tipo de retorno e são chamados na instanciação com o operador new.
+
+Se criar um construtor com parâmetros, o default é perdido e deve ser declarado manualmente se necessário.
+
+-----------------------------------------------
+SINTAXE E LAYOUT DE UM ARQUIVO FONTE
+
+Sintaxe:
+<mod_acesso> class <nome_classe>
+<mod_acesso> tipo <nome_atributo> [=valor];
+<nome_construtor>([args])
+[<mod_acesso>] <tipo_retorno> <nomeMetodo>([args])
+import <pacote>.<classe> ou import <pacote>.*
+
+Layout de um .java:
+[package]
+[importações]
+<class>
+    <atributos>
+    <construtores>
+    <métodos>
+
+Retorno de método pode ser: primitivo, referência ou void.
+
+Cliente decide capturar ou não o retorno:
+Ex:
+String nome = rodrigo.getNome();
+double salario = rodrigo.getSalario();
+
+-----------------------------------------------
+COMENTÁRIOS
+
+// Comentário de uma linha
+
+/* Comentário
+   de múltiplas linhas
+*/
+
+/** Comentário para javadoc */
+
+-----------------------------------------------
+TIPOS PRIMITIVOS E TIPOS DE REFERÊNCIA
+
+TIPOS PRIMITIVOS (8):
+- Inteiros: byte, short, int, long
+- Reais: float, double
+- Caractere: char
+- Lógico: boolean
+
+Exemplos:
+byte (8 bits), short (16 bits), int (32 bits), long (64 bits)
+float (32 bits), double (64 bits)
+char (16 bits - Unicode)
+boolean (true / false)
+
+TIPOS DE REFERÊNCIA:
+- Todos os outros tipos (ex: String)
+- Instanciados na Heap
+- Começam com letra maiúscula
+- null é valor especial para "sem referência"
+
+String é objeto (não primitivo):
++ Métodos prontos, como length()
+- Pior performance (instanciação)
+
+-----------------------------------------------
+CONVENÇÕES DE NOMENCLATURA
+
+Java é Case Sensitive
+
+Classes:
+- Começam com letra maiúscula
+- Palavras compostas: cada palavra com maiúscula
+Ex: Hospede, CatalogoProdutos
+
+Métodos:
+- Letra minúscula inicial
+- Palavras compostas com maiúsculas a partir da segunda
+Ex: calcularImposto(), getNome()
+
+Variáveis:
+- minúscula inicial
+- Ex: hospede, impostoAPagar
+
+Pacotes:
+- Tudo minúsculo, separado por ponto
+Ex: br.com.pagliares.sistemax.tela
+
+Constantes:
+- Todas letras maiúsculas
+- Palavras separadas por underline
+Ex: PI, FORÇA_GRAVIDADE
+
+-----------------------------------------------
+BLOCOS E ESPAÇOS
+
+Espaços em branco são ignorados pelo compilador.
+
+Usar para:
+- Indentação
+- Clareza
+
+Bloco = conjunto de instruções entre { }
+
+Exemplo:
+
+class {
+    private String nome;
+
+    construtor() {
+        nome = "Jeann";
+        int idade = 0;
+    }
+
+    metodo() {
+        nome = "Batista";
+        idade = 19;
+
+        if (...) {
+            nome = nome + "33";
+        }
+
+        for (...) {
+            ...
+        }
+    }
+}
+
+Variáveis declaradas em blocos são destruídas ao final do bloco.
+
+-----------------------------------------------
+ESCOPO E INICIALIZAÇÃO DE VARIÁVEIS
+
+ESCOPO
+
+Variáveis podem ser:
+- Locais (em métodos, if, for)
+- De instância (campos da classe)
+
+Evitar usar o mesmo nome em escopos diferentes.
+
+INICIALIZAÇÃO
+
+Variáveis locais: não são iniciadas automaticamente.
+Variáveis de instância: iniciadas automaticamente.
+
+Valores padrão:
+byte     -> 0
+short    -> 0
+int      -> 0
+long     -> 0L
+float    -> 0.0F
+double   -> 0.0D
+char     -> \u0000
+boolean  -> false
+referência -> null
+
+-----------------------------------------------
+IDENTIFICADORES E PALAVRAS RESERVADAS
+
+Identificadores:
+- Nome de classes, métodos, variáveis
+- Começam com letra, _ ou $
+- Sensível a maiúsculas e minúsculas
+
+Válidos:
+identificador
+_variavelValida
+$variavelValida
+numero5
+
+Inválidos:
+5variavel
+
+Não podem ser palavras reservadas.
+
+-----------------------------------------------
+PALAVRAS RESERVADAS
+
+abstract      assert        boolean       break         byte
+case          catch         char          class         const
+continue      default       do            double        else
+enum          extends       final         finally       float
+for           goto          if            implements    import
+instanceof    int           interface     long          native
+new           package       private       protected     public
+return        short         static        strictfp      super
+switch        synchronized  this          throw         throws
+transient     try           void          volatile      while
+
+-----------------------------------------------
+CONFIGURAÇÃO DO AMBIENTE
+
+Cenários:
+
+Executar aplicações Java:
+- Instalar JRE
+
+Desenvolver aplicações Java:
+- Instalar JDK
+
+IDE (ex: IntelliJ) não é obrigatória, mas recomendada.
+
+Opções:
+- Instalar JDK separadamente + configurar IDE
+- Instalar Bundle IDE + JDK
+------------------------------------------------------------------------------------------
+				Atribuição de Referencias 
+		
+Quando duas variáveis de referencia estão apontando para o mesmo objeto na heap
+temos o feito colateral de que ao se alterar o estado de um objeto com uma das referencias
+esta alteração é propagada para o outro objeto.
+
+ex:
+
+Hospede h1 = new Hospede("Neymar","Júnior");
+Hospede h2= h1;
+h2.setNome("Maria"); // tanto h1 quanto h2 apontarão para um objeto de estado "Maria Junior"
+
+
+------------------------------------------------------------------------------------------
+					Refactoring
+					
+A tecnica de rafactoring tem como objetivo a limpeza de código que já esta funcionando
+sem acrescentar novas funcionalidades.
+
+A técnica é descrita na integra no famoso livro do Martin Fowler chamado 
+"Refactoring : improve the deseing of existing code" 
+
+------------------------------------------------------------------------------------------
+				Associações
+Um relacionamento semantico em instancias de classes
+
+podem ser restringidos por multiplicidade e navegabilidade
+
+Existem diversos tipos de associações baseadas em sua multiciplicidade e navegabilidade
+
+por exemplo:
+
+associação 1;1 - Hospede Reside EM um endereço

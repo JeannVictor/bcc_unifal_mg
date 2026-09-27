@@ -1,0 +1,416 @@
+[gd_scene load_steps=30 format=3 uid="uid://dki47ebywt47l"]
+
+[ext_resource type="Script" uid="uid://dwq326ibrckj7" path="res://Scenes/Player/Player_base/player.gd" id="1_uvnfx"]
+[ext_resource type="Texture2D" uid="uid://ct2kswpjdmq4s" path="res://Assets/Textures/Armas_E_Personagens/Personagens/2 Punk/Punk_idle.png" id="2_a3d8c"]
+[ext_resource type="Texture2D" uid="uid://2l5aqymcb7xf" path="res://Assets/Textures/Armas_E_Personagens/Personagens/2 Punk/Punk_run.png" id="3_mtuoh"]
+[ext_resource type="Texture2D" uid="uid://dokhj053yhu4v" path="res://Assets/Textures/Armas_E_Personagens/Personagens/2 Punk/Punk_hurt.png" id="4_dd0ac"]
+[ext_resource type="Script" uid="uid://b1a4agwuanrr1" path="res://Scenes/Player/Player_base/animation_player.gd" id="5_dd0ac"]
+[ext_resource type="PackedScene" uid="uid://djv6hj8hqdilv" path="res://Scenes/Utility/Hitboxes/HurtBox/hurtBox.tscn" id="6_dd0ac"]
+[ext_resource type="Script" uid="uid://bvdiqfcy8tpd6" path="res://Scenes/Player/Player_base/orbital_gun.gd" id="6_ocvar"]
+[ext_resource type="Texture2D" uid="uid://dlasogkv1aliy" path="res://Assets/Textures/GUI/exp_background.png" id="8_bhp24"]
+[ext_resource type="Texture2D" uid="uid://341qwvb8xft8" path="res://Assets/Textures/GUI/exp_progress.png" id="9_2iroa"]
+[ext_resource type="Texture2D" uid="uid://dv0rdxtjym022" path="res://Assets/Textures/GUI/GUI_cyberpunk/5 Logo/Logo1.png" id="9_pmkbe"]
+[ext_resource type="FontFile" uid="uid://jtemo7px1tum" path="res://Assets/Font/CyberpunkCraftpixPixel.otf" id="10_2iroa"]
+[ext_resource type="Script" uid="uid://dkc4p5f608cur" path="res://Scenes/Player/Player_base/experience_bar.gd" id="10_uohgb"]
+[ext_resource type="Script" uid="uid://bgk743jro3fj6" path="res://Scenes/Player/Player_base/level_up.gd" id="12_5i2fg"]
+[ext_resource type="AudioStream" uid="uid://mhglwy5ui8ty" path="res://Assets/Audio/SoundEffect/levelup.ogg" id="12_j7xa5"]
+[ext_resource type="PackedScene" uid="uid://18p05avlo2ww" path="res://Scenes/Utility/HealthBar/healthbar.tscn" id="13_j7xa5"]
+[ext_resource type="Texture2D" uid="uid://dsmnuk2pgbt6w" path="res://Assets/Textures/GUI/GUI_expecificas/menu_option_upgrade.png" id="14_7bjry"]
+[ext_resource type="PackedScene" uid="uid://btaahi0mulu2w" path="res://Scenes/Utility/PauseMenu/PauseMenu.tscn" id="16_7bjry"]
+[ext_resource type="Texture2D" uid="uid://bldti2rtfbfcw" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio4.png" id="17_0pqxf"]
+[ext_resource type="Texture2D" uid="uid://5tjy0slhu7on" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio1.png" id="17_rvfrc"]
+[ext_resource type="Texture2D" uid="uid://cbm3tpc6voqj3" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio8.png" id="19_oxjp6"]
+[ext_resource type="Texture2D" uid="uid://cax5i6hjg388c" path="res://Assets/Textures/GUI/GUI_expecificas/leve_up2.png" id="19_rvfrc"]
+[ext_resource type="Texture2D" uid="uid://bq0w0baqqj8vj" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio7.png" id="19_viay3"]
+[ext_resource type="Texture2D" uid="uid://j5amgqk0osbb" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio5.png" id="20_2yv7m"]
+[ext_resource type="Script" uid="uid://7hwjscugoodk" path="res://Scenes/Player/Player_base/timer_label.gd" id="24_fhn6u"]
+[ext_resource type="Texture2D" uid="uid://bopmc2dh1n2wc" path="res://Assets/Textures/GUI/GUI_expecificas/menu_option_upgrade_darkened.png" id="24_viay3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a3d8c"]
+size = Vector2(20, 34.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0u5uq"]
+size = Vector2(20, 34)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ocvar"]
+radius = 222.03603
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5potw"]
+radius = 13.453624
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+z_index = 1
+collision_layer = 2
+motion_mode = 1
+script = ExtResource("1_uvnfx")
+animationPlayer_path = NodePath("AnimationPlayer")
+hurtbox_path = NodePath("HurtBox")
+attack_path = NodePath("GunsOrbiter")
+grab_area = NodePath("GrabArea")
+
+[node name="SpriteIdle" type="Sprite2D" parent="."]
+z_index = 1
+scale = Vector2(2, 2)
+texture = ExtResource("2_a3d8c")
+offset = Vector2(12, -7)
+hframes = 4
+
+[node name="SpriteWalk" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(2, 2)
+texture = ExtResource("3_mtuoh")
+offset = Vector2(12, -7)
+hframes = 6
+
+[node name="SpriteTakingDamage" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(2, 2)
+texture = ExtResource("4_dd0ac")
+offset = Vector2(12, -7)
+hframes = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4.75)
+shape = SubResource("RectangleShape2D_a3d8c")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+script = ExtResource("5_dd0ac")
+player_path = NodePath("..")
+spriteWalk_path = NodePath("../SpriteWalk")
+spriteIdle_path = NodePath("../SpriteIdle")
+spriteTakingDamage_path = NodePath("../SpriteTakingDamage")
+
+[node name="GunsOrbiter" type="Node2D" parent="."]
+script = ExtResource("6_ocvar")
+
+[node name="HurtBox" parent="." instance=ExtResource("6_dd0ac")]
+collision_layer = 0
+collision_mask = 976
+monitorable = false
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(0, 5)
+shape = SubResource("RectangleShape2D_0u5uq")
+
+[node name="GrabArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+monitorable = false
+
+[node name="GrabArea" type="CollisionShape2D" parent="GrabArea"]
+position = Vector2(1, 1)
+shape = SubResource("CircleShape2D_ocvar")
+
+[node name="CollectArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollectArea" type="CollisionShape2D" parent="CollectArea"]
+shape = SubResource("CircleShape2D_5potw")
+
+[node name="GUILayer" type="CanvasLayer" parent="."]
+
+[node name="GUI" type="Control" parent="GUILayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="PauseMenu" parent="GUILayer/GUI" instance=ExtResource("16_7bjry")]
+layout_mode = 1
+
+[node name="Bars" type="TextureRect" parent="GUILayer/GUI"]
+layout_mode = 0
+offset_right = 421.0
+offset_bottom = 159.0
+texture = ExtResource("9_pmkbe")
+
+[node name="Healthbar" parent="GUILayer/GUI/Bars" instance=ExtResource("13_j7xa5")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.079
+anchor_top = 0.395
+anchor_right = 0.78000003
+anchor_bottom = 0.5
+offset_left = -0.0010032654
+offset_top = -0.025001526
+offset_right = 0.17999268
+offset_bottom = 0.5
+size_flags_vertical = 1
+
+[node name="Label" parent="GUILayer/GUI/Bars/Healthbar" index="2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.897
+anchor_top = 3.9040003
+anchor_right = 1.052
+anchor_bottom = 5.2970004
+offset_left = -0.14389038
+offset_top = -0.0068893433
+offset_right = 0.08428955
+offset_bottom = 0.005645752
+
+[node name="ExperienceBar" type="TextureProgressBar" parent="GUILayer/GUI/Bars"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.07700001
+anchor_top = 0.19500001
+anchor_right = 0.87700003
+anchor_bottom = 0.303
+offset_left = 0.03699112
+offset_top = -0.02500534
+offset_right = -0.16299438
+offset_bottom = -0.084991455
+value = 50.0
+nine_patch_stretch = true
+texture_under = ExtResource("8_bhp24")
+texture_progress = ExtResource("9_2iroa")
+script = ExtResource("10_uohgb")
+
+[node name="lbl_level" type="Label" parent="GUILayer/GUI/Bars/ExperienceBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.109000005
+anchor_top = 5.9030004
+anchor_right = 0.34300002
+anchor_bottom = 6.9620004
+offset_left = -0.14339447
+offset_top = 0.007843018
+offset_right = 0.09220886
+offset_bottom = -0.0017700195
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("10_2iroa")
+text = "Level: 1"
+horizontal_alignment = 1
+
+[node name="LevelUp" type="TextureRect" parent="GUILayer/GUI"]
+unique_name_in_owner = true
+process_mode = 2
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 760.0
+offset_top = -260.0
+offset_right = 1240.0
+offset_bottom = 188.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("14_7bjry")
+script = ExtResource("12_5i2fg")
+
+[node name="decoration" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 0
+offset_left = 332.30768
+offset_top = 43.846153
+offset_right = 375.3847
+offset_bottom = 90.76923
+texture = ExtResource("17_0pqxf")
+
+[node name="decoration2" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 0
+offset_left = 71.53847
+offset_top = 42.3077
+offset_right = 109.53847
+offset_bottom = 91.53847
+texture = ExtResource("17_rvfrc")
+
+[node name="decoration3" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+z_index = -1
+layout_mode = 0
+offset_left = 451.53845
+offset_top = 25.384605
+offset_right = 493.98303
+offset_bottom = 89.384605
+rotation = -1.2042772
+texture = ExtResource("19_viay3")
+
+[node name="decoration4" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -146.92316
+offset_top = -13.3845825
+offset_right = -99.92322
+offset_bottom = 50.615417
+grow_horizontal = 0
+grow_vertical = 0
+rotation = -1.5707964
+texture = ExtResource("19_oxjp6")
+
+[node name="decoration5" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 0
+offset_left = 56.15384
+offset_top = 434.61545
+offset_right = 88.15384
+offset_bottom = 498.61545
+rotation = -1.5707964
+texture = ExtResource("20_2yv7m")
+
+[node name="TextureRect" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -183.0
+offset_right = 183.0
+offset_bottom = 46.923088
+grow_horizontal = 2
+texture = ExtResource("19_rvfrc")
+expand_mode = 1
+
+[node name="lbl_levelup" type="Label" parent="GUILayer/GUI/LevelUp/TextureRect"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -76.5
+offset_top = -18.747694
+offset_right = 76.5
+offset_bottom = 18.747694
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("10_2iroa")
+theme_override_font_sizes/font_size = 25
+text = "Level Up !"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpgradeOptions" type="VBoxContainer" parent="GUILayer/GUI/LevelUp"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.080000006
+anchor_top = 0.20300001
+anchor_right = 0.9110001
+anchor_bottom = 0.88100004
+offset_left = 0.06155777
+offset_top = -0.17477417
+offset_right = -0.14245605
+offset_bottom = 0.17922974
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="snd_levelup" type="AudioStreamPlayer" parent="GUILayer/GUI/LevelUp"]
+unique_name_in_owner = true
+stream = ExtResource("12_j7xa5")
+volume_db = -20.0
+
+[node name="StatsShow" type="TextureRect" parent="GUILayer/GUI/LevelUp"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.019
+anchor_top = 0.098000005
+anchor_right = 1.5020001
+anchor_bottom = 0.59800005
+offset_left = 0.11077881
+offset_top = -5.442459
+offset_right = -0.1906128
+offset_bottom = -0.21170044
+texture = ExtResource("24_viay3")
+expand_mode = 1
+
+[node name="StatsDescription" type="RichTextLabel" parent="GUILayer/GUI/LevelUp/StatsShow"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -101.923096
+offset_top = -90.76923
+offset_right = 101.923096
+offset_bottom = 90.76923
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+
+[node name="CountdownTimer" type="Timer" parent="GUILayer/GUI/LevelUp"]
+unique_name_in_owner = true
+
+[node name="CountdownLabel" type="Label" parent="GUILayer/GUI"]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -26.5
+offset_right = 20.0
+offset_bottom = 26.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("10_2iroa")
+theme_override_font_sizes/font_size = 50
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DamagePopupLayer" type="ColorRect" parent="GUILayer/GUI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+mouse_behavior_recursive = 1
+mouse_force_pass_scroll_events = false
+color = Color(1, 1, 1, 0)
+
+[node name="TimerLabel" type="Label" parent="GUILayer/GUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 113.0
+offset_bottom = 54.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("10_2iroa")
+theme_override_font_sizes/font_size = 30
+text = "5:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("24_fhn6u")
+time = 300.0
+
+[node name="FpsLabel" type="Label" parent="GUILayer/GUI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 1222.0
+offset_top = 3.0
+offset_right = 1271.0
+offset_bottom = 26.0
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="area_entered" from="GrabArea" to="." method="_on_grab_area_area_entered"]
+[connection signal="area_entered" from="CollectArea" to="." method="_on_collect_area_area_entered"]
+
+[editable path="HurtBox"]
+[editable path="GUILayer/GUI/Bars/Healthbar"]

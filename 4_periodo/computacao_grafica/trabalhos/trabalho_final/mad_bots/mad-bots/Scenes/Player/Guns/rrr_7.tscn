@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://d0ve67kkpxv82"]
+
+[ext_resource type="PackedScene" uid="uid://san70ewrn4ap" path="res://Scenes/Player/Guns/Gun_base/gun_base.tscn" id="1_7rhsp"]
+[ext_resource type="PackedScene" uid="uid://c6f5u7q2t4m2t" path="res://Scenes/Projectile/projectile_for_player.tscn" id="2_kkhc3"]
+[ext_resource type="Texture2D" uid="uid://dern1gkya8e4g" path="res://Assets/Textures/Armas_E_Personagens/1 Icons/rrr7.png" id="3_7rhsp"]
+
+[node name="RRR7" instance=ExtResource("1_7rhsp")]
+init_damage = 20
+init_fire_rate = 0.1
+init_fire_range = 300.0
+pierce = 2
+projectile_scene = ExtResource("2_kkhc3")
+
+[node name="Sprite2D" parent="." index="0"]
+rotation = 0.7853982
+texture = ExtResource("3_7rhsp")

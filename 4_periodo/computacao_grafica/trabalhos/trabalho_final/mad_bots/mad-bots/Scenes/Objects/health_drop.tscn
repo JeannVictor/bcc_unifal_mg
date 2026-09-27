@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgdxlghq03817"]
+
+[ext_resource type="Script" uid="uid://dhyaw36x1o2w4" path="res://Scenes/Objects/health_drop.gd" id="1_bhkmw"]
+[ext_resource type="Texture2D" uid="uid://ca2k552xqsb16" path="res://Assets/Textures/GUI/icons/1 Icons/6/Skillicon6_16.png" id="2_m0iha"]
+[ext_resource type="AudioStream" uid="uid://b6hjex7upmk1x" path="res://Assets/Textures/sounds/collect.mp3" id="3_wo54c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_26s18"]
+size = Vector2(14.75, 15.5)
+
+[node name="HealthDrop" type="Area2D" groups=["health_drop", "loot"]]
+scale = Vector2(2, 2)
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1_bhkmw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_m0iha")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_26s18")
+
+[node name="snd_collected" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_wo54c")
+volume_db = -33.0
+
+[connection signal="finished" from="snd_collected" to="." method="_on_snd_collected_finished"]

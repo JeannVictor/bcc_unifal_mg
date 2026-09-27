@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdc3siplhawqx"]
+
+[ext_resource type="PackedScene" uid="uid://san70ewrn4ap" path="res://Scenes/Player/Guns/Gun_base/gun_base.tscn" id="1_g1cu4"]
+[ext_resource type="PackedScene" uid="uid://c6f5u7q2t4m2t" path="res://Scenes/Projectile/projectile_for_player.tscn" id="2_a4y13"]
+[ext_resource type="Texture2D" uid="uid://btfcd3ybmmr6l" path="res://Assets/Textures/Armas_E_Personagens/1 Icons/m45.png" id="3_g1cu4"]
+
+[node name="M45" instance=ExtResource("1_g1cu4")]
+scale = Vector2(1.5, 1.5)
+init_damage = 40
+init_fire_rate = 0.2
+init_fire_range = 200.0
+init_knockback_amount = 200.0
+projectile_scene = ExtResource("2_a4y13")
+
+[node name="Sprite2D" parent="." index="0"]
+rotation = 0.7853982
+texture = ExtResource("3_g1cu4")
+
+[node name="ProjectileSpawnPoint" parent="." index="1"]
+position = Vector2(0, 0)

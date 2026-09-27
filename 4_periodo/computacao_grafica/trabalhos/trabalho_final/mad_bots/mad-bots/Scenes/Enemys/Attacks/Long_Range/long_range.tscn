@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmf55wueli5ef"]
+
+[ext_resource type="Script" uid="uid://j70tm57rc3p" path="res://Scenes/Enemys/Attacks/Long_Range/long_range.gd" id="1_sps7h"]
+
+[node name="Long_Range" type="Node2D"]
+script = ExtResource("1_sps7h")
+
+[node name="Cooldown_timer" type="Timer" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="."]
+
+[node name="DelayTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Cooldown_timer" to="." method="_on_cooldown_timer_timeout"]

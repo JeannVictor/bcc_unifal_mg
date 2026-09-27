@@ -1,0 +1,201 @@
+\chapter{Panorama da Profissão de Desenvolvedor Web}
+
+\section{Objetivos desta primeira parte do curso}
+
+Este livro cobre os fundamentos necessários para qualquer pessoa que pretenda trabalhar com desenvolvimento web, seja como desenvolvedor front-end, desenvolvedor back-end ou como um profissional full stack, capaz de transitar entre as duas pontas de uma aplicação. É importante deixar claro, desde já, qual é o recorte proposto: esta parte introdutória do curso oferece uma visão geral — “a dez mil pés de altura” — da carreira de desenvolvedor web, com foco nos métodos, técnicas, ferramentas, bibliotecas, frameworks e conceitos de interconexão necessários para que o leitor comece a compreender o que significa, na prática, tornar-se um desenvolvedor web. Outras partes do curso vão se aprofundar em tópicos complementares, como uma investigação detalhada do protocolo HTTP e de seus cabeçalhos — conhecimento fundamental para quem se especializa em back-end. Esta parte inicial, contudo, é dividida em diversos módulos, organizados da seguinte forma:
+
+\begin{itemize}
+  \item Módulo 1: a carreira de desenvolvimento web;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 2: métodos, processos, padrões e práticas de desenvolvimento de software;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 3: conceitos fundamentais de redes de computadores;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 4: as principais linguagens da web — HTML, CSS e JavaScript;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 5: o DOM (Document Object Model), a estrutura hierárquica criada pelos navegadores para representar os elementos de um documento web;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 6: a publicação de sites desenvolvidos com HTML, CSS e JavaScript;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 7: ferramentas de desenvolvimento, frameworks, bibliotecas e módulos usados no dia a dia;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 8: uma visão geral das linguagens usadas para desenvolvimento backend;
+\end{itemize}
+
+\begin{itemize}
+  \item Módulo 9: acessibilidade, tópico especialmente importante para quem deseja atuar com desenvolvimento web profissional.
+\end{itemize}
+
+\begin{infobox}{Dica}
+Ao longo do curso, o professor faz referência a códigos-fonte de exemplo hospedados em um repositório no GitHub. O procedimento recomendado é fazer o clone (cópia de um repositório para a máquina local usando Git) ou simplesmente o download do conteúdo como arquivo compactado, evitando assim ter que digitar manualmente cada trecho de código demonstrado nas aulas. Para o desenvolvimento front-end, o editor sugerido é o Visual Studio Code, gratuito e amplamente utilizado no mercado, especialmente em conjunto com a extensão Live Server, que permite visualizar em tempo real, no navegador, as alterações feitas no códigofonte assim que o arquivo é salvo.
+\end{infobox}
+
+\section{Tipos de desenvolvedores web e a origem do termo full stack}
+
+Para entender a carreira de desenvolvimento web, é útil começar pelos tipos de desenvolvedores encontrados no mercado. Os títulos clássicos mais comuns são:
+
+\begin{infobox}{Front-end, Back-end e Full Stack}
+• Desenvolvedor front-end: foca no que é exibido para o usuário, tipicamente a partir de um navegador web (Chrome, Firefox, Safari, entre outros). Trabalha no design dos documentos web e nas interações entre os usuários e os sites.
+\end{infobox}
+
+\begin{itemize}
+  \item Desenvolvedor back-end: foca no que acontece “por trás dos panos” — o servidor de aplicação. Lida com configuração de máquinas servidoras, estruturas de dados e a lógica que gera as informações consumidas pelas aplicações que o usuário vê no dia a dia.
+\end{itemize}
+
+\begin{itemize}
+  \item Desenvolvedor full stack: um misto entre front-end e back-end, capaz de trabalhar tanto com tecnologias de interface quanto com tecnologias de servidor.
+\end{itemize}
+
+Segundo o Stack Overflow Developer Survey de 2019 — uma pesquisa anual, com respostas de dezenas de milhares de desenvolvedores ao redor do mundo, que servirá de referência estatística ao longo deste capítulo — cerca de 46\% dos desenvolvedores se declararam front-end developers, enquanto 46\% se identificaram como back-end developers (a soma ultrapassa 100\% porque um mesmo profissional pode marcar mais de uma opção). A maioria, no entanto, se identifica como desenvolvedor full stack: uma combinação de habilidades de front-end e back-end. Vale um comentário importante: teoricamente, não existe o desenvolvedor “perfeito”, excepcional tanto em front-end quanto em back-end — essa noção de desenvolvedor full stack completo é, na prática, comparável à noção de um unicórnio, algo raro e difícil de encontrar em sua forma ideal. Por essa razão, o mercado de desenvolvimento de software tem demandado, nos últimos anos, profissionais no formato “T”: indivíduos com uma especialidade vertical (a haste do T) e conhecimentos horizontais mais rasos em outras tecnologias correlatas (o traço superior do T). Um profissional
+
+em formato T tem uma área de especialização, mas também compreende minimamente tecnologias vizinhas que não são diretamente sua especialidade, o que o torna mais valioso e versátil no mercado.
+
+\begin{infobox}{Dica}
+Se você está começando agora, não se cobre para se tornar um ”unicórnio”imediatamente. É mais realista buscar uma especialidade sólida e, a partir dela, ir ampliando gradualmente seu conhecimento em áreas correlatas — essa é a essência do profissional em formato T, e é isso que o mercado efetivamente valoriza.
+\end{infobox}
+
+\section{Satisfação profissional e tendências tecnológicas em 2019}
+
+O levantamento também trouxe dados sobre satisfação no trabalho: cerca de 66\% das pessoas que responderam à pesquisa disseram estar satisfeitas com sua posição atual em equipes de desenvolvimento, e um percentual semelhante relatou confiar que seus gestores realmente sabem o que estão fazendo. Do ponto de vista técnico, alguns destaques de 2019 merecem atenção porque ilustram como o mercado de tecnologia muda constantemente:
+
+\begin{itemize}
+  \item O Visual Studio Code era, pelo sétimo ano seguido, o ambiente de desenvolvimento mais utilizado pelos desenvolvedores;
+\end{itemize}
+
+\begin{itemize}
+  \item JavaScript era considerada a linguagem de programação mais usada, tendo ultrapassado o Java em popularidade;
+\end{itemize}
+
+\begin{itemize}
+  \item O MySQL era o sistema gerenciador de banco de dados relacional mais utilizado, mas o PostgreSQL já ocupava a segunda posição, à frente do SQL Server;
+\end{itemize}
+
+\begin{itemize}
+  \item O npm era o gerenciador de pacotes mais usado por desenvolvedores web.
+\end{itemize}
+
+A mensagem central que fica é que desenvolvedores web precisam aprender a trabalhar com diferentes tecnologias, linguagens e ambientes de desenvolvimento ao longo da carreira — é raro que as tecnologias usadas em um projeto sejam exatamente as mesmas do próximo projeto. Outro dado relevante: as pessoas que participaram da pesquisa relataram que o uso de testes automatizados de unidade aumenta a satisfação com o emprego. Além disso, 68,8\% dos respondentes reconheceram valor na prática de revisão de código, e 65\% dos profissionais informaram que contribuem para projetos open source pelo menos uma vez ao ano.
+
+\section{Salários na carreira de desenvolvedor web}
+
+Uma pergunta recorrente de quem está iniciando a carreira é: quanto vou ganhar? A resposta depende de vários fatores — tamanho da empresa, popularidade das tecnologias que você domina, anos de experiência, entre outros. Nos Estados Unidos, segundo
+
+a pesquisa de 2019, os salários médios mais altos na área de TI eram de gerentes de engenharia, especialistas em contabilidade de sistemas, cientistas e engenheiros de dados. O salário médio de um gerente de engenharia, por exemplo, girava em torno de US\$ 95.000 anuais. Vale notar que, se considerado o mundo todo (e não apenas os Estados Unidos), a faixa salarial fica consideravelmente menor, embora ainda em patamares elevados quando comparada a outras profissões. O desenvolvimento back-end costuma ser considerado uma atividade mais desafiadora do que o desenvolvimento front-end, o que se reflete em salários geralmente maiores. Outro dado interessante: metade das pessoas que responderam à pesquisa não acredita que precisa necessariamente migrar para uma função de gestão para continuar tendo aumentos salariais — ou seja, é possível crescer financeiramente permanecendo como especialista técnico.
+
+\section{Caminhos de educação para se tornar desenvolvedor web}
+
+A educação faz uma diferença significativa em qualquer carreira, e na área de desenvolvimento web não é diferente. Existem basicamente quatro formas de educação que as pessoas costumam buscar:
+
+\subsection{Treinamento liderado por instrutor}
+
+É o modelo tradicional de ensino: matrícula em uma disciplina, curso ou treinamento presencial conduzido por um professor ou instrutor que segue um currículo com exercícios, plano de aulas e slides. Funciona muito bem para quem precisa esclarecer dúvidas ao longo do processo e para quem se beneficia de trabalhar em grupo. É o modelo típico de escolas, universidades e também de workshops e conferências.
+
+\subsection{Estudo autodidata}
+
+Muitas pessoas aprendem sozinhas, e algumas argumentam — com razão — que nenhum treinamento guiado ensinará tudo o que é necessário para se tornar um desenvolvedor bem-sucedido. O que fica evidente é que os desenvolvedores estão sempre em um processo de aprendizado contínuo: 86,8\% das pessoas que responderam à pesquisa indicaram ter aprendido sozinhas uma nova linguagem, framework ou ferramenta, mesmo estando matriculadas em um curso formal. Como a indústria de software muda rapidamente, talvez seja mais importante aprender os fundamentos necessários e se adaptar continuamente à medida que o mercado evolui, em vez de fixar-se em habilidades muito específicas. Práticas úteis para o autodidata incluem ler documentação oficial das tecnologias, analisar código desenvolvido por outras pessoas e explorar novas ideias que tornem o próprio trabalho mais eficiente.
+
+\subsection{Trabalho em projetos reais}
+
+Nenhuma quantidade de treinamento guiado, leitura de livros ou vídeos substitui a experiência de construir projetos reais. Algumas habilidades só são adquiridas trabalhando em uma empresa real, com desafios reais — muito diferente do ambiente de sala de aula ou de projetos pessoais isolados. Uma mensagem central aqui é a importância de aprender a trabalhar em equipes multifuncionais (cross-functional), com profissionais de diferentes áreas, superando o estereótipo de que profissionais de TI trabalham isoladamente.
+
+\subsection{Bootcamps e treinamentos intensivos}
+
+Os chamados coding bootcamps são cursos intensivos, projetados para ensinar habilidades de mercado em um período curto e condensado de tempo, geralmente com carga horária de 40 horas ou mais por semana, em experiência imersiva e presencial. Costumam ensinar habilidades práticas de mercado (controle de versão, integração contínua, ferramentas de ponta) que nem sempre são cobertas por cursos universitários tradicionais.
+
+\begin{infobox}{Dica}
+Bootcamps tendem a ter processos seletivos rigorosos, porque as escolas têm interesse em alocar seus alunos no mercado de trabalho e, para isso, selecionam previamente quem já demonstra alto potencial de conseguir uma vaga. Além disso, são financeiramente caros — alguns custam mais de US\$ 10.000 por poucas semanas de imersão — o que os torna mais adequados para quem já tem alguma base ou já está no mercado de trabalho e busca uma transição de carreira, e não necessariamente para quem está começando do zero.
+\end{infobox}
+
+\subsection{Educação universitária tradicional}
+
+Cerca de três quartos dos desenvolvedores profissionais possuem formação superior, sendo que 60\% deles estudaram Ciência da Computação, Engenharia de Computação ou Engenharia de Software. É interessante notar que, diferente do Brasil — que possui diversas universidades públicas e gratuitas — a maioria das universidades americanas é privada, e uma universidade nos Estados Unidos pode custar, em média, US\$ 50.000 por ano, valor cerca de três vezes maior do que na década de 1990 (aumento muito acima da inflação e da renda média das famílias). Apesar do custo elevado nos Estados Unidos, estudos indicam que pessoas com formação superior ganham, em média, cerca de um milhão de dólares a mais ao longo da vida profissional do que pessoas sem diploma. Algumas empresas ainda exigem diploma em seus processos seletivos (cerca de 65\% das vagas nos Estados Unidos, segundo a pesquisa), embora várias empresas importantes de tecnologia venham dispensando essa exigência nos últimos anos. Os benefícios de uma formação tradicional incluem o desenvolvimento de raciocínio mais abstrato para resolução de problemas, o contato com uma ampla gama de disciplinas (incluindo matemática e física, muito úteis em Ciência da Computação) e, frequentemente, disciplinas de administração que ensinam a escrever propostas, planos
+
+de negócio e documentos relevantes para tomadores de decisão.
+
+\subsection{Aprendizado online}
+
+O aprendizado online barateou e democratizou o acesso à educação em tecnologia. Suas vantagens incluem flexibilidade de horário e lugar, além do acesso a uma quantidade enorme de conteúdo por meio de ferramentas como Google e YouTube. Um problema comum, porém, é que a abundância de conteúdo disponível pode dificultar encontrar exatamente a resposta simples e direta que se busca.
+
+\begin{infobox}{Recursos de aprendizado online mencionados}
+• Stack Overflow: site de perguntas e respostas sobre programação, onde profissionais renomados ajudam a esclarecer dúvidas da comunidade constantemente;
+\end{infobox}
+
+\begin{itemize}
+  \item Fork de projetos: prática de copiar (fork) projetos reais desenvolvidos por terceiros para estudo próprio, permitindo analisar e aprender a partir de código já escrito e testado; o GitHub é a plataforma de desenvolvimento colaborativo mais famosa para isso, embora existam alternativas como o GitLab;
+\end{itemize}
+
+\begin{itemize}
+  \item MOOCs (Massive Open Online Courses): cursos online abertos para milhares de pessoas, como os oferecidos por Coursera, edX e Udacity;
+\end{itemize}
+
+\begin{itemize}
+  \item Plataformas como a Udemy: cursos vendidos a valores acessíveis, embora também existam trilhas gratuitas em diversas plataformas.
+\end{itemize}
+
+\section{Trilhas típicas de aprendizado}
+
+Não existe uma única linguagem que unifique todos os tipos de desenvolvedores web, mas o HTML é considerado a linguagem base para qualquer um deles. A partir desse conhecimento comum, existem caminhos típicos para cada perfil:
+
+\begin{itemize}
+  \item Front-end: HTML → CSS → JavaScript, seguido de bibliotecas e frameworks como React, Bootstrap e Vue.js. É comum também aprender sistemas de gestão de conteúdo (CMS) como WordPress, Drupal ou Joomla.
+\end{itemize}
+
+\begin{itemize}
+  \item Back-end com Java: HTML → Java SE → Jakarta EE (antigo Java EE) → um framework como Spring Boot.
+\end{itemize}
+
+\begin{itemize}
+  \item Back-end com PHP: HTML → PHP → um framework como Laravel.
+\end{itemize}
+
+\begin{itemize}
+  \item Back-end com JavaScript: HTML → JavaScript → Node.js → um framework como Express.
+\end{itemize}
+
+De modo geral, desenvolvedores back-end também precisam conhecer alguma linguagem estruturada de manipulação de banco de dados, como SQL, e eventualmente
+
+linguagens não estruturadas associadas a bancos de dados NoSQL. Vale destacar também a relevância do WordPress: esse sistema de gestão de conteúdo está presente em cerca de 30 a 40\% de todos os sites da web, tornando-o um conhecimento praticamente obrigatório para qualquer desenvolvedor web, a ponto de existirem empresas cujo modelo de negócio é inteiramente construído em torno de tecnologias baseadas em WordPress. Em resumo, o caminho para se tornar um desenvolvedor full stack é, essencialmente, a união das trilhas de front-end e back-end. A mensagem final é que o desenvolvimento web é uma carreira de estudo contínuo e sem fim — e é justamente essa característica que exige do profissional flexibilidade e disposição para aprender ao longo de toda a sua trajetória.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Os três perfis clássicos da carreira são front-end, back-end e full stack, sendo o perfil “em T” (especialista com conhecimento amplo em áreas correlatas) o mais valorizado no mercado atual.
+\end{itemize}
+
+\begin{itemize}
+  \item Segundo o Stack Overflow Developer Survey de 2019, JavaScript era a linguagem mais usada, o Visual Studio Code o ambiente mais popular e a maioria dos desenvolvedores se identificava como full stack.
+\end{itemize}
+
+\begin{itemize}
+  \item Testes automatizados, revisão de código e contribuição a projetos open source estão associados a maior satisfação profissional.
+\end{itemize}
+
+\begin{itemize}
+  \item Salários variam conforme tamanho da empresa, tecnologias dominadas e anos de experiência; não é necessário migrar para cargos de gestão para crescer financeiramente.
+\end{itemize}
+
+\begin{itemize}
+  \item Existem quatro grandes caminhos de educação: treinamento com instrutor, estudo autodidata, trabalho em projetos reais e bootcamps intensivos, cada um com vantagens e limitações próprias.
+\end{itemize}
+
+\begin{itemize}
+  \item A formação universitária tradicional oferece base teórica sólida e ainda é o caminho mais comum entre desenvolvedores profissionais, mas não é o único caminho válido para a carreira.
+\end{itemize}
+
+\begin{itemize}
+  \item HTML é a linguagem base comum a todas as trilhas; a partir dela, front-end e back-end seguem caminhos distintos, mas complementares, sendo o aprendizado contínuo a característica definidora da profissão.
+\end{itemize}

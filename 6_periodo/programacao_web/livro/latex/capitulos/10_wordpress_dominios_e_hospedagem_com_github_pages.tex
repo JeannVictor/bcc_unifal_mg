@@ -1,0 +1,149 @@
+\chapter{WordPress, Domínios e Hospedagem com GitHub Pages}
+
+\section{WordPress: três nomes, três coisas diferentes}
+
+Um ponto que costuma confundir iniciantes é a existência de três termos parecidos, mas com significados distintos dentro do ecossistema WordPress:
+
+\begin{itemize}
+  \item WordPress (o software): uma aplicação web escrita em PHP, de código aberto e gratuita, que qualquer pessoa pode baixar, instalar e executar em seu próprio servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item wordpress.org: o site oficial do projeto de software WordPress. É lá que se encontra o software para download, além de tutoriais, fóruns de discussão e documentação sobre sua evolução.
+\end{itemize}
+
+\begin{itemize}
+  \item wordpress.com: um serviço de hospedagem que permite criar um site em Word- Press sem precisar instalar nada localmente — o modelo de computação em nuvem conhecido como Software as a Service (SaaS). Nem todos os recursos do wordpress.com são gratuitos; alguns exigem plano pago.
+\end{itemize}
+
+O foco deste capítulo é o software WordPress e o site wordpress.org, de onde ele pode ser obtido gratuitamente, inclusive com versão traduzida para português do Brasil.
+
+\subsection{Tipos de conteúdo e arquitetura interna}
+
+O WordPress é descrito como um sistema de gestão de conteúdo, mas sua função central é a publicação de conteúdo na web. Esse conteúdo se organiza basicamente em três tipos: posts (publicações, geralmente organizadas cronologicamente, como em um blog), páginas (conteúdo mais estático, como “Sobre” ou “Contato”) e itens de mídia (imagens, vídeos e outros arquivos incorporados aos posts e páginas). Cada um desses tipos possui suas próprias propriedades e características. Internamente, o WordPress é uma aplicação PHP que depende de conexão com um banco de dados — tipicamente MySQL. A aplicação oferece duas visões distintas:
+
+\begin{itemize}
+  \item Uma visão de administração (o dashboard), destinada a quem cria e gerencia o conteúdo do site.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma visão para o visitante, que acessa o conteúdo já publicado.
+\end{itemize}
+
+Ao cadastrar conteúdo pelo painel administrativo e publicá-lo, esse conteúdo passa a ficar disponível para os visitantes. Todo o conteúdo é armazenado e referenciado a partir do banco de dados: alguns elementos (como o texto dos posts e seus metadados) ficam no banco de dados propriamente dito, enquanto outros (como arquivos de imagem) ficam armazenados no sistema de arquivos do servidor, sendo referenciados a partir de metadados salvos no banco. Quando um visitante acessa uma URL do site, o que ele recebe não é um arquivo HTML pronto e estático guardado em disco: é uma página gerada on the fly, no servidor, unindo o conteúdo vindo do banco de dados com um template visual definido por um tema. É por isso que se diz que a página, em certo sentido teórico, “não existe” antes da requisição — ela é montada dinamicamente a cada acesso.
+
+\subsection{Temas e plugins}
+
+A customização e extensão do WordPress ocorrem por meio de dois mecanismos:
+
+\begin{itemize}
+  \item Temas: definem a aparência e o layout visual da aplicação.
+\end{itemize}
+
+\begin{itemize}
+  \item Plugins: estendem as funcionalidades da aplicação, adicionando recursos que não fazem parte do núcleo do WordPress.
+\end{itemize}
+
+Publicar conteúdo no WordPress, portanto, equivale na prática a cadastrar um novo registro em uma tabela do banco de dados, que futuramente será combinado com o tema ativo para gerar a página exibida ao visitante.
+
+\section{Registrando um domínio web}
+
+Um domínio é o endereço legível por humanos (como meusite.com) que identifica um site na internet, evitando a necessidade de memorizar endereços IP numéricos. Existem diversas empresas — chamadas registradoras — que oferecem serviços de registro de domínio, hospedagem de sites, ou ambos. Algumas oferecem apenas registro, outras apenas hospedagem, e outras ainda, os dois serviços combinados. O processo típico de registro de um domínio, usando como exemplo uma registradora conhecida mundialmente, segue estes passos:
+
+1. Verificar disponibilidade: pesquisar o nome desejado (por exemplo, um nome pessoal) e verificar quais variações de domínio — .com, .com.br, .xyz, entre outras extensões — estão disponíveis para registro.
+
+2. Escolher a extensão e o período: diferentes extensões têm preços distintos, e o registro costuma ser cobrado por período (um ano, dois anos etc.).
+
+3. Adicionar ao carrinho e revisar serviços adicionais: durante o processo de compra, a registradora tipicamente oferece uma série de serviços extras (proteção de privacidade do domínio, e-mail personalizado, criação de site gratuito), a maioria opcional e paga à parte.
+
+4. Criar uma conta: necessária para gerenciar o domínio adquirido.
+
+5. Efetuar o pagamento: geralmente disponível via cartão de crédito, boleto bancário ou transferência.
+
+6. Aguardar confirmação: após o pagamento (especialmente via boleto, que pode levar algumas horas para compensar), a registradora envia e-mails de confirmação e o domínio passa a estar ativo e disponível para configuração.
+
+Antes da confirmação do pagamento, tentar acessar o domínio recém-solicitado no navegador tipicamente resulta em uma mensagem de erro ou em uma página da própria registradora informando que o domínio ainda não está disponível. Após a confirmação, o domínio pode ser gerenciado a partir do painel de controle da conta, de onde é possível, por exemplo, apontá-lo para um servidor de hospedagem ou configurar registros DNS.
+
+\begin{infobox}{Dica}
+Ao registrar um domínio, tenha atenção especial aos serviços adicionais oferecidos automaticamente durante o checkout — muitos deles vêm pré-selecionados e são pagos. Se o objetivo é apenas registrar o domínio, revise cada item do carrinho antes de finalizar a compra.
+\end{infobox}
+
+\section{Publicando sites estáticos com GitHub Pages}
+
+Registrar um domínio resolve apenas parte do problema: também é preciso um lugar para hospedar os arquivos do site. Para sites simples, estáticos (compostos apenas por HTML, CSS e JavaScript, sem necessidade de banco de dados ou processamento no servidor), o GitHub Pages é uma alternativa gratuita e muito utilizada atualmente.
+
+\begin{infobox}{Git versus GitHub}
+É importante não confundir os dois termos. Git é um sistema de controle de versão distribuído. GitHub é uma plataforma web baseada em Git que permite hospedar e gerenciar projetos de desenvolvimento de software de forma colaborativa. Um repositório no GitHub é, de forma simplificada, equivalente ao conceito de um projeto.
+\end{infobox}
+
+\subsection{Passo a passo para publicar um site}
+
+O processo básico para publicar um site simples via GitHub Pages é o seguinte:
+
+1. Criar uma conta no GitHub, caso ainda não se tenha uma.
+
+2. Criar um novo repositório. Se o repositório for nomeado exatamente como nomedeusuario.github.io, o GitHub Pages o trata como o site principal daquela conta, publicado diretamente em https://nomedeusuario.github.io.
+
+3. Adicionar um arquivo README (opcional, mas recomendado) com informações sobre o projeto.
+
+4. Enviar (fazer commit) os arquivos do site — por exemplo, um arquivo index.html — para o repositório.
+
+5. Acessar Settings (Configurações) do repositório e, na seção Pages, ativar a publicação, indicando a branch (ramificação) e a pasta de onde os arquivos devem ser servidos (geralmente a raiz do repositório).
+
+6. Aguardar alguns minutos — tipicamente entre 10 e 15 — para que o GitHub processe e publique o site no endereço configurado.
+
+Estrutura mínima de um repositório para GitHub Pages
+
+\begin{codebox}{HTML}
+   <!DOCTYPE html>
+   <html>
+   <head>
+     <title>Meu primeiro site</title>
+   </head>
+   <body>
+     <h1>Olá, mundo!</h1>
+   </body>
+   </html>
+\end{codebox}
+
+Um detalhe prático relevante: se o repositório contiver um arquivo chamado exatamente index.html na raiz, o GitHub Pages o exibe automaticamente ao acessar o endereço raiz do site, sem que seja necessário digitar o nome do arquivo na URL. Arquivos com outros nomes precisam ser acessados explicitamente (por exemplo, https://usuario.github.io/pagina.html). Também é possível criar múltiplos repositórios na mesma conta, cada um publicado em um subcaminho próprio, no formato https://usuario.github.io/nome-do-repositorio/, permitindo hospedar diversos projetos distintos gratuitamente a partir de uma única conta do GitHub.
+
+\begin{infobox}{Dica}
+Caso o site não apareça imediatamente após a configuração, verifique em Settings → Pages se a publicação está de fato habilitada e apontando para a branch e pasta corretas antes de assumir que há um erro no código. Muitas vezes o problema é apenas o tempo de propagação da publicação.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item WordPress (o software), wordpress.org (o site oficial) e wordpress.com (o serviço de hospedagem SaaS) são três coisas distintas dentro do mesmo ecossistema.
+\end{itemize}
+
+\begin{itemize}
+  \item O WordPress gerencia três tipos de conteúdo — posts, páginas e mídia — armazenados em banco de dados e sistema de arquivos, combinados dinamicamente com um tema no momento da requisição.
+\end{itemize}
+
+\begin{itemize}
+  \item Temas definem aparência; plugins estendem funcionalidades do WordPress.
+\end{itemize}
+
+\begin{itemize}
+  \item Registrar um domínio envolve verificar disponibilidade, escolher extensão e período, revisar serviços adicionais (frequentemente pagos e pré-selecionados) e efetuar o pagamento.
+\end{itemize}
+
+\begin{itemize}
+  \item Git é o sistema de controle de versão; GitHub é a plataforma de hospedagem colaborativa construída sobre o Git.
+\end{itemize}
+
+\begin{itemize}
+  \item Um repositório nomeado usuario.github.io é publicado automaticamente como o site principal da conta no GitHub Pages.
+\end{itemize}
+
+\begin{itemize}
+  \item Um arquivo index.html na raiz do repositório é servido automaticamente como página padrão, sem necessidade de especificar seu nome na URL.
+\end{itemize}
+
+Parte II
+
+\begin{codebox}{HTML}
+
+\end{codebox}

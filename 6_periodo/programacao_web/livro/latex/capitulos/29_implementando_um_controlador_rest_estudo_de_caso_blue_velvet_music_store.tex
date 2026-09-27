@@ -1,0 +1,405 @@
+\chapter{Implementando um Controlador REST: Estudo de Caso Blue Velvet Music Store}
+
+\section{O projeto BlueVelvet Music Store}
+
+O projeto BlueVelvet Music Store é organizado em torno de um conjunto de user stories — descrições, sob a perspectiva do usuário, das funcionalidades que o sistema deve oferecer. Entre elas, destacam-se: login de usuários, registro de novos usuários, acesso a um painel (dashboard) de gerenciamento de produtos, criação de produtos, edição de informações de produtos, visualização de detalhes de produtos por administradores e exclusão de produtos. Como as funcionalidades de login e registro exigem o uso do Spring Security — módulo que será tratado em um capítulo futuro — este capítulo concentra-se nas user stories relacionadas ao gerenciamento de produtos, implementando um controlador que segue o padrão REST e contempla as operações básicas do CRUD (criar, recuperar, atualizar e deletar produtos).
+
+\begin{infobox}{Dica}
+Nesta etapa, o objetivo é compreender a estrutura de um controlador REST isoladamente, sem ainda conectá-lo a um banco de dados real. Por isso, os dados retornados pelos endpoints serão simulados (mockados) diretamente no código — uma prática comum durante o desenvolvimento inicial de uma API, antes da camada de persistência estar pronta.
+\end{infobox}
+
+\section{Estrutura inicial do projeto}
+
+O projeto foi criado por meio do Spring Initializr, com as seguintes configurações: gerenciador de dependências Gradle (sintaxe Groovy), linguagem Java, versão do Spring Boot 3.3.5, grupo com.musicstore, artefato bluevelvet, empacotamento JAR e Java 21. Foram selecionadas três dependências iniciais:
+
+\begin{itemize}
+  \item Lombok: biblioteca que gera automaticamente código repetitivo como getters, setters, construtores e métodos utilitários de log, por meio de anotações;
+\end{itemize}
+
+\begin{itemize}
+  \item Spring Web: dependência que traz a infraestrutura necessária para criar controladores REST, incluindo o servidor embutido Tomcat;
+\end{itemize}
+
+\begin{itemize}
+  \item SpringDoc OpenAPI: responsável por gerar automaticamente uma documentação interativa da API, no formato conhecido popularmente pelo nome comercial Swagger.
+\end{itemize}
+
+A classe principal do projeto, gerada automaticamente, é anotada com @SpringBootApplication — anotação que identifica o ponto de entrada da aplicação e sinaliza ao Spring que ali deve ocorrer toda a inicialização automática do contêiner:
+
+\begin{codebox}{Java}
+package com.musicstore.bluevelvet;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BlueVelvetApplication {
+
+       public static void main(String[] args) {
+           SpringApplication.run(BlueVelvetApplication.class, args);
+       }
+
+}
+\end{codebox}
+
+Para simplificar a configuração da aplicação, o arquivo application.properties pode ser substituído por um arquivo application.yml, considerado mais legível e organizado:
+
+\begin{codebox}{YAML}
+spring:
+\end{codebox}
+
+\begin{infobox}{application:}
+name: Blue Velvet Music Store
+\end{infobox}
+
+Ao executar a aplicação, o Spring Boot inicializa o servidor Tomcat embutido na porta padrão 8080. Acessando http://localhost:8080 no navegador, é esperado observar a página padrão de erro do Spring (Whitelabel Error Page), o que indica que o servidor está no ar — apenas ainda não existe nenhum endpoint mapeado para a raiz da aplicação. Ao acessar http://localhost:8080/swagger-ui/index.html, é possível visualizar a interface do Swagger, inicialmente vazia, por não haver ainda nenhum controlador implementado.
+
+Capítulo 29. Implementando um Controlador REST: Estudo de Caso BlueVelvet 190 Music Store
+
+\section{Organizando o projeto: pacotes controller, request e response}
+
+Antes de escrever o primeiro controlador, é criada uma estrutura de pacotes que organiza o código de forma clara: um pacote api, contendo três subpacotes — controller (onde ficam os controladores REST), request (onde ficam as classes que representam os dados recebidos nas requisições) e response (onde ficam as classes que representam os dados devolvidos nas respostas).
+
+\subsection{A classe ProductRequest}
+
+A classe ProductRequest representa as informações necessárias para criar ou atualizar um produto. Ela inclui atributos como nome, descrições, marca, categoria, preços, disponibilidade, dimensões e detalhes adicionais:
+
+\begin{codebox}{Java}
+ package com.musicstore.bluevelvet.api.request;
+
+ import lombok.AllArgsConstructor;
+ import lombok.Builder;
+ import lombok.Getter;
+ import lombok.NoArgsConstructor;
+ import lombok.Setter;
+ import lombok.ToString;
+
+ import java.math.BigDecimal;
+ import java.time.LocalDate;
+ import java.util.List;
+
+ @Getter
+ @Setter
+ @Builder
+ @ToString
+ @NoArgsConstructor
+ @AllArgsConstructor
+ public class ProductRequest {
+
+        private String name;
+        private String shortDescription;
+        private String fullDescription;
+        private String brand;
+        private String category;
+        private String mainImage;
+        private String otherImages;
+        private BigDecimal listPrice;
+        private BigDecimal discount;
+        private boolean isEnabled;
+        private boolean inStock;
+
+
+
+       private LocalDate creationTime;
+       private LocalDate updateTime;
+       private ProductDimensionRequest dimension;
+       private BigDecimal cost;
+       private List<ProductDetailRequest> details;
+
+}
+\end{codebox}
+
+As dimensões físicas do produto (comprimento, largura, altura e peso) são encapsuladas em uma classe auxiliar própria, já que representam um subconjunto coeso de informações:
+
+\begin{codebox}{Java}
+package com.musicstore.bluevelvet.api.request;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductDimensionRequest {
+
+       private float length;
+       private float width;
+       private float height;
+       private float weight;
+
+}
+\end{codebox}
+
+Já os detalhes do produto — pares de nome e valor, como ”Cor: Prata”ou ”Material: Metal-– são representados por uma lista de objetos de uma classe auxiliar:
+
+\begin{codebox}{Java}
+package com.musicstore.bluevelvet.api.request;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+\end{codebox}
+
+Capítulo 29. Implementando um Controlador REST: Estudo de Caso BlueVelvet 192 Music Store
+
+\begin{codebox}{Código}
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductDetailRequest {
+\end{codebox}
+
+\begin{codebox}{Código}
+private String name;
+private String value;
+\end{codebox}
+
+\}
+
+As anotações do Lombok utilizadas merecem destaque: @Getter e @Setter geram automaticamente os métodos de acesso e modificação de cada atributo; @Builder permite construir objetos informando apenas os atributos desejados, evitando a fragilidade de um construtor extenso (no qual a inserção de um novo parâmetro no meio da lista pode quebrar todo o código que já utiliza aquele construtor); @ToString gera uma representação textual do objeto, extremamente útil para fins de log; @NoArgsConstructor gera um construtor vazio; e @AllArgsConstructor gera um construtor com todos os atributos da classe.
+
+\subsection{A classe ProductResponse}
+
+A classe ProductResponse é praticamente idêntica à ProductRequest, mas inclui um atributo adicional: o identificador (id) do produto, atribuído após sua criação — geralmente pelo próprio banco de dados:
+
+\begin{codebox}{Java}
+package com.musicstore.bluevelvet.api.response;
+
+import com.musicstore.bluevelvet.api.request.ProductDetailRequest;
+import com.musicstore.bluevelvet.api.request.ProductDimensionRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+@ToString
+
+
+
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductResponse {
+
+       private Long id;
+       private String name;
+       private String shortDescription;
+       private String fullDescription;
+       private String brand;
+       private String category;
+       private BigDecimal listPrice;
+       private BigDecimal discount;
+       private boolean isEnabled;
+       private boolean inStock;
+       private LocalDate creationTime;
+       private LocalDate updateTime;
+       private ProductDimensionRequest dimension;
+       private BigDecimal cost;
+       private List<ProductDetailRequest> details;
+
+}
+\end{codebox}
+
+\section{O controlador REST: ProductController}
+
+Com as classes de requisição e resposta definidas, o controlador em si pode ser criado. O primeiro ponto de atenção é que, para o Spring reconhecer uma classe como um controlador REST, não basta nomeá-la como tal — é necessário utilizar a anotação @RestController. Existe também a anotação @Controller, mais adequada quando o objetivo é retornar páginas HTML (unindo frontend e backend no mesmo projeto), o que não é o caso aqui. A anotação @RequestMapping("/products") define o caminho-base (path) para todos os endpoints do controlador. Seguindo a convenção REST, o nome do recurso é sempre utilizado no plural.
+
+\subsection{Buscando um produto por identificador (GET)}
+
+O primeiro endpoint implementado recupera um único produto a partir de seu identificador:
+
+\begin{codebox}{Java}
+package com.musicstore.bluevelvet.api.controller;
+
+import com.musicstore.bluevelvet.api.request.ProductDetailRequest;
+import com.musicstore.bluevelvet.api.request.ProductDimensionRequest;
+import com.musicstore.bluevelvet.api.request.ProductRequest;
+import com.musicstore.bluevelvet.api.response.ProductResponse;
+import io.swagger.v3.oas.annotations.Operation;
+\end{codebox}
+
+Capítulo 29. Implementando um Controlador REST: Estudo de Caso BlueVelvet 194 Music Store
+
+\begin{codebox}{Código}
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+\end{codebox}
+
+\begin{codebox}{Código}
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+\end{codebox}
+
+\begin{codebox}{Código}
+@Log4j2
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+\end{codebox}
+
+\begin{codebox}{@Operation(}
+summary = "Find product",
+description = "Retrieve a product from the Blue Velvet Music Store by its ID"
+)
+@GetMapping("/{id}")
+public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
+log.info("Request received to fetch a product by ID {}", id);
+\end{codebox}
+
+// FIXME: remover mock apos implementarmos servico e repositorio return ResponseEntity.ok(assembleProduct(id)); \}
+
+\begin{codebox}{Código}
+private ProductResponse assembleProduct(Long id) {
+\end{codebox}
+
+\begin{infobox}{return ProductResponse.builder()}
+.id(id) .name("CD Player") .brand("Elgin") .build(); \}
+\end{infobox}
+
+\}
+
+Alguns pontos merecem destaque. A anotação @GetMapping("/\{id\}") indica que esse método responde a requisições GET no caminho /products/\{id\} — a concatenação entre o @RequestMapping da classe e o @GetMapping do método. A anotação @PathVariable, aplicada ao parâmetro id, indica que esse valor deve ser extraído diretamente do caminho da URL (e não de um parâmetro de consulta na query string), sendo fundamental que o nome entre chaves no mapeamento (\{id\}) corresponda ao nome utilizado na anotação. O retorno do método é sempre um ResponseEntity, um tipo do Spring que permite construir respostas HTTP completas de forma elegante, incluindo o código de status — neste caso, ResponseEntity.ok(...) corresponde a um status 200 OK. Como a camada de persistência ainda não foi implementada, o método auxiliar assembleProduct simula (mocka) um retorno, o que é sinalizado no código por um comentário FIXME, lembrando que esse trecho precisará ser substituído por uma consulta real ao banco de dados.
+
+A anotação @Log4j2, do Lombok, disponibiliza o objeto log dentro da classe, permitindo o uso de log.info, log.debug, log.warn, log.error e log.trace. O uso de um framework de log é preferível ao tradicional System.out.println porque cada mensagem registrada já inclui automaticamente informações como timestamp, nível do log, identificador do processo e nome da aplicação — essenciais para depuração em ambientes de produção.
+
+\subsection{Buscando todos os produtos (GET)}
+
+Para recuperar a lista completa de produtos, é adicionado um segundo endpoint, mapeado diretamente para /products:
+
+\begin{codebox}{Java}
+
+\end{codebox}
+
+\begin{codebox}{@Operation(}
+summary = "Find all products",
+description = "Retrieve all products from the Blue Velvet Music Store"
+)
+@GetMapping
+public ResponseEntity<List<ProductResponse>> getProducts() {
+log.info("Request received to fetch all products");
+\end{codebox}
+
+// FIXME: remover mock e adicionar Pageable do Spring Data futuramente
+
+\begin{infobox}{return ResponseEntity.ok(}
+List.of(assembleProduct(1L), assembleProduct(2L), assembleProduct(3L)) ); \}
+\end{infobox}
+
+Note que a busca paginada (utilizando um objeto Pageable) fica marcada como pendente: ela dependerá do módulo Spring Data, que será apresentado quando a aplicação for conectada a um banco de dados real.
+
+\subsection{Removendo um produto (DELETE)}
+
+A remoção de um produto segue o mesmo princípio de extração do identificador via @PathVariable, mas normalmente retorna uma resposta sem conteúdo (status 204 No Content):
+
+\begin{codebox}{Java}
+
+\end{codebox}
+
+\begin{codebox}{@Operation(}
+summary = "Delete product",
+description = "Delete a product from the Blue Velvet Music Store"
+)
+@DeleteMapping("/{id}")
+public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+log.info("Request received to delete the product with ID {}", id);
+\end{codebox}
+
+return ResponseEntity.ok(null); \}
+
+Capítulo 29. Implementando um Controlador REST: Estudo de Caso BlueVelvet 196 Music Store
+
+\subsection{Criando um novo produto (POST)}
+
+Para criar um novo produto, os dados não podem trafegar como parâmetros na URL (o que seria inadequado e, em muitos casos, inseguro — imagine, por exemplo, enviar nome de usuário e senha diretamente na barra de endereços). Em vez disso, utiliza-se a anotação @RequestBody, que instrui o Spring a extrair o objeto ProductRequest diretamente do corpo da requisição HTTP:
+
+\begin{codebox}{Java}
+
+\end{codebox}
+
+\begin{codebox}{@Operation(}
+summary = "Create product",
+description = "Create a new product in the Blue Velvet Music Store"
+)
+@PostMapping
+public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest requ
+log.info("Request received to create a product with request {}", request);
+\end{codebox}
+
+return ResponseEntity.ok(assembleProduct(7L)); \}
+
+Graças à anotação @ToString presente em ProductRequest, o log exibe de forma legível todos os campos recebidos na requisição, o que facilita a depuração durante o desenvolvimento.
+
+\subsection{Atualizando um produto (PUT)}
+
+Por fim, resta implementar a atualização de um produto existente. Como a especificação do projeto BlueVelvet determina que todos os campos do produto podem ser atualizados de uma só vez, o verbo apropriado é o PUT (e não o PATCH, reservado para atualizações parciais de um subconjunto de campos):
+
+\begin{codebox}{Java}
+
+\end{codebox}
+
+\begin{codebox}{@Operation(}
+summary = "Update product",
+description = "Update a product from the Blue Velvet Music Store"
+)
+@PutMapping("/{id}")
+public ResponseEntity<ProductResponse> updateProduct(
+@PathVariable Long id,
+@RequestBody ProductRequest request) {
+\end{codebox}
+
+log.info("Request received to update the product with ID \{\} with request \{\}", id,
+
+return ResponseEntity.ok(assembleProduct(id)); \}
+
+\section{O que realmente caracteriza um controlador REST}
+
+Um ponto conceitual merece destaque especial: o que determina se uma operação é de criação, recuperação, atualização ou remoção não é o nome do método Java, tampouco apenas a anotação @RestController presente na classe. O que efetivamente define essa distinção é a combinação entre o caminho (path) do endpoint e o verbo HTTP utilizado. No exemplo do ProductController, o endpoint de busca por identificador e o de remoção compartilham exatamente o mesmo caminho (/products/\{id\}), diferenciando-se unicamente pelo verbo (GET contra DELETE). Da mesma forma, o endpoint de listagem e o de criação compartilham o caminho /products, diferenciando-se entre GET e POST.
+
+\begin{infobox}{Dica}
+O controlador é apenas a porta de entrada da aplicação: ele não deve conter regras de negócio. Sua responsabilidade é receber a requisição e repassá-la à camada de serviço, que concentra as regras de negócio e, quando necessário, aciona a camada de repositório, responsável pelo acesso efetivo ao banco de dados. Depois de processada a informação, o serviço a devolve ao controlador, que apenas monta a resposta para o cliente. Essa separação de responsabilidades — controlador, serviço e repositório — será aprofundada nos próximos capítulos, à medida que a aplicação evoluir para incluir persistência real de dados.
+\end{infobox}
+
+A documentação gerada automaticamente pelo SpringDoc (visível na interface do Swagger, em /swagger-ui/index.html) permite testar interativamente cada um desses endpoints, sem a necessidade de ferramentas externas como o Postman — embora, para os verbos diferentes de GET, o navegador sozinho não seja suficiente, já que ele só realiza requisições GET a partir da barra de endereços.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O estudo de caso BlueVelvet Music Store organiza o desenvolvimento em torno de user stories, começando pelo gerenciamento de produtos (CRUD), deixando login e registro para quando o Spring Security for abordado.
+  \item O projeto é estruturado em pacotes controller, request e response, separando claramente entrada, saída e lógica de roteamento.
+  \item Classes de requisição e resposta usam anotações do Lombok (@Getter, @Setter, @Builder, @ToString, @NoArgsConstructor, @AllArgsConstructor) para eliminar código repetitivo.
+  \item @RestController e @RequestMapping definem, respectivamente, que a classe é um controlador REST e qual o caminho-base de seus endpoints.
+  \item @GetMapping, @PostMapping, @PutMapping e @DeleteMapping associam métodos Java a verbos HTTP específicos; @PathVariable extrai valores do caminho da URL, e @RequestBody extrai objetos do corpo da requisição.
+\end{itemize}
+
+Capítulo 29. Implementando um Controlador REST: Estudo de Caso BlueVelvet 198 Music Store
+
+\begin{itemize}
+  \item O que caracteriza uma API REST é a combinação entre caminho e verbo HTTP — nunca apenas o nome do método ou da classe.
+\end{itemize}
+
+\begin{itemize}
+  \item O controlador deve se limitar a rotear requisições; regras de negócio pertencem à camada de serviço, e o acesso a dados, à camada de repositório.
+\end{itemize}

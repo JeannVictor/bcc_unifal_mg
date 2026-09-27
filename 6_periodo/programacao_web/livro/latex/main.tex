@@ -1,0 +1,109 @@
+\documentclass[12pt,a4paper,openany]{book}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+\usepackage[brazilian]{babel}
+\usepackage{geometry}
+\geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm}
+\usepackage{xcolor}
+\definecolor{azullivro}{HTML}{0B4F7A}
+\definecolor{laranjalivro}{HTML}{EF6C00}
+\definecolor{fundocodigo}{HTML}{282C34}
+\definecolor{fundocaixa}{HTML}{F5F7F9}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=azullivro,urlcolor=laranjalivro,pdftitle={Programação Web: Fundamentos, Front-End e Back-End},pdfauthor={Jeann Victor}}
+\usepackage{microtype}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries\color{azullivro}}{\chaptertitlename\ \thechapter}{12pt}{\LARGE}
+\titleformat{\section}{\Large\bfseries\color{azullivro}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{laranjalivro}}{\thesubsection}{0.8em}{}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\thepage}
+\fancyhead[RO]{\small\thepage}
+\fancyhead[LO,RE]{\small Programação Web}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+\usepackage{fancyvrb}
+\newenvironment{codebox}[1]{\VerbatimEnvironment\begin{tcolorbox}[enhanced,breakable,title={#1},colback=fundocodigo,colframe=azullivro,coltitle=white,fonttitle=\bfseries,arc=2mm,boxrule=0.5pt]\begin{Verbatim}[fontsize=\small,formatcom=\color{white}]}{\end{Verbatim}\end{tcolorbox}}
+\newtcolorbox{infobox}[1]{enhanced,title={#1},colback=fundocaixa,colframe=gray!65,coltitle=white,fonttitle=\bfseries,arc=1mm,boxrule=0.5pt}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0.15em}
+\emergencystretch=4em
+\sloppy
+\raggedbottom
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{azullivro} Programação Web\par}
+\vspace{1cm}
+{\LARGE\color{laranjalivro} Fundamentos, Front-End (HTML, CSS e JavaScript) e\\Back-End com Spring Boot\par}
+\vspace{2cm}\rule{0.65\textwidth}{0.4pt}\par\vspace{1.5cm}
+{\Large Notas de aula organizadas a partir da disciplina de Programação Web\par}
+\vspace{1cm}
+{\large Compiladas e organizadas por\par}\vspace{0.3cm}
+{\Large\bfseries Jeann Victor\par}
+\vfill
+{\large Curso de Bacharelado em Ciência da Computação\par}
+{\large 2026\par}
+\end{titlepage}
+\frontmatter
+\chapter*{Prefácio}\addcontentsline{toc}{chapter}{Prefácio}
+\input{prefacio}
+\tableofcontents
+\mainmatter
+\part{Fundamentos de Programação Web e a Profissão}
+\input{capitulos/01_panorama_da_profissao_de_desenvolvedor_web}
+\input{capitulos/02_o_mercado_de_ti_segundo_o_stack_overflow_developer_survey_de_2021}
+\input{capitulos/03_processos_metodos_e_praticas_de_desenvolvimento_de_software}
+\input{capitulos/04_conceitos_fundamentais_de_redes_de_computadores}
+\input{capitulos/05_as_linguagens_fundamentais_da_web_html_css_e_javascript}
+\input{capitulos/06_escrevendo_implantando_e_acessando_websites}
+\input{capitulos/07_desvendando_o_dom_document_object_model}
+\input{capitulos/08_ferramentas_de_desenvolvimento_devtools_frameworks_e_bibliotecas_front_end}
+\input{capitulos/09_linguagens_e_frameworks_para_backend_apis_e_servicos}
+\input{capitulos/10_wordpress_dominios_e_hospedagem_com_github_pages}
+\part{HTML}
+\input{capitulos/11_introducao_a_linguagem_html}
+\input{capitulos/12_marcacao_fundamental_de_texto_em_html}
+\input{capitulos/13_elementos_adicionais_de_texto_e_estrutura_semantica_em_html}
+\input{capitulos/14_imagens_e_video_em_html}
+\part{CSS}
+\input{capitulos/15_introducao_ao_css_e_primeiros_passos}
+\input{capitulos/16_primeiros_passos_com_css_parte_2}
+\input{capitulos/17_o_modelo_de_caixa_css_box_model}
+\input{capitulos/18_cascata_e_heranca_em_css}
+\part{JavaScript}
+\input{capitulos/19_introducao_ao_javascript}
+\input{capitulos/20_um_primeiro_mergulho_em_javascript}
+\input{capitulos/21_depuracao_de_programas_javascript}
+\input{capitulos/22_variaveis_em_javascript}
+\input{capitulos/23_numeros_e_operadores_em_javascript}
+\input{capitulos/24_estruturas_de_controle_funcoes_e_arrays_em_javascript}
+\input{capitulos/25_javascript_e_o_dom_manipulacao_de_elementos_e_eventos}
+\part{Desenvolvimento Back-End com Spring Boot}
+\input{capitulos/26_frontend_e_backend_a_arquitetura_cliente_servidor}
+\input{capitulos/27_apis_e_o_estilo_arquitetural_rest}
+\input{capitulos/28_spring_jakarta_ee_e_spring_boot}
+\input{capitulos/29_implementando_um_controlador_rest_estudo_de_caso_blue_velvet_music_store}
+\input{capitulos/30_docker_conteineres_para_aplicacoes_web}
+\input{capitulos/31_docker_e_spring_data_jpa_entidades_e_repositorios}
+\input{capitulos/32_camada_de_servico_e_tratamento_de_excecoes}
+\input{capitulos/33_introducao_ao_thymeleaf}
+\input{capitulos/34_spring_security_fundamentos_de_autenticacao_e_autorizacao}
+\backmatter
+\chapter*{Considerações Finais}
+\addcontentsline{toc}{chapter}{Considerações Finais}
+Ao longo deste livro, percorremos o caminho da programação web desde os fundamentos da profissão e das redes de computadores até a construção de interfaces com HTML e CSS, a programação de comportamento com JavaScript e, por fim, o desenvolvimento de um back-end completo com Java, Spring Boot, Docker, JPA e Spring Security.
+
+Mais do que decorar tags, propriedades ou APIs, o mais importante é entender a lógica por trás de cada camada: o HTML estrutura o conteúdo, o CSS cuida da apresentação, o JavaScript adiciona comportamento e interação, e o back-end fornece os dados e as regras de negócio que sustentam a aplicação. Compreendida essa lógica, qualquer framework ou ferramenta nova se torna consideravelmente mais fácil de aprender.
+
+Que este material sirva como referência de consulta sempre que for necessário relembrar, aprofundar ou aplicar esses conceitos ao longo da disciplina e da trajetória profissional.
+\end{document}

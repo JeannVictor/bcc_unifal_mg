@@ -1,0 +1,1 @@
+Do laboratorio 1 até o laboratorio 4, possuem o conteudo introdutorio onde engloba, qual IDE utilizar, explicações sobre o maven e nada de mais mesmo ... A partir do 5 realmente começam os exercicios.

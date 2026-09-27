@@ -1,0 +1,183 @@
+\chapter{As Linguagens Fundamentais da Web: HTML, CSS e JavaScript}
+
+\section{Três linguagens, três responsabilidades}
+
+Existem três linguagens fundamentais que qualquer desenvolvedor web precisa conhecer, independentemente de atuar como front-end, back-end ou full stack: HTML, CSS e JavaScript. Cada uma delas tem uma responsabilidade específica e bem definida no desenvolvimento de aplicações para a web:
+
+Responsabilidades de HTML, CSS e JavaScript
+
+\begin{itemize}
+  \item HTML: responsável pela estrutura e pela semântica do documento web;
+\end{itemize}
+
+\begin{itemize}
+  \item CSS: responsável pelo estilo e pelo layout do documento;
+\end{itemize}
+
+\begin{itemize}
+  \item JavaScript: linguagem de programação responsável por definir o comportamento do documento, permitindo interação com o usuário e, eventualmente, comunicação com um servidor back-end.
+\end{itemize}
+
+Em outras palavras: ao criar um documento HTML, pegamos conteúdo textual e o associamos a imagens, áudio, vídeo e, opcionalmente, folhas de estilo CSS e pequenos programas em JavaScript. O resultado é um documento que não possui apenas estrutura e semântica (fornecidas pelo HTML), mas também estilo (fornecido pelo CSS) e comportamento interativo (fornecido pelo JavaScript).
+
+\section{HTML: estrutura e semântica}
+
+HTML significa HyperText Markup Language (linguagem de marcação de hipertexto). É importante destacar: HTML não é uma linguagem de programação, mas uma linguagem de marcação (markup language) de documentos — e é a base de toda a World Wide Web. A ideia central da web é que documentos estejam associados uns aos outros através de hiperlinks (ou simplesmente links): elementos de ligação que permitem navegar de um documento para outro, seja dentro do mesmo site, seja para documentos hospedados em servidores completamente diferentes, em qualquer lugar do mundo. Como linguagem de marcação, HTML define o papel de cada trecho de conteúdo dentro de um documento, para que o navegador saiba como renderizá-lo corretamente. Alguns trechos marcados descrevem elementos textuais (um parágrafo, um título, uma lista), enquanto outros descrevem elementos não textuais (uma imagem, um vídeo).
+
+Essas marcações são chamadas de tags ou elementos HTML, e seguem o formato geral:
+
+\begin{codebox}{Código}
+Sintaxe de um elemento HTML
+<nomeDaTag>conteúdo</nomeDaTag>
+\end{codebox}
+
+\begin{codebox}{Código}
+Por exemplo, ao marcar um trecho com <p>...</p>, indicamos ao navegador que
+aquele conteúdo é um parágrafo; ao usar <ul>...</ul>, indicamos que se trata de
+uma lista não ordenada; ao usar <h1> até <h6>, indicamos títulos e subtítulos com
+diferentes níveis de importância hierárquica dentro do documento.
+\end{codebox}
+
+\begin{infobox}{Dica}
+Espaços em branco e indentação dentro de um documento HTML são ignorados durante a renderização — eles existem apenas para tornar o código mais legível para humanos. Um documento HTML tecnicamente funcionaria sem nenhuma formatação (tudo em uma única linha), mas isso prejudicaria muito a leitura e a manutenção do código por outros desenvolvedores. Ou seja: indente e formate seu código sempre, mesmo sabendo que o navegador ”não precisa”disso.
+\end{infobox}
+
+\section{CSS: estilo e apresentação}
+
+CSS (Cascading Style Sheets, ou folhas de estilo em cascata) também é, originalmente, uma linguagem declarativa, embora tenha incorporado, ao longo dos anos, características cada vez mais próximas de uma linguagem de programação (como variáveis, transições e animações). Enquanto HTML fornece estrutura e semântica, CSS define a aparência: cores, fontes, espaçamentos, layout e responsividade. Nos primórdios da web, era comum misturar diretamente questões de estilo dentro do próprio HTML (por exemplo, usando atributos de cor e fonte diretamente nas tags, ou até criando layouts inteiros com tabelas HTML). Essa prática é hoje considerada inadequada, porque mistura duas responsabilidades que deveriam estar separadas: conteúdo/estrutura de um lado e apresentação de outro.
+
+\begin{infobox}{Separação de responsabilidades}
+Separar CSS de HTML traz vantagens práticas importantes: diferentes pessoas podem trabalhar em paralelo (uma cuidando de estilos, outra de estrutura e semântica), e alterar a aparência de uma página não exige mexer diretamente na sua estrutura. Mesmo quando nenhuma folha de estilo é escrita, os navegadores aplicam estilos padrão próprios (por isso uma lista sem CSS ainda aparece com marcadores, e um link aparece sublinhado e azul).
+\end{infobox}
+
+O funcionamento do CSS se baseia em regras, formadas por um seletor (que identifica quais elementos do HTML devem receber o estilo) e um bloco de propriedades:
+
+\begin{codebox}{CSS}
+h1 {
+  color: red;
+  font-size: 5rem;
+}
+
+p {
+  color: black;
+}
+\end{codebox}
+
+O nome ”cascata”vem justamente do fato de que as regras de estilo são aplicadas em camadas sucessivas: primeiro os estilos padrão dos navegadores, depois os estilos definidos pelo desenvolvedor, sendo que regras definidas posteriormente (ou mais específicas) tomam precedência sobre regras anteriores. Um dos grandes benefícios do CSS hoje é permitir o chamado design responsivo: como a web é acessada a partir de uma enorme variedade de dispositivos — desktops, laptops, tablets, celulares, leitores de tela, até relógios com acesso à internet — é fundamental que um mesmo documento se adapte visualmente a telas de tamanhos muito diferentes. Antigamente, isso exigia criar versões separadas de um mesmo site; hoje, recursos como media queries do CSS resolvem esse problema de forma muito mais elegante, permitindo que o mesmo conjunto de HTML e CSS se ajuste automaticamente conforme a largura da tela disponível.
+
+\begin{infobox}{Dica}
+Uma boa forma de visualizar concretamente o poder do CSS é observar sites como o CSS Zen Garden, que apresentam o mesmo conteúdo HTML estilizado com dezenas de folhas de estilo completamente diferentes — a mesma estrutura semântica pode resultar em aparências radicalmente distintas dependendo apenas do CSS aplicado.
+\end{infobox}
+
+\section{JavaScript: comportamento e interatividade}
+
+JavaScript é uma linguagem de programação — diferente de HTML e CSS, que são linguagens de marcação/estilo — responsável por fornecer comportamento aos documentos web. Uma boa definição é pensar em JavaScript como uma camada interativa que reside sobre HTML e CSS: HTML dá estrutura e semântica, CSS dá estilo, e JavaScript permite alterar ambos em tempo de execução, respondendo a eventos gerados pela interação do usuário com a página. JavaScript permite escrever pequenos programas executados diretamente dentro do navegador, capazes de alterar o HTML e o CSS de um documento já carregado, sem que seja necessário fazer uma nova requisição ao servidor. Alguns exemplos típicos de uso: ocultar ou exibir conteúdo dinamicamente, criar animações, responder a cliques de mouse ou teclas pressionadas, validar formulários antes do envio, ou até carregar novo conteúdo de forma assíncrona.
+
+\begin{infobox}{DOM — Document Object Model}
+JavaScript manipula o documento por meio do DOM (Document Object Model), a representação em memória, em forma de árvore, dos elementos de um documento HTML carregado pelo navegador. Esse conceito será aprofundado em capítulo posterior, mas vale adiantar que é através do DOM que o código JavaScript ”enxerga”e modifica a página.
+\end{infobox}
+
+Vale destacar que o JavaScript hoje não é usado apenas no navegador (também chamado de Vanilla JavaScript quando usado sem frameworks adicionais): com o surgimento do Node.js, um ambiente de execução JavaScript que roda do lado do servidor, desacoplado do navegador, tornou-se possível construir aplicações back-end inteiras usando JavaScript — um desenvolvedor que já domina JavaScript no front-end pode aprender a usá-lo também no back-end, usando frameworks como o Express.
+
+\section{Um primeiro exemplo prático}
+
+\begin{codebox}{Código}
+Para consolidar a ideia de que essas três linguagens trabalham juntas, mas com pa-
+péis distintos, veja um exemplo mínimo de página web combinando HTML, CSS e
+JavaScript — um ”Hello World”interativo:
+HTML + CSS + JavaScript combinados
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Meu primeiro documento web</title>
+<style>
+body {
+background-color: #1c3d5a;
+color: white;
+font-family: sans-serif;
+text-align: center;
+padding-top: 4rem;
+}
+button {
+padding: 0.6rem 1.2rem;
+font-size: 1rem;
+border-radius: 6px;
+border: none;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+<h1>Hello, Cruel World!</h1>
+<p>Esta página combina HTML, CSS e JavaScript.</p>
+\end{codebox}
+
+\begin{codebox}{Código}
+<button id="botaoSaudacao">Clique aqui</button>
+\end{codebox}
+
+\begin{codebox}{Código}
+<script>
+const botao = document.getElementById('botaoSaudacao');
+botao.addEventListener('click', function () {
+alert('Bem-vindo ao mundo do desenvolvimento web!');
+});
+</script>
+</body>
+</html>
+\end{codebox}
+
+Observe a divisão de responsabilidades mesmo dentro de um único arquivo:
+
+\begin{itemize}
+  \item As tags <h1>, <p> e <button> definem a estrutura do conteúdo (HTML);
+\end{itemize}
+
+\begin{itemize}
+  \item O bloco <style> define a aparência — cor de fundo, cor de texto, alinhamento (CSS);
+\end{itemize}
+
+\begin{itemize}
+  \item O bloco <script> define o comportamento: quando o botão é clicado, uma janela de alerta é exibida (JavaScript), através da manipulação do DOM via document.getElementById.
+\end{itemize}
+
+\begin{codebox}{Dica}
+Embora seja tecnicamente possível misturar HTML, CSS e JavaScript no mesmo
+arquivo (como no exemplo acima, usando as tags <style> e <script>), a boa
+prática recomendada é manter cada linguagem em seu próprio arquivo (.html,
+.css e .js), conectados entre si por meio de referências no HTML. Isso facilita a
+manutenção, a divisão de trabalho em equipe e a reutilização de código. O exemplo
+combinado acima é útil apenas para fins didáticos, para visualizar rapidamente
+as três linguagens interagindo.
+\end{codebox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item HTML, CSS e JavaScript têm responsabilidades complementares: estrutura/semântica, estilo/layout e comportamento/interatividade, respectivamente.
+\end{itemize}
+
+\begin{itemize}
+  \item HTML é uma linguagem de marcação (não de programação) baseada em tags que descrevem o papel de cada trecho do conteúdo para o navegador.
+\end{itemize}
+
+\begin{itemize}
+  \item CSS separa apresentação de conteúdo através de regras compostas por seletores e propriedades, seguindo o princípio de cascata que dá nome à linguagem.
+\end{itemize}
+
+\begin{itemize}
+  \item O design responsivo em CSS permite que um mesmo documento se adapte a telas de tamanhos muito diferentes, algo essencial na era do acesso multiplataforma à web.
+\end{itemize}
+
+\begin{itemize}
+  \item JavaScript é uma linguagem de programação real, capaz de manipular o DOM e responder a eventos do usuário, alterando a página em tempo de execução sem recarregar o servidor.
+\end{itemize}
+
+\begin{itemize}
+  \item O Node.js estendeu o alcance do JavaScript para o back-end, permitindo que desenvolvedores usem a mesma linguagem em toda a pilha da aplicação.
+\end{itemize}
+
+\begin{itemize}
+  \item A boa prática recomendada é manter HTML, CSS e JavaScript em arquivos separados, ainda que seja tecnicamente possível combiná-los em um único documento.
+\end{itemize}

@@ -1,0 +1,158 @@
+\chapter{Depuração de Programas JavaScript}
+
+\section{Dois tipos fundamentais de erro}
+
+De forma geral, ao se trabalhar com qualquer linguagem de programação, os erros podem ser classificados em duas grandes categorias: erros de sintaxe e erros de lógica. Entender a diferença entre eles é o primeiro passo para depurar com eficiência.
+
+\begin{infobox}{Erros de sintaxe}
+São erros que ocorrem quando o código não está de acordo com a gramática da linguagem — por exemplo, uma palavra reservada digitada incorretamente, um parêntese ou uma chave que não foi fechada, ou uma aspa esquecida. Quando há um erro de sintaxe, o interpretador normalmente recusa-se a executar o programa (ou para de executá-lo no ponto do erro) e emite uma mensagem de erro indicando, ainda que de forma aproximada, o que está errado e em qual linha.
+\end{infobox}
+
+\begin{infobox}{Erros de lógica}
+São erros nos quais a sintaxe está perfeitamente correta — não há nenhuma mensagem de erro emitida pelo interpretador —, mas o programa produz um resultado diferente do esperado. Esses erros costumam ser mais difíceis de encontrar justamente porque não vêm acompanhados de nenhuma indicação automática de onde está o problema: cabe ao programador raciocinar sobre o comportamento do código e localizar a falha.
+\end{infobox}
+
+\section{Usando as ferramentas de desenvolvedor do navegador}
+
+Todo navegador moderno oferece um conjunto de ferramentas voltadas a desenvolvedores (Developer Tools), geralmente acessível pela tecla F12, pelo menu de ”Inspecionar elemento”(clique com o botão direito sobre a página) ou por um atalho específico de cada navegador. Dentro dessas ferramentas, a aba de Console é o ponto de partida
+
+mais importante para depuração de JavaScript: é ali que aparecem as mensagens de erro emitidas pelo interpretador, além de qualquer saída gerada explicitamente pelo próprio código através de console.log().
+
+\begin{infobox}{Dica}
+Para abrir o console em praticamente qualquer navegador (Chrome, Firefox, Edge, Safari), a tecla F12 costuma funcionar, assim como o atalho Ctrl+Shift+J (Chrome/Windows) ou Cmd+Option+J (Chrome/Mac). Alternativamente, clique com o botão direito em qualquer parte da página, escolha ”Inspecionar”e navegue até a aba ”Console”. É nesse painel que aparecerão erros de sintaxe, erros em tempo de execução e qualquer mensagem produzida por console.log().
+\end{infobox}
+
+Ao encontrar um erro no console, normalmente é exibido um ícone de alerta (frequentemente vermelho), seguido do tipo do erro, uma breve descrição e uma referência ao arquivo e à linha aproximada onde o problema ocorreu. Um ponto de atenção: quando se utiliza uma ferramenta como o Live Server (comum em editores como o Visual Studio Code), o navegador pode injetar código adicional na página para viabilizar o recarregamento automático, o que faz com que o número de linha indicado no console não corresponda exatamente ao número de linha no editor de texto. É preciso ter esse detalhe em mente e, se necessário, contar algumas linhas de diferença.
+
+\section{Depurando erros de sintaxe comuns}
+
+Considere o seguinte trecho, semelhante ao jogo de adivinhação, mas com um pequeno erro de digitação:
+
+\begin{codebox}{JavaScript}
+ guessSubmit.addEvenListener("click", checkGuess);
+\end{codebox}
+
+Ao executar esse código, o console exibiria algo como:
+
+\begin{infobox}{Mensagem de erro}
+Uncaught TypeError: guessSubmit.addEvenListener is not a function
+\end{infobox}
+
+A mensagem indica que addEvenListener não é reconhecido como uma função — porque, de fato, o nome correto do método é addEventListener, e faltou a letra ”t”na palavra ”Event”. Esse tipo de erro é extremamente comum, sobretudo porque o JavaScript diferencia letras maiúsculas de minúsculas e é sensível a qualquer caractere digitado incorretamente em identificadores e nomes de métodos.
+
+\begin{infobox}{Dica}
+Sempre que o console indicar que ”X não é uma função”(”X is not a function”), a primeira suspeita deve recair sobre um erro de digitação no nome do método ou sobre o fato de o objeto em questão realmente não possuir aquele método — talvez porque a variável aponte para outro tipo de objeto do que se imagina.
+\end{infobox}
+
+Outro erro de sintaxe comum ocorre quando se tenta acessar uma propriedade ou método a partir de uma referência que não foi corretamente inicializada — por exemplo, um seletor CSS escrito incorretamente:
+
+\begin{codebox}{JavaScript}
+ const lowOrHigh = document.querySelector("lowHigh"); // faltou o ponto!
+ lowOrHigh.textContent = "Tentativa muito baixa!";
+\end{codebox}
+
+Aqui, o seletor deveria ser ".lowHigh" (buscando um elemento pela classe), mas, sem o ponto, o navegador interpreta que se está buscando um elemento chamado literalmente lowHigh — o que não existe. Como resultado, querySelector retorna null, e a linha seguinte tenta acessar uma propriedade de null, gerando um erro do tipo:
+
+\begin{infobox}{Mensagem de erro}
+Uncaught TypeError: lowOrHigh is null
+\end{infobox}
+
+Esse tipo de mensagem — ”algo é null”ou ”não é um objeto”— costuma indicar que uma referência esperada não foi encontrada, seja por um seletor incorreto, seja porque o elemento ainda não existia no DOM no momento em que o script tentou acessá-lo. Outros erros de sintaxe frequentes incluem: parênteses não fechados após a lista de parâmetros de uma função, chaves não fechadas ao final do corpo de uma função ou bloco condicional, e aspas de abertura de uma string sem a correspondente aspas de fechamento. Todos eles geram mensagens específicas no console, e a documentação da Mozilla Developer Network mantém, inclusive, páginas de referência dedicadas a explicar cada tipo comum de mensagem de erro em detalhes.
+
+\section{Usando console.log() para depurar}
+
+Uma das técnicas de depuração mais simples e eficazes é inserir chamadas a console.log() em pontos estratégicos do código, para inspecionar o valor de variáveis durante a execução:
+
+\begin{codebox}{JavaScript}
+ function checkGuess() {
+   const guess = Number(guessField.value);
+   console.log("valor digitado:", guess);
+   console.log("número sorteado:", randomNumber);
+
+     if (guess === randomNumber) {
+       // ...
+     }
+ }
+
+   Ao executar o jogo com esses logs inseridos, é possível observar no console, a cada
+\end{codebox}
+
+tentativa, exatamente quais valores estão sendo comparados — o que ajuda a confirmar (ou refutar) hipóteses sobre onde está o problema.
+
+\begin{infobox}{Dica}
+console.log() é o equivalente, em JavaScript, ao clássico System.out.println do Java ou ao print() de outras linguagens. É uma ferramenta simples, mas frequentemente suficiente para depurar a maior parte dos problemas do dia a dia — especialmente quando combinada com breakpoints, descritos a seguir, para investigações mais profundas.
+\end{infobox}
+
+Além de console.log(), as ferramentas de desenvolvedor permitem também trabalhar com breakpoints: pontos marcados no código-fonte (na aba ”Sources”ou equivalente do navegador) que pausam a execução do programa exatamente naquela linha, permitindo inspecionar, passo a passo, o valor de cada variável no momento em que a execução foi interrompida. Essa técnica é particularmente útil quando o problema não é óbvio a partir de alguns console.log() isolados, pois permite ”andar”pela execução do código linha a linha.
+
+\section{Um erro de lógica clássico: confundir atribuição com comparação}
+
+Um dos erros de lógica mais comuns entre iniciantes é confundir o operador de atribuição = com os operadores de comparação == ou ===. Considere o trecho a seguir:
+
+\begin{codebox}{JavaScript}
+ if (guess = randomNumber) {
+   lastResult.textContent = "Parabéns! Você acertou o número!";
+ }
+\end{codebox}
+
+Esse código não gera nenhum erro de sintaxe — e é justamente por isso que ele é perigoso. Em vez de comparar guess com randomNumber, a expressão guess = randomNumber atribui o valor de randomNumber a guess, e o resultado dessa atribuição (o próprio valor atribuído) é avaliado como verdadeiro dentro da condição do if. Na prática, o jogador ”ganharia”em toda tentativa, independentemente do número digitado — um comportamento claramente incorreto, mas que não produz nenhuma mensagem de erro no console.
+
+\begin{infobox}{Dica}
+Para evitar esse tipo de deslize, vale o hábito de sempre usar === (ou, no mínimo, ==) dentro de condições, e nunca um único =. Alguns editores de código e ferramentas de análise estática (linters) já alertam automaticamente quando detectam uma atribuição dentro de uma condição, ajudando a prevenir esse erro antes mesmo de rodar o programa.
+\end{infobox}
+
+\section{Estratégia geral para depurar}
+
+Diante de um erro, um roteiro simples de investigação costuma ser eficaz:
+
+\begin{itemize}
+  \item Leia atentamente a mensagem de erro no console: qual é o tipo do erro e em qual linha (aproximada) ele ocorreu?
+\end{itemize}
+
+\begin{itemize}
+  \item Se a linha indicada não parecer fazer sentido, procure algumas linhas acima — muitas vezes o erro de fato se origina antes da linha reportada.
+\end{itemize}
+
+\begin{itemize}
+  \item Insira console.log() para inspecionar os valores das variáveis envolvidas naquele trecho.
+\end{itemize}
+
+\begin{itemize}
+  \item Se o problema persistir, use breakpoints para executar o código passo a passo e observar exatamente onde o comportamento diverge do esperado.
+\end{itemize}
+
+\begin{itemize}
+  \item Verifique se não há confusão entre operadores de atribuição e de comparação, um dos erros de lógica mais comuns e mais difíceis de perceber a olho nu.
+\end{itemize}
+
+À medida que a experiência com a linguagem aumenta, a leitura das mensagens de erro se torna cada vez mais rápida e intuitiva, e o programador passa a reconhecer padrões recorrentes de falha quase instantaneamente.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Erros de sintaxe violam a gramática da linguagem e normalmente impedem a execução, gerando uma mensagem de erro explícita no console.
+\end{itemize}
+
+\begin{itemize}
+  \item Erros de lógica não geram mensagens de erro, mas produzem resultados diferentes do esperado, sendo mais difíceis de localizar.
+\end{itemize}
+
+\begin{itemize}
+  \item O console do navegador (acessível via F12 ou pelo menu de inspeção) é a ferramenta central de depuração, exibindo mensagens de erro e saídas de console.log().
+\end{itemize}
+
+\begin{itemize}
+  \item Mensagens como ”X is not a function”ou ”X is null”geralmente indicam erro de digitação em nomes de métodos ou seletores incorretos.
+\end{itemize}
+
+\begin{itemize}
+  \item Breakpoints permitem pausar a execução do código em uma linha específica e inspecionar variáveis passo a passo.
+\end{itemize}
+
+\begin{itemize}
+  \item Confundir o operador de atribuição (=) com os operadores de comparação (== ou ===) é um erro de lógica clássico, silencioso e traiçoeiro.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma boa estratégia de depuração combina leitura cuidadosa das mensagens de erro, console.log() estratégico e, quando necessário, execução passo a passo com breakpoints.
+\end{itemize}

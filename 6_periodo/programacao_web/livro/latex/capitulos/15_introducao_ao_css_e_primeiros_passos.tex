@@ -1,0 +1,212 @@
+\chapter{Introdução ao CSS e Primeiros Passos}
+
+\section{O que é CSS?}
+
+A primeira observação importante é que, mesmo que você nunca escreva uma única linha de CSS, os navegadores web ainda assim conseguem renderizar visualmente qualquer documento HTML. Isso é possível porque os navegadores já implementam, internamente, um conjunto de estilos padrão para os elementos definidos na especificação HTML. É por isso que uma lista não ordenada (ul) já aparece automaticamente com marcadores (bullets) na tela, mesmo sem nenhuma folha de estilo associada: esse é o estilo padrão do navegador. Quando escrevemos nossas próprias regras CSS, na prática estamos sobrescrevendo esses estilos padrão recebidos do navegador. O CSS, portanto, é a linguagem que especifica como os elementos definidos estruturalmente e semanticamente pelo HTML devem aparecer para o usuário final. Com CSS, é possível alterar tipo e tamanho de fonte, cores, espaçamentos, disposição em colunas, posicionamento de elementos na tela e, nas versões mais recentes da linguagem, até criar animações — tarefas que antigamente exigiam linguagens de programação completas.
+
+\begin{infobox}{CSS não é exclusivo do HTML}
+Embora, na prática, usemos CSS quase sempre para estilizar documentos HTML, essa não é a única linguagem de marcação que o CSS pode estilizar — existem outras, como SVG e XML. Esse detalhe se tornará relevante mais adiante, quando você trabalhar com programação back-end e entender melhor o conceito de user agent, um termo mais amplo do que ”navegador web”, que se refere a qualquer software capaz de interpretar e representar um documento em nome do usuário.
+\end{infobox}
+
+\section{A Sintaxe de uma Regra CSS}
+
+O CSS é uma linguagem baseada em regras. Cada regra é composta por um seletor — que indica qual elemento (ou elementos) do documento HTML deve receber o estilo — e um bloco de declarações, delimitado por chaves, contendo pares de propriedade e valor.
+
+\begin{codebox}{CSS}
+ h1 {
+   color: red;
+   font-size: 5rem;
+ }
+\end{codebox}
+
+Nesse exemplo, h1 é o seletor: ele indica que a regra se aplica a todos os elementos h1 do documento. Dentro do bloco de declarações, temos duas propriedades: color, cujo valor é red (vermelho), e font-size, cujo valor é 5rem (uma unidade relativa de tamanho que estudaremos com mais detalhe adiante). Se essa regra for aplicada a um documento HTML contendo um elemento h1, o título ficará vermelho e com tamanho de fonte maior.
+
+\begin{infobox}{Dica}
+Uma folha de estilo é composta de várias regras, escritas uma após a outra. Sempre que tiver dúvidas sobre quais valores são aceitos por uma determinada propriedade CSS, uma estratégia muito eficaz é pesquisar no Google o nome da propriedade seguido de ”MDN”(por exemplo, ”color MDN”). O primeiro resultado normalmente será a página de referência da Mozilla Developer Network para aquela propriedade, com diversos exemplos práticos de uso.
+\end{infobox}
+
+\section{Associando CSS a um Documento HTML}
+
+\begin{codebox}{Código}
+Existem três formas de aplicar CSS a um documento HTML: folha de estilo externa,
+folha de estilo interna e estilo em linha (inline). Este capítulo apresenta a forma
+recomendada — a folha de estilo externa — que será aprofundada, junto das outras
+duas, no próximo capítulo.
+Para associar uma folha de estilo externa, utiliza-se o elemento link dentro do
+head do documento HTML, com dois atributos: rel (indicando o relationship, ou
+seja, que o documento associado é uma folha de estilo) e href (indicando o caminho,
+relativo ou absoluto, até o arquivo .css).
+HTML — index.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Meu primeiro site com CSS</title>
+<link rel="stylesheet" href="estilos.css">
+\end{codebox}
+
+\begin{codebox}{Código}
+</head>
+<body>
+<h1>Bem-vindo ao meu site</h1>
+<p class="destaque">Este parágrafo tem uma classe especial.</p>
+<p id="rodape-info">Informações de rodapé.</p>
+</body>
+</html>
+\end{codebox}
+
+CSS — estilos.css h1 \{ color: navy; \}
+
+p \{ color: black; font-size: 1.1rem; \}
+
+Repare que o arquivo estilos.css está localizado no mesmo diretório do arquivo index.html — por isso, o caminho informado em href é apenas o nome do arquivo. Se a folha de estilo estivesse dentro de uma subpasta chamada styles, o caminho seria styles/estilos.css, seguindo exatamente a mesma lógica de caminhos relativos já estudada no capítulo sobre hiperlinks.
+
+\section{Seletores Básicos: Tag, Classe e ID}
+
+Um dos aspectos mais poderosos do CSS é a capacidade de selecionar exatamente quais elementos do documento devem receber um determinado estilo. Os três seletores mais fundamentais são o seletor de tag (elemento), o seletor de classe e o seletor de ID.
+
+\subsection{Seletor de Tag (Elemento)}
+
+O seletor de tag seleciona todos os elementos daquele tipo no documento, simplesmente escrevendo o nome da tag:
+
+\begin{codebox}{CSS}
+p {
+  color: green;
+}
+\end{codebox}
+
+Essa regra transforma a cor de todos os parágrafos da página para verde, sem exceção. É possível, ainda, aplicar a mesma regra a múltiplos seletores de uma vez, separando-os por vírgula:
+
+\begin{codebox}{CSS}
+p, li {
+  color: green;
+
+
+
+}
+\end{codebox}
+
+Essa regra diz: ”tanto os parágrafos quanto os itens de lista devem ter a fonte na cor verde”.
+
+\subsection{Seletor de Classe}
+
+Quando queremos selecionar apenas um subconjunto de elementos — e não todos os elementos de um determinado tipo — usamos o atributo class no HTML, e o seletor de classe no CSS, precedido de um ponto (.).
+
+\begin{codebox}{HTML}
+<ul>
+  <li>Item comum</li>
+  <li class="especial">Item especial</li>
+  <li>Item comum</li>
+</ul>
+\end{codebox}
+
+\begin{codebox}{CSS}
+.especial {
+  color: orange;
+  font-style: italic;
+}
+\end{codebox}
+
+Essa regra diz: ”todo elemento que possuir um atributo class com valor especial deve ter a fonte na cor laranja e em itálico”. Note que a mesma classe pode ser reaproveitada em quantos elementos forem necessários, inclusive de tags diferentes — por exemplo, tanto um li quanto um span poderiam compartilhar a classe especial:
+
+\begin{codebox}{CSS}
+.especial, span.especial {
+  color: orange;
+}
+\end{codebox}
+
+\subsection{Seletor de ID}
+
+O atributo id identifica um elemento de forma única dentro do documento — ou seja, teoricamente, apenas um único elemento no documento inteiro deve possuir um determinado valor de id. No CSS, o seletor de ID é precedido de uma cerquilha (\#).
+
+\begin{codebox}{HTML}
+<p id="rodape-info">Informações de rodapé.</p>
+\end{codebox}
+
+\begin{codebox}{CSS}
+#rodape-info {
+  color: gray;
+  font-size: 0.9rem;
+}
+\end{codebox}
+
+\begin{codebox}{Dica}
+Um mesmo elemento pode ter apenas um valor de id, mas pode ter vários val-
+ores de class simultaneamente, separados por espaço no HTML (por exemplo,
+class="destaque grande"). Além disso, como veremos com mais profundidade
+no capítulo sobre cascata e especificidade, um seletor de ID tem precedência sobre
+um seletor de classe, que por sua vez tem precedência sobre um seletor de tag —
+essa hierarquia de ”peso”entre seletores será fundamental para resolver conflitos
+entre regras CSS.
+\end{codebox}
+
+\section{Um Exemplo Combinando Tudo}
+
+\begin{codebox}{Código}
+Vamos consolidar os conceitos apresentados com um exemplo completo, combinando
+um documento HTML com uma folha de estilo externa que utiliza os três tipos de
+seletores estudados:
+HTML — index.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Exemplo combinado</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<h1>Blog de Programação</h1>
+<p>Este é um parágrafo comum.</p>
+<p class="destaque">Este parágrafo recebe destaque visual.</p>
+<p id="assinatura">Escrito por um futuro desenvolvedor front-end.</p>
+</body>
+</html>
+\end{codebox}
+
+CSS — estilos.css h1 \{ color: navy; \}
+
+p \{ color: \#333333; font-family: Georgia, serif; \}
+
+.destaque \{ background-color: yellow; font-weight: bold; \}
+
+\#assinatura \{
+
+font-style: italic; color: gray; \}
+
+\begin{codebox}{Código}
+Nesse exemplo, o título recebe a cor azul-marinho por meio do seletor de tag; todos
+os parágrafos recebem uma cor de texto e uma família de fontes específica, também por
+seletor de tag; o parágrafo com class="destaque" ganha um fundo amarelo e negrito
+adicional, sem afetar os demais parágrafos; e o parágrafo com id="assinatura" recebe
+um estilo próprio, exclusivo daquele único elemento.
+\end{codebox}
+
+\begin{infobox}{Dica}
+Ao testar seus próprios exemplos, você pode trabalhar tanto localmente (com um editor como o Visual Studio Code, por exemplo usando a extensão ”Live Server”para servir a página) quanto em editores online, como o CodePen ou diretamente nos exemplos interativos disponibilizados pela própria documentação da MDN. Ambas as abordagens são válidas para praticar os conceitos apresentados neste capítulo.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item CSS é a linguagem responsável por definir a apresentação visual e o layout de documentos estruturados com HTML, complementando a estrutura e a semântica fornecidas por esta última.
+\end{itemize}
+
+\begin{itemize}
+  \item Mesmo sem CSS, navegadores já aplicam estilos padrão internos aos elementos HTML; escrever CSS é, na prática, sobrescrever esses estilos.
+\end{itemize}
+
+\begin{itemize}
+  \item Uma regra CSS é composta por um seletor e um bloco de declarações entre chaves, com pares de propriedade e valor separados por dois-pontos.
+\end{itemize}
+
+\begin{itemize}
+  \item A forma recomendada de associar CSS a HTML é a folha de estilo externa, vinculada com <link rel="stylesheet"href="...» dentro do head.
+\end{itemize}
+
+\begin{itemize}
+  \item O seletor de tag afeta todos os elementos daquele tipo; o seletor de classe (precedido de ponto) afeta um subconjunto de elementos marcados com class; o seletor de ID (precedido de cerquilha) afeta um único elemento identificado por id.
+\end{itemize}
+
+\begin{itemize}
+  \item Seletores podem ser combinados em uma mesma regra separando-os por vírgula, aplicando o mesmo bloco de declarações a múltiplos alvos.
+\end{itemize}

@@ -1,0 +1,176 @@
+espaço sequencia 4   janela 3
+
+pct0(seq 0) ------------->     
+.
+pct1(seq 1) ------------->
+.
+pct2(seq 2) ------------->
+	X-------------- ack0  0(123)012
+.
+	X-------------- ack1  01(230)12
+.	
+	X-------------- ack2  012(301)2
+	
+pct0(seq 0) -------------> 
+			como estava 012(301)2, ele não consegue saber que o proximo 0 é retrasmissão
+			pois ele esta na janela e estando na janela é entendido como um novo dado
+			
+
+Ou seja, é uma retransmissão, porem é aceito como um novo pacote,
+justamente porque a janela é 3, e cai no 0
+
+
+
+espaço sequencia 4   janela 2
+
+pct0(seq 0) ------------->     
+.
+pct1(seq 1) ------------->
+.
+	X-------------- ack0  0(12)3012
+.
+	X-------------- ack1  01(23)012
+.		
+pct0(seq 0) -------------> 
+			como estava 01(23)012, ele sabe que o proximo 0 é retransmissão pois não estava na janela
+			0123012
+	(sabe que o dado é retransmissão)
+	
+	
+Sim, você está muito próximo da ideia correta. Só faria uma pequena correção na frase:
+
+> "estando na janela é entendido como um novo dado"
+
+Mais precisamente:
+
+> **Se o número de sequência está dentro da janela de recepção, ele é considerado um número válido.**
+>
+> Portanto, o receptor não consegue distinguir se é um pacote novo ou uma retransmissão antiga.
+
+Essa é a essência do problema.
+
+Eu escreveria assim:
+
+---
+
+### Espaço de sequência = 4, janela = 3
+
+```text
+pct0(seq 0) ------------->     
+.
+pct1(seq 1) ------------->     
+.
+pct2(seq 2) ------------->     
+        X-------------- ack0     0(123)012
+.
+        X-------------- ack1     01(230)12
+.
+        X-------------- ack2     012(301)2
+
+TIMEOUT
+
+pct0(seq 0) ------------->
+
+        janela atual: 012(301)2
+```
+
+Como o número **0** está dentro da janela:
+
+```text
+012(301)2
+     ^
+     |
+     0 é válido
+```
+
+o receptor aceita o pacote.
+
+Mas ele não consegue saber se esse:
+
+```text
+pct0(seq 0)
+```
+
+é:
+
+```text
+- retransmissão do pacote antigo
+```
+
+ou
+
+```text
+- um novo pacote com sequência 0
+```
+
+Logo existe ambiguidade.
+
+---
+
+### Espaço de sequência = 4, janela = 2
+
+```text
+pct0(seq 0) ------------->     
+.
+pct1(seq 1) ------------->     
+.
+        X-------------- ack0     0(12)3012
+.
+        X-------------- ack1     01(23)012
+
+TIMEOUT
+
+pct0(seq 0) ------------->
+```
+
+Janela atual:
+
+```text
+01(23)012
+```
+
+O número 0 não está dentro da janela.
+
+```text
+01(23)012
+   ^^
+```
+
+Logo o receptor sabe que:
+
+```text
+seq 0 não é esperado
+```
+
+e conclui que é um pacote antigo/retransmitido.
+
+Não há ambiguidade.
+
+---
+
+### Conclusão para a prova
+
+> Quando a janela é maior que metade do espaço de sequência, um número de sequência pode voltar a ser considerado válido enquanto ainda existem pacotes antigos com esse mesmo número circulando na rede. Assim, o receptor não consegue distinguir um pacote novo de uma retransmissão antiga. Para evitar essa ambiguidade, em Selective Repeat deve valer:
+>
+> [
+> W \le \frac{N}{2}
+> ]
+
+E sim, a sua interpretação final está correta:
+
+> **Com janela 3, o seq 0 cai novamente dentro da janela e pode ser confundido com um novo pacote.**
+>
+> **Com janela 2, quando o seq 0 reaparece, os pacotes antigos com seq 0 já não podem ser aceitos pela janela, eliminando a ambiguidade.**
+
+Esse é exatamente o argumento que normalmente vale a nota inteira dessa questão.
+
+	
+	
+	
+	
+	
+
+	
+
+
+            

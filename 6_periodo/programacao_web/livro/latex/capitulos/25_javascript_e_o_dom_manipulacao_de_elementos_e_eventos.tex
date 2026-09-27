@@ -1,0 +1,259 @@
+\chapter{JavaScript e o DOM: Manipulação de Elementos e Eventos}
+
+\section{Relembrando o DOM}
+
+Como visto anteriormente no livro, quando um navegador carrega um documento HTML, ele constrói em memória uma representação em forma de árvore desse documento, chamada de DOM. Cada elemento HTML (uma tag div, um p, um button) se torna um nó dessa árvore, com propriedades e métodos que podem ser acessados e manipulados via JavaScript. É essa ponte entre o código JavaScript e a árvore DOM que permite ler, criar, alterar e remover conteúdo da página em tempo real, sem depender de uma nova requisição ao servidor.
+
+\section{Selecionando elementos}
+
+O primeiro passo para manipular qualquer parte de uma página é obter uma referência ao elemento (ou elementos) desejado. O JavaScript oferece diversos métodos para isso, disponíveis no objeto global document.
+
+\subsection{getElementById}
+
+O método mais antigo e ainda muito utilizado é getElementById, que retorna o único elemento cujo atributo id corresponde ao valor informado:
+
+\begin{codebox}{HTML}
+ <h1 id="titulo">Bem-vindo!</h1>
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+ const titulo = document.getElementById("titulo");
+ console.log(titulo.textContent); // "Bem-vindo!"
+\end{codebox}
+
+\subsection{querySelector e querySelectorAll}
+
+Mais flexíveis, querySelector e querySelectorAll aceitam qualquer seletor CSS válido, o que torna a busca por elementos consistente com o que já se aprendeu em CSS.
+
+\begin{codebox}{JavaScript}
+// Retorna o PRIMEIRO elemento que corresponde ao seletor
+const primeiroParagrafo = document.querySelector("p");
+const botaoPrincipal = document.querySelector("#botaoPrincipal");
+const primeiroDestaque = document.querySelector(".destaque");
+
+// Retorna TODOS os elementos que correspondem ao seletor (uma NodeList)
+const todosOsParagrafos = document.querySelectorAll("p");
+const todosOsDestaques = document.querySelectorAll(".destaque");
+\end{codebox}
+
+\begin{infobox}{Dica}
+querySelectorAll retorna uma NodeList, uma coleção semelhante a um array (mas não exatamente um array). É possível percorrê-la com forEach diretamente, ou convertê-la para um array de fato com Array.from() caso seja necessário usar métodos como map ou filter sobre ela.
+\end{infobox}
+
+Como regra geral, querySelector e querySelectorAll são hoje a abordagem preferida na maior parte dos projetos, justamente por reaproveitarem os mesmos seletores já conhecidos do CSS, tornando o código mais consistente entre as duas linguagens.
+
+\section{Alterando conteúdo}
+
+Uma vez com a referência a um elemento em mãos, é possível ler e alterar seu conteúdo de diferentes formas, dependendo do que se deseja fazer.
+
+\subsection{textContent}
+
+A propriedade textContent lê ou define o conteúdo textual puro de um elemento, ignorando qualquer marcação HTML que porventura seja atribuída a ela (o texto é tratado literalmente, e não interpretado como HTML):
+
+\begin{codebox}{JavaScript}
+const mensagem = document.querySelector("#mensagem");
+
+mensagem.textContent = "Operação concluída com sucesso!";
+console.log(mensagem.textContent); // "Operação concluída com sucesso!"
+\end{codebox}
+
+\subsection{innerHTML}
+
+Já a propriedade innerHTML permite ler ou definir o conteúdo de um elemento interpretando-o como HTML, o que possibilita inserir tags dentro de um elemento existente:
+
+\begin{codebox}{JavaScript}
+const caixa = document.querySelector("#caixa");
+
+caixa.innerHTML = "<strong>Atenção:</strong> restam poucas vagas.";
+\end{codebox}
+
+\begin{infobox}{Dica}
+Prefira sempre textContent quando o objetivo for apenas exibir texto simples, especialmente se esse texto vier de uma fonte externa ou de dados digitados pelo próprio usuário. Usar innerHTML com conteúdo não confiável (por exemplo, texto digitado livremente por um usuário e inserido sem tratamento) pode abrir brechas de segurança conhecidas como XSS (Cross-Site Scripting), nas quais um usuário mal-intencionado injeta código malicioso na página. Use innerHTML apenas quando realmente for necessário inserir marcação HTML, e com dados de origem confiável.
+\end{infobox}
+
+\section{Alterando estilo}
+
+Assim como o conteúdo, o estilo visual de um elemento também pode ser manipulado diretamente via JavaScript.
+
+\subsection{A propriedade style}
+
+Todo elemento do DOM possui uma propriedade style, que dá acesso direto às propriedades CSS inline daquele elemento. Os nomes das propriedades CSS que contêm hífen (como background-color) são escritos em camelCase em JavaScript (backgroundColor):
+
+\begin{codebox}{JavaScript}
+const aviso = document.querySelector("#aviso");
+
+aviso.style.backgroundColor = "red";
+aviso.style.color = "white";
+aviso.style.padding = "10px";
+aviso.style.fontWeight = "bold";
+\end{codebox}
+
+\subsection{classList}
+
+Embora alterar style diretamente funcione, a prática mais recomendada — e mais alinhada com uma boa separação entre estrutura, estilo e comportamento — é definir as regras visuais em uma classe CSS e, via JavaScript, apenas adicionar ou remover
+
+essa classe do elemento. Isso é feito através da propriedade classList, que oferece métodos convenientes:
+
+\begin{codebox}{CSS}
+.destaque {
+  background-color: yellow;
+  font-weight: bold;
+}
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+const item = document.querySelector("#item1");
+
+item.classList.add("destaque");     // adiciona a classe
+item.classList.remove("destaque"); // remove a classe
+item.classList.toggle("destaque"); // adiciona se não tiver, remove se já tiver
+item.classList.contains("destaque"); // true ou false
+\end{codebox}
+
+O método toggle é particularmente útil para implementar comportamentos de ”ligar/desligar”, como mostrar ou esconder um menu, marcar um item como selecionado, ou alternar entre modo claro e escuro em uma interface.
+
+\section{Criando e removendo elementos}
+
+Além de alterar elementos existentes, o JavaScript permite criar novos elementos do zero e inseri-los no DOM, assim como remover elementos que já não são mais necessários.
+
+\begin{codebox}{JavaScript}
+// Criando um novo elemento
+const novoItem = document.createElement("li");
+novoItem.textContent = "Novo item da lista";
+
+// Inserindo esse elemento dentro de uma lista existente
+const lista = document.querySelector("#minhaLista");
+lista.appendChild(novoItem);
+\end{codebox}
+
+Para remover um elemento, é preciso acessar seu elemento pai (parentNode) e chamar removeChild a partir dele, já que, tradicionalmente, um elemento não pode remover a si mesmo diretamente:
+
+\begin{codebox}{JavaScript}
+const item = document.querySelector("#itemAntigo");
+item.parentNode.removeChild(item);
+
+// Alternativa mais moderna, que dispensa acessar o pai:
+item.remove();
+\end{codebox}
+
+\begin{infobox}{Dica}
+O método remove(), chamado diretamente sobre o próprio elemento, é uma adição mais recente e mais direta do que o padrão parentNode.removeChild(). Ambos funcionam; remove() tende a deixar o código mais legível, mas é sempre bom reconhecer o padrão mais antigo, pois ele ainda aparece com frequência em código existente e em exemplos de documentação.
+\end{infobox}
+
+\section{Reagindo a eventos com addEventListener}
+
+A peça final que conecta tudo isso é o tratamento de eventos: capturar ações do usuário (cliques, digitação, envio de formulários) e executar código em resposta a elas. O método padrão para isso é addEventListener, chamado sobre o elemento que se deseja observar.
+
+\begin{codebox}{JavaScript}
+ elemento.addEventListener(tipoDoEvento, funcaoTratadora);
+\end{codebox}
+
+\subsection{O evento click}
+
+\begin{codebox}{HTML}
+ <button id="botaoCurtir">Curtir</button>
+ <p id="contador">0 curtidas</p>
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+ const botao = document.querySelector("#botaoCurtir");
+ const contador = document.querySelector("#contador");
+ let curtidas = 0;
+
+ botao.addEventListener("click", function () {
+   curtidas++;
+   contador.textContent = curtidas + " curtidas";
+ });
+\end{codebox}
+
+\subsection{O evento input}
+
+O evento input é disparado toda vez que o valor de um campo de texto é alterado, tecla a tecla — o que o torna ideal para validações em tempo real ou para atualizar a interface conforme o usuário digita:
+
+\begin{codebox}{HTML}
+ <input type="text" id="campoNome">
+ <p id="preview"></p>
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+const campoNome = document.querySelector("#campoNome");
+const preview = document.querySelector("#preview");
+
+campoNome.addEventListener("input", function () {
+  preview.textContent = "Olá, " + campoNome.value + "!";
+});
+\end{codebox}
+
+\subsection{O evento submit}
+
+Ao trabalhar com formulários, o evento submit é disparado no próprio elemento form quando o usuário confirma o envio (seja clicando em um botão do tipo submit, seja pressionando Enter). É prática comum chamar preventDefault() sobre o objeto do evento para impedir o comportamento padrão do navegador, que seria recarregar a página:
+
+\begin{codebox}{HTML}
+<form id="formularioContato">
+  <input type="text" id="nomeUsuario" placeholder="Seu nome">
+  <button type="submit">Enviar</button>
+</form>
+<p id="resultado"></p>
+\end{codebox}
+
+\begin{codebox}{JavaScript}
+const formulario = document.querySelector("#formularioContato");
+const resultado = document.querySelector("#resultado");
+
+formulario.addEventListener("submit", function (evento) {
+  evento.preventDefault(); // impede o recarregamento da página
+
+  const nome = document.querySelector("#nomeUsuario").value;
+  resultado.textContent = "Obrigado por entrar em contato, " + nome + "!";
+});
+\end{codebox}
+
+\section{O fluxo evento, listener e callback}
+
+Vale consolidar, de forma visual, o fluxo conceitual por trás do tratamento de eventos em JavaScript: o usuário interage com a página (por exemplo, clicando em um botão), o navegador gera um evento correspondente, o listener registrado com addEventListener captura esse evento, e a função de callback associada é executada, realizando a lógica de negócio desejada.
+
+Interação Evento Função de
+
+\begin{infobox}{addEventListener}
+do usuário gerado pelo callback (o listener) (ex.: clique) navegador executada
+\end{infobox}
+
+Esse fluxo se repete, com pequenas variações, em praticamente toda interação frontend: um evento de input dispara a validação de um campo, um evento de submit dispara o envio de um formulário, um evento de click dispara a exibição de um menu. Entender esse padrão é entender a espinha dorsal de como aplicações web modernas respondem ao usuário.
+
+\section{Fechando a Parte IV: front-end interativo}
+
+Ao longo desta parte do livro, o leitor percorreu o caminho que vai desde a definição de uma variável até a construção de um jogo interativo completo, passando por depuração, tipos numéricos, operadores, estruturas de controle, funções, arrays e, por fim, a manipulação do DOM e o tratamento de eventos. É exatamente na junção dessas três linguagens — HTML fornecendo estrutura e semântica, CSS fornecendo estilo e layout, e JavaScript fornecendo comportamento e interatividade — que nasce o que se costuma chamar de front-end interativo: páginas que não apenas exibem informação, mas reagem, se atualizam e conversam com o usuário em tempo real, sem depender de recarregar o navegador a cada pequena mudança. Esse é o alicerce sobre o qual se constroem praticamente todas as aplicações web modernas, dos formulários mais simples aos painéis e sistemas mais sofisticados que o leitor encontrará adiante em sua trajetória como desenvolvedor.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item getElementById, querySelector e querySelectorAll são as formas padrão de selecionar elementos do DOM a partir do JavaScript.
+\end{itemize}
+
+\begin{itemize}
+  \item textContent altera texto puro; innerHTML interpreta o conteúdo como HTML e deve ser usado com cautela por razões de segurança.
+\end{itemize}
+
+\begin{itemize}
+  \item A propriedade style altera CSS diretamente no elemento; classList (com add, remove e toggle) é a forma recomendada para alternar estilos definidos em folhas de estilo.
+\end{itemize}
+
+\begin{itemize}
+  \item createElement e appendChild criam e inserem elementos no DOM; removeChild (a partir do elemento pai) ou remove() os eliminam.
+\end{itemize}
+
+\begin{itemize}
+  \item addEventListener é o mecanismo padrão para reagir a eventos como click, input e submit.
+\end{itemize}
+
+\begin{itemize}
+  \item O fluxo evento – listener – callback é o padrão central por trás de toda interatividade front-end construída com JavaScript.
+\end{itemize}
+
+\begin{itemize}
+  \item A combinação de HTML, CSS e JavaScript forma o front-end interativo, o alicerce de praticamente toda aplicação web moderna.
+\end{itemize}
+
+Parte V
+
+Desenvolvimento Back-End com Spring Boot

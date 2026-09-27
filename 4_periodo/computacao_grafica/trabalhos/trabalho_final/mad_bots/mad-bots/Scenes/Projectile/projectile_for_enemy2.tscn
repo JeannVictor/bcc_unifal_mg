@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cniobi6oklidm"]
+
+[ext_resource type="PackedScene" uid="uid://dn55nwjvi8ywu" path="res://Scenes/Projectile/Projectile_base/projectile.tscn" id="1_ckc34"]
+[ext_resource type="Texture2D" uid="uid://fuhkau4fyyer" path="res://Assets/Textures/Enemys/Infantryman/Charge_1.png" id="2_1ynp7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tun8a"]
+size = Vector2(11, 5)
+
+[node name="Projectile_for_enemy2" instance=ExtResource("1_ckc34")]
+scale = Vector2(3, 3)
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(-1.5, 0.5)
+shape = SubResource("RectangleShape2D_tun8a")
+
+[node name="Sprite2D" parent="." index="1"]
+texture = ExtResource("2_1ynp7")
+hframes = 4

@@ -1,0 +1,202 @@
+[gd_scene load_steps=17 format=3 uid="uid://cxejxjtdycglw"]
+
+[ext_resource type="PackedScene" uid="uid://dnv2ikg1u4ni2" path="res://Scenes/Enemys/Enemy_base/enemy_base.tscn" id="1_run80"]
+[ext_resource type="Texture2D" uid="uid://dmw02gqvvwsng" path="res://Assets/Textures/Enemys/GreenQuadruped/Walk.png" id="2_2nu3x"]
+[ext_resource type="Texture2D" uid="uid://ndjqkcy41sq0" path="res://Assets/Textures/Enemys/GreenQuadruped/Attack4.png" id="3_02meg"]
+[ext_resource type="Texture2D" uid="uid://b3brdrbe377q6" path="res://Assets/Textures/Enemys/GreenQuadruped/Hurt.png" id="4_02meg"]
+[ext_resource type="PackedScene" uid="uid://fj4ep7j7o1s8" path="res://Scenes/Enemys/Attacks/Melee/delayed_attack_melee.tscn" id="4_xyhuv"]
+[ext_resource type="Texture2D" uid="uid://ciq122n77dwbf" path="res://Assets/Textures/Enemys/GreenQuadruped/Death.png" id="5_xyhuv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t42lc"]
+size = Vector2(75, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fyjsa"]
+size = Vector2(95, 57)
+
+[sub_resource type="Animation" id="Animation_2244s"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteAttack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteHurt:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteDeath:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_rwau5"]
+resource_name = "attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_02meg"]
+resource_name = "death"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666667, 0.33333334, 0.5, 0.6666667, 0.8333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_vk56t"]
+resource_name = "hurt"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_od5bt"]
+resource_name = "taking_damage"
+length = 0.1
+
+[sub_resource type="Animation" id="Animation_77eob"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.4, 0.53333336, 0.6666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_7ve0w"]
+_data = {
+&"RESET": SubResource("Animation_2244s"),
+&"attack": SubResource("Animation_rwau5"),
+&"death": SubResource("Animation_02meg"),
+&"hurt": SubResource("Animation_vk56t"),
+&"taking_damage": SubResource("Animation_od5bt"),
+&"walk": SubResource("Animation_77eob")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fwdf2"]
+size = Vector2(123, 80)
+
+[node name="GreenQuadruped" instance=ExtResource("1_run80")]
+scale = Vector2(2, 2)
+collision_layer = 64
+collision_mask = 67
+attack_path = NodePath("Delayed_Attack_Melee")
+speed = 200.0
+max_health = 500
+drop_reward = 1
+invincibility_time = 0.05
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(-5.5, 0)
+shape = SubResource("RectangleShape2D_t42lc")
+
+[node name="SpriteWalk" parent="." index="1"]
+position = Vector2(0, 30)
+texture = ExtResource("2_2nu3x")
+hframes = 6
+
+[node name="SpriteAttack" parent="." index="2"]
+position = Vector2(0, 30)
+texture = ExtResource("3_02meg")
+hframes = 6
+
+[node name="SpriteHurt" parent="." index="3"]
+position = Vector2(0, 30)
+texture = ExtResource("4_02meg")
+hframes = 2
+frame = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+position = Vector2(0, 30)
+texture = ExtResource("5_xyhuv")
+hframes = 6
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(-0.5, -4.5)
+shape = SubResource("RectangleShape2D_fyjsa")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_7ve0w")
+}
+
+[node name="Delayed_Attack_Melee" parent="." index="7" instance=ExtResource("4_xyhuv")]
+damage = 10
+knockback_force = 50
+
+[node name="CollisionShape2D" parent="Delayed_Attack_Melee/Attack_area" index="0"]
+position = Vector2(-0.5, -5)
+shape = SubResource("RectangleShape2D_fwdf2")
+
+[editable path="HurtBox"]
+[editable path="Delayed_Attack_Melee"]
+[editable path="Delayed_Attack_Melee/Attack_area"]

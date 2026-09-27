@@ -1,0 +1,227 @@
+\chapter{Camada de Serviço e Tratamento de Exceções}
+
+\section{Por que separar regras de negócio do controlador}
+
+Até este ponto, o ProductController foi responsável por receber requisições, e, apenas para fins de teste, chegou a acessar diretamente o ProductRepository. Essa mistura de responsabilidades é problemática por diversos motivos, e vale a pena enumerá-los com cuidado. Em primeiro lugar, o controlador é a camada de entrada da aplicação: ele lida com o protocolo HTTP — verbos, códigos de status, cabeçalhos, corpo da requisição. Ele não deveria precisar saber se os dados persistem em um MySQL, em um PostgreSQL ou em um serviço remoto. Se o repositório aparece diretamente no controlador, qualquer mudança na forma de acessar os dados obriga a alterar também a camada exposta publicamente pela API — um acoplamento desnecessário. Em segundo lugar, regras de negócio — validações, cálculos, decisões sobre o que fazer quando um dado não é encontrado — não são responsabilidade do controlador nem do repositório. O controlador apenas encaminha a requisição e devolve a resposta; o repositório apenas executa consultas e comandos no banco. É a camada de serviço que concentra a lógica que dá sentido de negócio à aplicação: por exemplo, decidir que, ao criar um produto, o nome deve ser único, ou que um desconto não pode ser maior do que o preço de lista.
+
+Camada de Serviço A camada de serviço é o conjunto de classes — geralmente anotadas com @Service — responsáveis por implementar as regras de negócio de uma aplicação. Ela fica posicionada entre o controlador (que lida com HTTP) e o repositório (que lida com persistência), orquestrando chamadas a um ou mais repositórios, aplicando validações e lançando exceções quando uma regra de negócio é violada.
+
+Essa separação em camadas — controlador, serviço, repositório — é uma das formas mais comuns de organizar uma aplicação back-end e aparece, com pequenas variações de nome, em praticamente qualquer material sobre arquitetura de software corporativo. Ela traz benefícios concretos: cada camada pode ser testada isoladamente (é possível testar o serviço com um repositório falso, sem subir um banco de dados de verdade), cada camada pode ser substituída sem afetar as demais (trocar o banco de dados relacional por um NoSQL não deveria exigir reescrever o controlador), e o código fica mais fácil de entender, pois cada classe tem uma responsabilidade clara e única.
+
+\section{Criando a camada de serviço}
+
+Uma classe de serviço, no ecossistema Spring, é uma classe comum anotada com @Service — uma especialização de @Component que sinaliza ao Spring que aquela classe deve ser gerenciada pelo contêiner de injeção de dependência e disponibilizada para ser injetada em outras classes, como os controladores.
+
+\begin{codebox}{Java}
+ package com.bluevelvet.api.service;
+
+ import com.bluevelvet.api.dto.ProductRequest;
+ import com.bluevelvet.api.dto.ProductResponse;
+ import com.bluevelvet.api.exception.ProductNotFoundException;
+ import com.bluevelvet.api.infrastructure.persistence.entity.Product;
+ import com.bluevelvet.api.infrastructure.persistence.repository.ProductRepository;
+ import org.springframework.stereotype.Service;
+
+ @Service
+ public class ProductService {
+
+        private final ProductRepository productRepository;
+
+        public ProductService(ProductRepository productRepository) {
+            this.productRepository = productRepository;
+        }
+
+        public ProductResponse findById(Long id) {
+            Product product = productRepository.findById(id)
+                    .orElseThrow(() -> new ProductNotFoundException(id));
+            return ProductResponse.fromEntity(product);
+        }
+
+        public ProductResponse createProduct(ProductRequest request) {
+            Product product = request.toEntity();
+            Product saved = productRepository.save(product);
+            return ProductResponse.fromEntity(saved);
+        }
+ }
+\end{codebox}
+
+Note que é o serviço — e não o controlador — quem recebe o ProductRepository injetado, quem resolve o Optional retornado por findById, e quem decide o que fazer quando o produto não é encontrado: lançar uma exceção específica, em vez de devolver null ou deixar o Optional vazar para fora da camada de serviço.
+
+\subsection{Injeção de dependência: por que preferir o construtor}
+
+O Spring oferece três formas de injetar uma dependência em uma classe: por campo (usando @Autowired diretamente sobre o atributo), por setter, ou por construtor. A injeção por campo é a mais compacta de escrever, mas é desaconselhada — inclusive sinalizada como prática não recomendada por IDEs modernas — porque dificulta a criação de testes unitários (não há como fornecer um repositório falso sem usar reflexão) e porque esconde dependências obrigatórias que deveriam ser explícitas na assinatura da classe.
+
+\begin{codebox}{Java}
+ // Evitar: injeção por campo
+ @Service
+ public class ProductService {
+     @Autowired
+     private ProductRepository productRepository;
+ }
+
+ // Preferir: injeção por construtor
+ @Service
+ public class ProductService {
+     private final ProductRepository productRepository;
+
+        public ProductService(ProductRepository productRepository) {
+            this.productRepository = productRepository;
+        }
+ }
+\end{codebox}
+
+A injeção por construtor tem duas vantagens práticas importantes. A primeira é permitir que o atributo seja declarado final, deixando explícito que aquela dependência é obrigatória e não pode ser reatribuída depois da construção do objeto. A segunda é facilitar testes: em um teste unitário, basta instanciar o serviço passando um repositório de teste (ou um mock) diretamente pelo construtor, sem depender do contêiner do Spring. Quando uma classe possui múltiplos atributos final, o Lombok oferece a anotação @RequiredArgsConstructor, que gera automaticamente um construtor recebendo exatamente os atributos marcados como final — economizando a escrita manual do construtor mostrado acima.
+
+\section{Tratamento de exceções: o problema}
+
+Regras de negócio falham. Um cliente pode pedir o produto de identificador 9999, que não existe; pode enviar um preço negativo; pode tentar cadastrar um nome de produto que já existe no catálogo. Sem tratamento adequado, esses cenários resultam
+
+em exceções não capturadas que sobem até o servidor, e o cliente da API recebe uma resposta HTTP 500 (Internal Server Error) — o pior tipo de resposta possível, pois não indica o que realmente deu errado nem se o erro foi causado pelo próprio cliente. O ideal é que cada tipo de falha resulte em um código de status HTTP apropriado: 404 Not Found quando o recurso solicitado não existe, 400 Bad Request quando os dados enviados pelo cliente são inválidos, 409 Conflict quando há uma violação de regra de unicidade, e assim por diante.
+
+\subsection{Exceções customizadas}
+
+O primeiro passo é criar exceções específicas para o domínio da aplicação, em vez de lançar exceções genéricas do Java como RuntimeException. Uma exceção customizada carrega, no próprio nome e nos dados que armazena, informação suficiente para que quem a captura saiba exatamente o que aconteceu.
+
+\begin{codebox}{Java}
+package com.bluevelvet.api.exception;
+
+public class ProductNotFoundException extends RuntimeException {
+
+       public ProductNotFoundException(Long id) {
+           super("Produto com id " + id + " nao foi encontrado.");
+       }
+}
+\end{codebox}
+
+Estender RuntimeException (em vez de Exception) é uma escolha deliberada: exceções que estendem RuntimeException são unchecked, ou seja, não obrigam todo método da cadeia de chamadas a declarar throws ou a envolver a chamada em um bloco try/catch. Isso mantém o código do serviço e do controlador mais limpo, deixando o tratamento centralizado em um único lugar — que veremos a seguir.
+
+\section{Tratamento centralizado com @ControllerAdvice}
+
+Uma abordagem possível é usar try/catch diretamente dentro de cada método do controlador:
+
+\begin{codebox}{Java}
+@GetMapping("/{id}")
+public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
+    try {
+        ProductResponse response = productService.findById(id);
+        return ResponseEntity.ok(response);
+    } catch (ProductNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+}
+\end{codebox}
+
+Essa solução funciona, mas não escala: se a API tiver dezenas de endpoints, o mesmo bloco try/catch — capturando os mesmos tipos de exceção e traduzindo-os para os mesmos códigos de status — se repetiria em cada método, violando o princípio de não repetir código (DRY, Don’t Repeat Yourself ). O Spring resolve esse problema com a anotação @ControllerAdvice combinada a @ExceptionHandler, que permite centralizar o tratamento de exceções de toda a aplicação em uma única classe.
+
+\begin{codebox}{Código}
+@ControllerAdvice e @ExceptionHandler
+@ControllerAdvice marca uma classe como um componente global de
+apoio a controladores, capaz de interceptar exceções lançadas por qual-
+quer controlador da aplicação.     Dentro dela, cada método anotado com
+@ExceptionHandler(TipoDaExcecao.class) define como uma exceção específica
+deve ser convertida em uma resposta HTTP.
+\end{codebox}
+
+\begin{codebox}{Java}
+package com.bluevelvet.api.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+       @ExceptionHandler(ProductNotFoundException.class)
+       public ResponseEntity<ErrorResponse> handleNotFound(ProductNotFoundException ex) 
+         {
+           ErrorResponse body = new ErrorResponse(
+\end{codebox}
+
+\begin{infobox}{HttpStatus.NOT\_FOUND.value(),}
+ex.getMessage(), LocalDateTime.now() ); return ResponseEntity.status(HttpStatus.NOT\_FOUND).body(body); \}
+\end{infobox}
+
+\begin{codebox}{Código}
+@ExceptionHandler(IllegalArgumentException.class)
+public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+ErrorResponse body = new ErrorResponse(
+\end{codebox}
+
+\begin{infobox}{HttpStatus.BAD\_REQUEST.value(),}
+ex.getMessage(), LocalDateTime.now() ); return ResponseEntity.status(HttpStatus.BAD\_REQUEST).body(body); \}
+\end{infobox}
+
+\begin{codebox}{Código}
+@ExceptionHandler(Exception.class)
+\end{codebox}
+
+\begin{codebox}{Código}
+public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+ErrorResponse body = new ErrorResponse(
+\end{codebox}
+
+\begin{infobox}{HttpStatus.INTERNAL\_SERVER\_ERROR.value(),}
+"Erro interno inesperado.", LocalDateTime.now() ); return ResponseEntity.status(HttpStatus.INTERNAL\_SERVER\_ERROR).body(body); \} \}
+\end{infobox}
+
+A anotação @RestControllerAdvice é equivalente a @ControllerAdvice combinada com @ResponseBody, garantindo que o objeto retornado por cada método seja automaticamente serializado como JSON no corpo da resposta. A classe ErrorResponse, usada acima, é um simples objeto de transferência de dados (DTO) contendo o código de status, uma mensagem descritiva e o instante em que o erro ocorreu — útil tanto para quem consome a API quanto para depuração e registro de logs. Com essa estrutura, o controlador volta a ficar limpo, livre de blocos try/catch: ele apenas delega ao serviço, e, caso uma exceção seja lançada, o @ControllerAdvice intercepta-a automaticamente e devolve a resposta HTTP apropriada.
+
+\begin{codebox}{Java}
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+
+       private final ProductService productService;
+
+       public ProductController(ProductService productService) {
+           this.productService = productService;
+       }
+
+       @GetMapping("/{id}")
+       public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
+           return ResponseEntity.ok(productService.findById(id));
+       }
+}
+\end{codebox}
+
+\begin{infobox}{Dica}
+Ao definir suas próprias exceções, considere criar uma hierarquia — por exemplo, uma BusinessException genérica da qual ProductNotFoundException e outras exceções de domínio herdam. Isso permite, quando fizer sentido, capturar toda uma família de erros de negócio com um único @ExceptionHandler, sem perder a granularidade de mensagens específicas para cada caso.
+\end{infobox}
+
+\section{Validação de entrada}
+
+Além de tratar exceções depois que elas ocorrem, é possível prevenir boa parte delas validando os dados de entrada antes que cheguem à camada de serviço. O Spring integra-se facilmente à especificação Bean Validation, permitindo anotar os campos de um DTO de requisição com restrições como @NotBlank, @NotNull, @Positive ou @Size, e então acionar essa validação automaticamente com @Valid no parâmetro do controlador. Quando uma validação falha, o Spring lança uma MethodArgumentNotValidException, que pode ser capturada no mesmo @ControllerAdvice e traduzida para uma resposta 400 Bad Request detalhando quais campos são inválidos e por quê.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item A camada de serviço, marcada com @Service, concentra as regras de negócio e fica posicionada entre o controlador e o repositório.
+\end{itemize}
+
+\begin{itemize}
+  \item Separar controlador, serviço e repositório reduz acoplamento, facilita testes isolados e torna cada camada substituível sem afetar as demais.
+\end{itemize}
+
+\begin{itemize}
+  \item Injeção de dependência por construtor é preferível à injeção por campo: permite atributos final e facilita a criação de testes unitários.
+\end{itemize}
+
+\begin{itemize}
+  \item Exceções customizadas, estendendo RuntimeException, comunicam de forma explícita o que deu errado em um ponto específico do domínio.
+\end{itemize}
+
+\begin{itemize}
+  \item @ControllerAdvice (ou @RestControllerAdvice) combinado a @ExceptionHandler centraliza o tratamento de exceções de toda a aplicação em um único lugar, evitando repetição de try/catch em cada endpoint.
+\end{itemize}
+
+\begin{itemize}
+  \item Cada tipo de erro deve ser traduzido para o código de status HTTP correto — 404 para recurso inexistente, 400 para requisição inválida, entre outros.
+\end{itemize}
+
+\begin{itemize}
+  \item A validação de entrada com anotações de Bean Validation (@NotBlank, @Positive etc.) previne erros antes mesmo de chegarem à camada de serviço.
+\end{itemize}

@@ -1,0 +1,50 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnv2ikg1u4ni2"]
+
+[ext_resource type="Script" uid="uid://otnhhg3gmd4e" path="res://Scenes/Enemys/Enemy_base/enemy_base.gd" id="1_ucpyf"]
+[ext_resource type="Script" uid="uid://b3ndq5rre6466" path="res://Scenes/Enemys/Enemy_base/animation_player.gd" id="3_eqolo"]
+[ext_resource type="PackedScene" uid="uid://djv6hj8hqdilv" path="res://Scenes/Utility/Hitboxes/HurtBox/hurtBox.tscn" id="7_iepy1"]
+
+[node name="Enemy_base" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 7
+motion_mode = 1
+script = ExtResource("1_ucpyf")
+animation_path = NodePath("AnimationPlayer")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="SpriteWalk" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+offset = Vector2(0, -40)
+hframes = 8
+
+[node name="SpriteAttack" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(1.5, 1.5)
+offset = Vector2(0, -40)
+hframes = 4
+
+[node name="SpriteHurt" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(1.5, 1.5)
+offset = Vector2(0, -40)
+hframes = 3
+
+[node name="SpriteDeath" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(1.5, 1.5)
+offset = Vector2(0, -40)
+hframes = 7
+
+[node name="HurtBox" parent="." instance=ExtResource("7_iepy1")]
+collision_layer = 0
+collision_mask = 8
+monitorable = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+script = ExtResource("3_eqolo")
+enemy_path = NodePath("..")
+spriteWalk_path = NodePath("../SpriteWalk")
+spriteAttack_path = NodePath("../SpriteAttack")
+spriteHurt_path = NodePath("../SpriteHurt")
+spriteDeath_path = NodePath("../SpriteDeath")

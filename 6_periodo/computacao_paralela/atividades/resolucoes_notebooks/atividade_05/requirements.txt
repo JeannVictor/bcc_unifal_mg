@@ -1,0 +1,2 @@
+jupyter
+kafka-python

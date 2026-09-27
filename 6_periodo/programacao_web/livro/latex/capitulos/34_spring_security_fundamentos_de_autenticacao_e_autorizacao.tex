@@ -1,0 +1,167 @@
+\chapter{Spring Security: Fundamentos de Autenticação e Autorização}
+
+\section{Autenticação e autorização: duas perguntas diferentes}
+
+É comum tratar autenticação e autorização como sinônimos, mas são conceitos distintos, e a diferença entre eles orienta boa parte do desenho de segurança de qualquer aplicação.
+
+\begin{infobox}{Autenticação}
+Autenticação é o processo de verificar quem é o usuário que está fazendo uma requisição. Tipicamente envolve a apresentação de credenciais — um par usuário/senha, um token, um certificado — que o sistema confere contra uma fonte confiável de identidade (um banco de dados de usuários, um provedor externo, etc.).
+\end{infobox}
+
+\begin{infobox}{Autorização}
+Autorização é o processo de verificar o que um usuário já autenticado tem permissão para fazer. Mesmo depois de confirmada a identidade de alguém, ainda é preciso decidir se essa pessoa pode, por exemplo, apenas visualizar produtos, ou também criar, editar e remover produtos do catálogo.
+\end{infobox}
+
+Um exemplo concreto ajuda a fixar a diferença. Imagine dois usuários da Blue Velvet Music Store: um cliente comum e um administrador do catálogo. Ambos passam pelo mesmo processo de autenticação — inserem usuário e senha, e o sistema confirma que ambos são, de fato, quem dizem ser. A partir daí, porém, a autorização diverge: o cliente comum pode ter permissão apenas para consultar produtos (GET
+
+/products), enquanto o administrador tem permissão adicional para criar, atualizar e remover produtos (POST, PUT, DELETE). Autenticar sem autorizar corretamente é como verificar a identidade de alguém na portaria de um prédio e, em seguida, deixá-lo entrar em qualquer sala, incluindo o cofre.
+
+\section{O filtro de segurança: onde a proteção acontece}
+
+O Spring Security se integra à aplicação por meio de um mecanismo chamado filtro de segurança (security filter chain). Antes que uma requisição HTTP alcance o controlador que ela pretende acessar, ela atravessa uma cadeia de filtros responsáveis por diferentes verificações de segurança: extrair e validar credenciais, checar se o usuário autenticado tem a permissão necessária para aquele recurso, e, caso alguma dessas checagens falhe, interromper a requisição antes mesmo que ela chegue ao código de negócio da aplicação. O diagrama a seguir ilustra esse fluxo básico: uma requisição chega à aplicação, passa pelo filtro de segurança, que decide se ela é autenticada e autorizada; em caso positivo, a requisição segue até o controlador; em caso negativo, o filtro já responde com um código de status apropriado (401 Unauthorized ou 403 Forbidden), sem que o controlador chegue a ser executado.
+
+Filtro de Autenticado sim Controlador Requisicao HTTP Seguranca e autorizado? (recurso protegido)
+
+nao
+
+\begin{infobox}{401 / 403}
+(negado)
+\end{infobox}
+
+Figura 34.1: Fluxo simplificado de uma requisição através do filtro de seguranca do Spring Security.
+
+Esse desenho tem uma implicação importante: a lógica de segurança fica desacoplada da lógica de negócio. O controlador e o serviço de produtos não precisam saber nada sobre como a autenticação é feita — essa responsabilidade é inteiramente do filtro de segurança, configurado de forma centralizada.
+
+\section{Configurando o Spring Security}
+
+Ao adicionar a dependência spring-boot-starter-security ao projeto, o Spring Security já entra em ação com uma configuração padrão extremamente restritiva: todos os endpoints passam a exigir autenticação, e uma senha aleatória é gerada e impressa no console a cada inicialização da aplicação, associada a um usuário padrão chamado user. Esse comportamento é proposital — o framework prefere começar ”fechado”e obrigar o desenvolvedor a abrir explicitamente o que deve ser público, em vez do contrário.
+
+\begin{codebox}{Java}
+implementation 'org.springframework.boot:spring-boot-starter-security'
+\end{codebox}
+
+A configuração customizada é feita por meio de uma classe anotada com @Configuration, que declara um bean do tipo SecurityFilterChain. É nessa classe que se define, entre outras coisas, quais rotas exigem autenticação, quais são públicas, e qual mecanismo de autenticação é usado.
+
+\begin{codebox}{Java}
+package com.bluevelvet.api.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+       @Bean
+       public SecurityFilterChain securityFilterChain(HttpSecurity http) throws 
+         Exception {
+           http
+               .authorizeHttpRequests(auth -> auth
+\end{codebox}
+
+\begin{infobox}{.requestMatchers("/products/**").permitAll()}
+.requestMatchers("/admin/**").hasRole("ADMIN") .anyRequest().authenticated() ) .httpBasic(basic -> \{\}) .csrf(csrf -> csrf.disable());
+\end{infobox}
+
+return http.build(); \} \}
+
+Nessa configuração, a primeira regra libera o acesso público de leitura ao catálogo de produtos (rotas /products/**), a segunda exige que o usuário autenticado possua o papel ADMIN para acessar rotas administrativas (/admin/**), e a terceira, anyRequest().authenticated(), exige no mínimo autenticação para qualquer outra rota não listada explicitamente. A ordem das regras importa: o Spring Security avalia os requestMatchers na sequência em que aparecem, aplicando a primeira regra compatível com a rota da requisição.
+
+\section{Autenticação básica versus autenticação com token}
+
+O exemplo anterior usa httpBasic(), que ativa a autenticação básica HTTP: o cliente envia usuário e senha em todas as requisições, codificados (não criptografados) em um cabeçalho Authorization. É simples de configurar e adequada para cenários
+
+internos ou de aprendizado, mas tem limitações práticas importantes: como a senha viaja em todas as requisições, ela depende inteiramente de HTTPS para não ser exposta; além disso, não há um conceito nativo de ”sessão expirada”ou ”logout-– a única forma de revogar o acesso é trocar a senha.
+
+\begin{codebox}{Autenticação Básica HTTP}
+Mecanismo definido pelo próprio protocolo HTTP em que o cliente envia,
+a cada requisição, um cabeçalho Authorization: Basic <usuario:senha em
+Base64>. O servidor decodifica esse cabeçalho e verifica as credenciais a cada
+chamada, sem manter estado entre requisições.
+\end{codebox}
+
+Para aplicações modernas, especialmente aquelas que separam front-end e backend (como discutido em capítulos anteriores sobre arquitetura REST), é mais comum usar autenticação baseada em token, e o padrão mais difundido para isso é o JWT (JSON Web Token).
+
+\begin{codebox}{JWT — JSON Web Token}
+Um JWT é um token compacto, assinado digitalmente, que carrega um conjunto
+de informações (chamadas claims) sobre o usuário autenticado — por exemplo,
+seu identificador e seus papéis — e uma data de expiração. O fluxo típico é:
+o cliente autentica-se uma única vez, enviando usuário e senha a um endpoint
+de login; o servidor valida essas credenciais e devolve um JWT; a partir daí,
+o cliente anexa esse token (tipicamente no cabeçalho Authorization: Bearer
+<token>) em cada requisição subsequente, e o servidor apenas valida a assinatura
+e a expiração do token, sem precisar consultar novamente usuário e senha.
+\end{codebox}
+
+A vantagem central do JWT é que o servidor não precisa manter estado de sessão: toda a informação necessária para autorizar a requisição já está — de forma assinada e verificável — dentro do próprio token. Isso facilita a escalabilidade horizontal da aplicação (qualquer instância do servidor consegue validar o token de forma independente) e se encaixa naturalmente em arquiteturas de APIs REST consumidas por aplicações front-end desacopladas, como as construídas com frameworks JavaScript modernos. A implementação completa de emissão e validação de JWT no Spring Security envolve componentes adicionais — um filtro customizado que intercepta o cabeçalho Authorization, uma biblioteca de assinatura de tokens e um serviço de geração de tokens no momento do login — que fogem do escopo introdutório deste capítulo, mas que valem a pena ser estudados em profundidade antes de colocar uma API em produção.
+
+\section{Protegendo endpoints por papel}
+
+Além de configurar regras de acesso de forma centralizada no SecurityFilterChain, o Spring Security permite proteger métodos individuais do controlador ou do serviço usando a anotação @PreAuthorize, que avalia uma expressão de segurança antes mesmo de o método ser executado.
+
+\begin{codebox}{Java}
+ import org.springframework.security.access.prepost.PreAuthorize;
+
+ @RestController
+ @RequestMapping("/products")
+ public class ProductController {
+
+        @PostMapping
+        @PreAuthorize("hasRole('ADMIN')")
+        public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest 
+          request) {
+            return ResponseEntity.ok(productService.createProduct(request));
+        }
+
+        @DeleteMapping("/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
+        public ResponseEntity<Void> delete(@PathVariable Long id) {
+            productService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+
+        @GetMapping("/{id}")
+        public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
+            return ResponseEntity.ok(productService.findById(id));
+        }
+ }
+\end{codebox}
+
+Nesse exemplo, criar e remover produtos exige o papel ADMIN, enquanto a consulta por identificador permanece acessível de acordo com a regra geral definida no filtro de segurança. Para que @PreAuthorize funcione, é necessário habilitar explicitamente esse recurso, anotando a classe de configuração com @EnableMethodSecurity. Essa abordagem — proteger métodos individualmente, além (ou no lugar) de proteger rotas inteiras — é particularmente útil quando a regra de autorização depende de lógica mais fina do que apenas o caminho da URL, como verificar se o próprio usuário é o dono de um recurso específico.
+
+\begin{infobox}{Dica}
+Prefira concentrar as regras de acesso mais gerais (rotas públicas versus rotas que exigem autenticação) no SecurityFilterChain, e reserve @PreAuthorize para regras mais específicas, ligadas a um único método ou a uma condição de negócio. Misturar as duas abordagens sem critério tende a espalhar a lógica de segurança pelo código e dificultar a auditoria de quem pode acessar o quê.
+\end{infobox}
+
+\section{HTTPS: a base sobre a qual tudo isso se sustenta}
+
+Toda a discussão anterior — autenticação básica, tokens JWT, papéis e permissões — perde grande parte do seu valor se a aplicação não for servida sobre HTTPS. Sem
+
+criptografia de transporte, qualquer credencial, token ou dado sensível trafega em texto claro pela rede, podendo ser interceptado por um terceiro na mesma rede local, em um Wi-Fi público, ou em qualquer ponto intermediário entre cliente e servidor.
+
+\begin{infobox}{HTTPS}
+HTTPS é o protocolo HTTP operado sobre uma camada de criptografia (TLS — Transport Layer Security), que garante três propriedades: confidencialidade (o conteúdo da comunicação não pode ser lido por terceiros), integridade (o conteúdo não pode ser alterado em trânsito sem detecção) e autenticidade do servidor (o cliente pode verificar que está de fato se comunicando com o servidor legítimo, por meio de um certificado digital).
+\end{infobox}
+
+Em ambiente de desenvolvimento, é comum testar aplicações Spring Boot sobre HTTP simples, sem TLS configurado. Em produção, no entanto, HTTPS deixou de ser opcional: navegadores modernos sinalizam sites sem HTTPS como ”não seguros”, muitos recursos de navegador (geolocalização, notificações push, entre outros) simplesmente não funcionam fora de um contexto seguro, e qualquer mecanismo de autenticação — básico ou por token — fica vulnerável à interceptação sem essa camada de proteção. Na prática, a terminação de TLS costuma ser delegada a um componente de infraestrutura à frente da aplicação Spring Boot — um balanceador de carga, um reverse proxy como o Nginx, ou o próprio provedor de nuvem — mas cabe ao desenvolvedor garantir que essa camada exista antes de expor qualquer aplicação com dados de usuários reais. Segurança em uma aplicação web nunca é um recurso isolado que se adiciona ao final de um projeto: ela atravessa cada decisão de arquitetura discutida ao longo deste livro — como os dados trafegam entre cliente e servidor, como são validados, como são persistidos, e, por fim, quem tem permissão para acessá-los. Autenticação, autorização e criptografia de transporte formam, juntas, a base mínima sem a qual nenhuma aplicação deveria ser considerada pronta para uso real.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Autenticação responde ”quem é o usuário”; autorização responde ”o que esse usuário pode fazer-– são etapas distintas e sequenciais.
+  \item O filtro de segurança do Spring Security intercepta requisições antes que cheguem ao controlador, decidindo se elas prosseguem ou são recusadas com 401/403.
+  \item A configuração central de segurança é feita por um SecurityFilterChain, declarando quais rotas são públicas, quais exigem autenticação e quais exigem papéis específicos.
+  \item Autenticação básica HTTP envia credenciais a cada requisição e depende inteiramente de HTTPS; tokens JWT permitem autenticação sem estado, validando um token assinado em vez de repetir usuário e senha.
+  \item @PreAuthorize protege métodos individuais com expressões de segurança, complementando (não substituindo) as regras gerais do filtro de segurança.
+\end{itemize}
+
+\begin{itemize}
+  \item HTTPS garante confidencialidade, integridade e autenticidade na comunicação, e é pré-requisito prático para qualquer mecanismo de autenticação em produção.
+\end{itemize}
+
+\begin{itemize}
+  \item Segurança não é um item adicionado ao final de um projeto: é uma dimensão que atravessa toda decisão de arquitetura de uma aplicação web.
+\end{itemize}
+
+Considerações Finais Ao longo deste livro, percorremos o caminho da programação web desde os fundamentos da profissão e das redes de computadores até a construção de interfaces com HTML e CSS, a programação de comportamento com JavaScript e, por fim, o desenvolvimento de um back-end completo com Java, Spring Boot, Docker, JPA e Spring Security. Mais do que decorar tags, propriedades ou APIs, o mais importante é entender a lógica por trás de cada camada: o HTML estrutura o conteúdo, o CSS cuida da apresentação, o JavaScript adiciona comportamento e interação, e o back-end fornece os dados e as regras de negócio que sustentam a aplicação. Compreendida essa lógica, qualquer framework ou ferramenta nova se torna consideravelmente mais fácil de aprender. Que este material sirva como referência de consulta sempre que for necessário relembrar, aprofundar ou aplicar esses conceitos ao longo da disciplina e da trajetória profissional.

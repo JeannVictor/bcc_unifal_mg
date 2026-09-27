@@ -1,0 +1,199 @@
+[gd_scene load_steps=16 format=3 uid="uid://c8mybxrbusoo8"]
+
+[ext_resource type="PackedScene" uid="uid://dnv2ikg1u4ni2" path="res://Scenes/Enemys/Enemy_base/enemy_base.tscn" id="1_wlm2y"]
+[ext_resource type="PackedScene" uid="uid://fj4ep7j7o1s8" path="res://Scenes/Enemys/Attacks/Melee/delayed_attack_melee.tscn" id="2_jh77b"]
+[ext_resource type="Texture2D" uid="uid://b0vihn54dlaqb" path="res://Assets/Textures/Enemys/Tick/Walk.png" id="2_jyfov"]
+[ext_resource type="Texture2D" uid="uid://bn2qwf5rwl0h5" path="res://Assets/Textures/Enemys/Tick/Attack.png" id="3_vpw3a"]
+[ext_resource type="Texture2D" uid="uid://tbjsmjhpij7t" path="res://Assets/Textures/Enemys/Tick/Hurt.png" id="4_jqnxm"]
+[ext_resource type="Texture2D" uid="uid://cy5y107q3cqjo" path="res://Assets/Textures/Enemys/Tick/Death.png" id="5_a2fqn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jqnxm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyfov"]
+size = Vector2(47, 35)
+
+[sub_resource type="Animation" id="Animation_knvsy"]
+resource_name = "attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_vpw3a"]
+resource_name = "death"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06943664, 0.13333334, 0.2, 0.26666668, 0.33333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_jyfov"]
+resource_name = "taking_damage"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_lbik1"]
+resource_name = "walk"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05868021, 0.13333334, 0.23333333, 0.33333334, 0.43333334),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_jqnxm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteAttack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteHurt:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteDeath:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jqnxm"]
+_data = {
+&"RESET": SubResource("Animation_jqnxm"),
+&"attack": SubResource("Animation_knvsy"),
+&"death": SubResource("Animation_vpw3a"),
+&"taking_damage": SubResource("Animation_jyfov"),
+&"walk": SubResource("Animation_lbik1")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vpw3a"]
+size = Vector2(53, 39)
+
+[node name="Tick" instance=ExtResource("1_wlm2y")]
+scale = Vector2(1.5, 1.5)
+collision_layer = 516
+collision_mask = 519
+attack_path = NodePath("Delayed_Attack_Melee")
+speed = 300.0
+max_health = 100
+experience_reward = 1
+invincibility_time = 0.05
+
+[node name="CollisionShape2D" parent="." index="0"]
+visible = false
+position = Vector2(-1, -13)
+shape = SubResource("RectangleShape2D_jqnxm")
+
+[node name="SpriteWalk" parent="." index="1"]
+texture = ExtResource("2_jyfov")
+offset = Vector2(0, -20)
+hframes = 6
+
+[node name="SpriteAttack" parent="." index="2"]
+texture = ExtResource("3_vpw3a")
+offset = Vector2(0, -20)
+hframes = 6
+
+[node name="SpriteHurt" parent="." index="3"]
+texture = ExtResource("4_jqnxm")
+offset = Vector2(0, -20)
+hframes = 2
+frame = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+texture = ExtResource("5_a2fqn")
+offset = Vector2(0, -20)
+hframes = 6
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(-1.5, -12.5)
+shape = SubResource("RectangleShape2D_jyfov")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_jqnxm")
+}
+
+[node name="Delayed_Attack_Melee" parent="." index="7" instance=ExtResource("2_jh77b")]
+damage = 1
+knockback_force = 20
+attack_range = 0.0
+
+[node name="CollisionShape2D" parent="Delayed_Attack_Melee/Attack_area" index="0"]
+position = Vector2(-1.5, -13.5)
+shape = SubResource("RectangleShape2D_vpw3a")
+
+[editable path="HurtBox"]
+[editable path="Delayed_Attack_Melee"]
+[editable path="Delayed_Attack_Melee/Attack_area"]

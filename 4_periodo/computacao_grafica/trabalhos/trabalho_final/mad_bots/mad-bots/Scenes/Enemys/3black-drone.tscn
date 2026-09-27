@@ -1,0 +1,200 @@
+[gd_scene load_steps=16 format=3 uid="uid://cw7fphffgyt4c"]
+
+[ext_resource type="PackedScene" uid="uid://bpuhk31jpn0dm" path="res://Scenes/Enemys/Enemy_Sniper/enemy_sniper.tscn" id="1_1kgbx"]
+[ext_resource type="Texture2D" uid="uid://c3d6on1b4t514" path="res://Assets/Textures/Enemys/BlackDrone/Forward.png" id="2_j4vnt"]
+[ext_resource type="Texture2D" uid="uid://85bmjykqb6n" path="res://Assets/Textures/Enemys/BlackDrone/Fire3.png" id="3_gnuxm"]
+[ext_resource type="Texture2D" uid="uid://b0xl6umjqv13w" path="res://Assets/Textures/Enemys/BlackDrone/Hurt.png" id="4_lo7vj"]
+[ext_resource type="Texture2D" uid="uid://da1m145qeswk6" path="res://Assets/Textures/Enemys/BlackDrone/Death.png" id="5_l8yqf"]
+[ext_resource type="PackedScene" uid="uid://bmf55wueli5ef" path="res://Scenes/Enemys/Attacks/Long_Range/long_range.tscn" id="6_l8yqf"]
+[ext_resource type="PackedScene" uid="uid://jsw064up3nkf" path="res://Scenes/Projectile/projectile_for_enemy1.tscn" id="7_l8yqf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j4vnt"]
+size = Vector2(53, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f3cok"]
+size = Vector2(59, 36)
+
+[sub_resource type="Animation" id="Animation_l8yqf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteAttack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteHurt:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteDeath:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_pt5yh"]
+resource_name = "attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.13333334, 0.2, 0.3, 0.36666667, 0.43333334, 0.5, 0.56666666, 0.6333333, 0.7, 0.76666665, 0.8333333, 0.9, 0.9586985),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15]
+}
+
+[sub_resource type="Animation" id="Animation_2gsxw"]
+resource_name = "death"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.11092213, 0.22184426, 0.33992267, 0.45263386, 0.57071227, 0.69773597, 0.8193925),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_u2auy"]
+resource_name = "taking_damage"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_f3cok"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.43333334, 0.6666667),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u2auy"]
+_data = {
+&"RESET": SubResource("Animation_l8yqf"),
+&"attack": SubResource("Animation_pt5yh"),
+&"death": SubResource("Animation_2gsxw"),
+&"taking_damage": SubResource("Animation_u2auy"),
+&"walk": SubResource("Animation_f3cok")
+}
+
+[node name="BlackDrone" instance=ExtResource("1_1kgbx")]
+scale = Vector2(1.5, 1.5)
+collision_layer = 132
+collision_mask = 131
+repel_radius = 400.0
+repel_hysteresis = 40.0
+attack_path = NodePath("Long_Range")
+speed = 300.0
+max_health = 100
+drop_reward = 1
+invincibility_time = 0.1
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(0.5, -21)
+shape = SubResource("RectangleShape2D_j4vnt")
+
+[node name="SpriteWalk" parent="." index="1"]
+position = Vector2(0, 37)
+texture = ExtResource("2_j4vnt")
+hframes = 4
+
+[node name="SpriteAttack" parent="." index="2"]
+position = Vector2(0, 37)
+texture = ExtResource("3_gnuxm")
+hframes = 16
+
+[node name="SpriteHurt" parent="." index="3"]
+visible = true
+position = Vector2(0, 37)
+texture = ExtResource("4_lo7vj")
+hframes = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+position = Vector2(0, 37)
+texture = ExtResource("5_l8yqf")
+hframes = 8
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_f3cok")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_u2auy")
+}
+
+[node name="Long_Range" parent="." index="7" instance=ExtResource("6_l8yqf")]
+position = Vector2(0, -1)
+projectile_scene = ExtResource("7_l8yqf")
+fire_rate = 1.0
+projectile_speed = 400.0
+knockback_amount = 10.0
+
+[node name="Marker2D" parent="Long_Range" index="1"]
+position = Vector2(13.333334, -11)
+
+[node name="DelayTimer" parent="Long_Range" index="2"]
+wait_time = 0.2
+
+[editable path="HurtBox"]
+[editable path="Long_Range"]

@@ -1,0 +1,237 @@
+\chapter{Imagens e Vídeo em HTML}
+
+\section{Incorporando Imagens}
+
+Para incorporar uma imagem em um documento HTML, utiliza-se o elemento img, combinado com o atributo src (source), que indica o caminho até o arquivo de imagem.
+
+\begin{codebox}{HTML}
+<img src="trex.jpg">
+\end{codebox}
+
+\begin{infobox}{O elemento img é um elemento vazio}
+Diferentemente da maioria dos elementos HTML vistos até aqui, img é um elemento vazio (void element): ele não possui conteúdo textual nem tag de encerramento. Toda a informação relevante é fornecida através de seus atributos.
+\end{infobox}
+
+O caminho informado em src pode ser relativo (quando a imagem está no mesmo projeto) ou absoluto (quando a imagem é hospedada em outro servidor):
+
+\begin{codebox}{HTML}
+<!-- Caminho relativo: a imagem está na raiz do projeto -->
+<img src="dino-esqueleto.jpg">
+
+<!-- Caminho relativo: a imagem está dentro de uma subpasta "images" -->
+<img src="images/dino-esqueleto.jpg">
+
+<!-- Caminho absoluto: a imagem está hospedada em outro domínio -->
+<img src="https://exemplo.com/imagens/dino.jpg">
+\end{codebox}
+
+\section{Boas Práticas: os Atributos alt, width e height}
+
+Embora o exemplo acima já seja suficiente para exibir uma imagem, ele está incompleto do ponto de vista de boas práticas de marcação. Uma imagem bem marcada em HTML deve sempre incluir, além de src, os atributos alt, width e height.
+
+\subsection{O Atributo alt}
+
+O atributo alt (alternative text) fornece um texto alternativo que é exibido caso a imagem, por algum motivo, não possa ser renderizada — por exemplo, se o arquivo foi removido do servidor, se o nome do arquivo foi digitado incorretamente, ou se o usuário está navegando com um leitor de tela.
+
+\begin{codebox}{HTML}
+<img src="dino-esqueleto.jpg"
+     alt="Esqueleto de um T-Rex montado em exposição no museu">
+\end{codebox}
+
+\begin{infobox}{Dica}
+O atributo alt é essencial para acessibilidade. Usuários com deficiência visual, que navegam com leitores de tela, dependem inteiramente desse texto para entender o que a imagem representa. Além disso, se o arquivo de imagem for renomeado ou removido do servidor por engano, o texto alternativo garante que o usuário ainda receba alguma informação útil no lugar da imagem quebrada. Diferentes navegadores tratam esse cenário de forma um pouco distinta — alguns exibem o texto de alt diretamente no espaço da imagem quebrada, outros não — mas o atributo continua sendo indispensável.
+\end{infobox}
+
+\subsection{Os Atributos width e height}
+
+Os atributos width e height indicam, em pixels, as dimensões da imagem.
+
+\begin{codebox}{HTML}
+<img src="dino-esqueleto.jpg"
+     alt="Esqueleto de um T-Rex montado em exposição no museu"
+     width="400"
+     height="341">
+\end{codebox}
+
+Esses valores são importantes porque permitem que o navegador reserve, antecipadamente, o espaço necessário para a imagem no layout da página — mesmo antes que a imagem termine de carregar. Isso evita que o restante do conteúdo ”pule”de posição repentinamente assim que a imagem é finalmente carregada, um problema conhecido como layout shift, que prejudica a experiência do usuário.
+
+\begin{infobox}{Dica}
+Os atributos width e height do HTML não devem ser usados para redimensionar imagens de forma expressiva. Se o objetivo é alterar visualmente o tamanho de exibição de uma imagem, a ferramenta correta é o CSS. Redimensionar drasticamente uma imagem apenas com esses atributos HTML pode causar distorção e perda de qualidade (pixelização), pois é fácil esquecer de manter a proporção original entre largura e altura. Para descobrir as dimensões originais de uma imagem, basta consultar as propriedades do arquivo no sistema operacional (por exemplo, clicando com o botão direito e verificando os detalhes da imagem).
+\end{infobox}
+
+\subsection{O Atributo title}
+
+Assim como no elemento de âncora, o atributo title também pode ser aplicado a uma imagem, exibindo um texto ao passar o mouse sobre ela:
+
+\begin{codebox}{HTML}
+ <img src="dino-esqueleto.jpg"
+      alt="Esqueleto de um T-Rex montado em exposição no museu"
+      title="T-Rex em exposição no Museu da Universidade de Manchester"
+      width="400"
+      height="341">
+\end{codebox}
+
+\begin{infobox}{Dica}
+Nem todos os dispositivos possuem a capacidade de ”passar o mouse”sobre um elemento (por exemplo, celulares e tablets com tela sensível ao toque). Por isso, o atributo title não deve ser usado como única fonte de uma informação importante — considere-o um complemento opcional, nunca essencial.
+\end{infobox}
+
+\section{Legendas com figure e figcaption}
+
+\begin{codebox}{Código}
+É muito comum, em livros e artigos, associar uma imagem a uma legenda numerada
+— ”Figura 1”, ”Figura 2”e assim por diante. Antes do HTML5, essa associação era
+feita de forma não semântica, geralmente com uma div e um parágrafo separado:
+HTML — forma antiga, não recomendada
+<div>
+<img src="trex.jpg" alt="T-Rex em exposição">
+<p>Fig. 1: Um T-Rex em exposição no museu.</p>
+</div>
+\end{codebox}
+
+O problema dessa abordagem é que não existe nenhuma relação semântica explícita entre a imagem e o parágrafo que a legenda. Em uma página com dez imagens e dez legendas, seria impossível para um navegador (ou leitor de tela) determinar, com certeza, qual legenda pertence a qual imagem. O HTML5 resolveu esse problema introduzindo os elementos figure e figcaption:
+
+\begin{codebox}{HTML}
+ <figure>
+   <img src="trex.jpg" alt="Esqueleto de T-Rex em exposição"
+        width="400" height="341">
+   <figcaption>
+     Fig. 1: T-Rex em exposição no Museu da Universidade de Manchester.
+   </figcaption>
+ </figure>
+\end{codebox}
+
+O elemento figure envolve tanto a imagem quanto sua legenda, enquanto figcaption — sempre um filho direto de figure — marca explicitamente qual trecho de texto é a legenda daquela imagem específica.
+
+\begin{infobox}{Dica}
+Embora figure seja frequentemente usado com imagens, ele não se limita a elas — pode envolver, por exemplo, um trecho de código, um gráfico ou uma tabela que precise de uma legenda associada.
+\end{infobox}
+
+\section{Vídeo em HTML}
+
+Assim como as imagens, os vídeos podem ser incorporados diretamente em um documento HTML, utilizando o elemento video e o atributo src.
+
+\begin{codebox}{HTML}
+<video src="coelho320.webm"></video>
+\end{codebox}
+
+\subsection{Conteúdo de Fallback}
+
+Nem todos os navegadores suportam todos os formatos de vídeo. É uma boa prática fornecer um conteúdo alternativo (fallback) — um texto, geralmente com um link para download — que será exibido apenas se o navegador não conseguir renderizar o vídeo.
+
+\begin{codebox}{HTML}
+<video src="coelho320.webm">
+  <p>
+    Seu navegador não suporta vídeo em HTML.
+    <a href="coelho320.webm">Clique aqui para baixar o vídeo.</a>
+  </p>
+</video>
+\end{codebox}
+
+\subsection{Múltiplas Fontes com o Elemento source}
+
+Como diferentes navegadores suportam diferentes formatos de vídeo (por exemplo, alguns navegadores suportam o formato aberto WebM, enquanto outros dependem do MP4), é recomendável oferecer mais de uma versão do mesmo vídeo, permitindo que o próprio navegador escolha qual formato consegue reproduzir. Isso é feito com o elemento source, colocando um ou mais elementos dentro de video (sem mais usar o atributo src diretamente na tag video):
+
+\begin{codebox}{HTML}
+<video controls>
+  <source src="coelho320.mp4" type="video/mp4">
+  <source src="coelho320.webm" type="video/webm">
+  <p>
+    Seu navegador não suporta vídeo em HTML.
+    <a href="coelho320.mp4">Clique aqui para baixar o vídeo.</a>
+  </p>
+</video>
+\end{codebox}
+
+O navegador percorre a lista de elementos source na ordem em que aparecem, e utiliza o primeiro formato que conseguir reproduzir. O atributo type (embora não obrigatório) informa antecipadamente ao navegador qual é o tipo MIME de cada fonte, evitando que ele precise baixar parte do arquivo apenas para descobrir se é compatível.
+
+\section{Atributos do Elemento video}
+
+\subsection{O Atributo controls}
+
+Por padrão, um vídeo incorporado com o elemento video não exibe nenhum controle de reprodução — nenhum botão de play, pausa ou volume. Para adicionar esses controles, utiliza-se o atributo booleano controls.
+
+\begin{codebox}{HTML}
+<video src="coelho320.mp4" controls></video>
+\end{codebox}
+
+Com controls presente, o navegador insere automaticamente uma barra de controles padrão, permitindo reproduzir, pausar, ajustar volume, exibir em tela cheia e até baixar o vídeo.
+
+\subsection{Dimensões: width e height}
+
+Assim como em imagens, é possível definir as dimensões de exibição do vídeo:
+
+\begin{codebox}{HTML}
+<video src="coelho320.mp4" controls width="400" height="400"></video>
+\end{codebox}
+
+\subsection{Outros Atributos Úteis}
+
+\begin{codebox}{HTML}
+<video
+  controls
+  width="400"
+  height="400"
+\end{codebox}
+
+\begin{codebox}{loop}
+muted
+poster="capa-video.png"
+preload="metadata"
+>
+<source src="coelho320.mp4" type="video/mp4">
+<source src="coelho320.webm" type="video/webm">
+</video>
+\end{codebox}
+
+\begin{itemize}
+  \item loop: atributo booleano que faz o vídeo reiniciar automaticamente assim que termina.
+  \item muted: atributo booleano que inicia o vídeo sem áudio (o usuário pode reativar o som manualmente).
+\end{itemize}
+
+\begin{itemize}
+  \item poster: define uma imagem de capa exibida antes que o usuário inicie a reprodução do vídeo.
+\end{itemize}
+
+\begin{itemize}
+  \item preload: indica ao navegador como se comportar antes da reprodução — os valores possíveis são auto (carregar o vídeo inteiro antecipadamente), metadata (carregar apenas metadados, como duração) ou none (não carregar nada até que o usuário inicie a reprodução). Essa opção é especialmente útil para economizar dados em vídeos longos.
+\end{itemize}
+
+\begin{infobox}{Dica}
+Assim como fizemos para o width e height de imagens, evite usar esses atributos HTML para controlar minuciosamente a aparência do player de vídeo — para personalizações visuais mais avançadas, o CSS (e, eventualmente, JavaScript) continua sendo a ferramenta apropriada. Os atributos vistos aqui cobrem apenas o comportamento básico de carregamento e reprodução.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O elemento img é vazio e usa o atributo src para indicar o caminho da imagem (relativo ou absoluto).
+\end{itemize}
+
+\begin{itemize}
+  \item Toda imagem bem marcada deve incluir os atributos alt (texto alternativo, essencial para acessibilidade), width e height (que evitam saltos de layout durante o carregamento).
+\end{itemize}
+
+\begin{itemize}
+  \item width e height não devem ser usados para redimensionamento visual expressivo — essa é uma responsabilidade do CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item Os elementos figure e figcaption associam semanticamente uma imagem (ou outro conteúdo) à sua legenda, substituindo a antiga prática de usar div e parágrafos soltos.
+\end{itemize}
+
+\begin{itemize}
+  \item O elemento video incorpora vídeos, sendo recomendável usar múltiplos elementos source para oferecer diferentes formatos e maximizar a compatibilidade entre navegadores.
+\end{itemize}
+
+\begin{itemize}
+  \item O atributo controls é indispensável para que o usuário consiga interagir com o vídeo (reproduzir, pausar, ajustar volume).
+\end{itemize}
+
+\begin{itemize}
+  \item Atributos como loop, muted, poster e preload controlam comportamentos adicionais de reprodução do vídeo.
+\end{itemize}
+
+Parte III
+
+\begin{codebox}{CSS}
+
+\end{codebox}

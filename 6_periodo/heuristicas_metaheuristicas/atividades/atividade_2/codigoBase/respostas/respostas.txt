@@ -1,0 +1,19 @@
+Questões para reflexão e discussão
+Uma heurística construtiva para o problema do caminho mais longo
+------------------------------------------------------------------------
+
+1. Como se comportou o algoritmo de reparo? Ele é rápido? 
+Sempre consegue gerar uma solução válida?
+Em todas as instâncias testadas,o reparo produziu uma solução válida.Em relação à 
+velocidade, ele é rápido, mas o custo varia conforme o ponto da quebra: quanto mais cedo
+no caminho, mais trabalho de reconstrução é necessário. Quebras próximas do fim foram 
+reparadas de 3 a 5× mais rápido que quebras próximas do início.
+
+------------------------------------------------------------------------
+
+2. O seu algoritmo de reparo é determinístico?
+Sim, é determinístico porque o critério de escolha do próximo vértice não usa nenhuma
+aleatoriedade, e em caso de empate de grau o desempate segue a ordem de iteração de vizinhos
+do NetworkX.
+
+------------------------------------------------------------------------

@@ -1,0 +1,241 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+\usepackage{times}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+% Configuração baseada na ABNT NBR 14724:2024 e no Manual da UNIFAL-MG.
+\geometry{top=3cm,left=3cm,right=2cm,bottom=2cm,headheight=14.5pt}
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{3em}
+
+\titleformat{\section}
+  {\normalfont\bfseries\normalsize}
+  {\thesection}{0.5em}{\MakeUppercase}
+\titlespacing*{\section}{0pt}{1.5\baselineskip}{1.5\baselineskip}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\fontsize{10}{12}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\begin{document}
+\pagenumbering{gobble}
+\hypersetup{pageanchor=false}
+
+% CAPA
+\begin{titlepage}
+    \begin{center}
+        \textbf{UNIVERSIDADE FEDERAL DE ALFENAS -- UNIFAL-MG}\\
+        \textbf{BACHARELADO EM CIÊNCIA DA COMPUTAÇÃO}
+
+        \vspace*{5cm}
+
+        \textbf{JEANN VICTOR BATISTA}
+
+        \vfill
+
+        \textbf{RESUMO DO ARTIGO ``A NEW HUMAN-BASED METAHEURISTIC
+        OPTIMIZATION METHOD BASED ON MIMICKING COOKING TRAINING''}
+
+        \vfill
+
+        \textbf{ALFENAS -- MG}\\
+        \textbf{2026}
+    \end{center}
+\end{titlepage}
+
+% FOLHA DE ROSTO
+\begin{titlepage}
+    \begin{center}
+        \textbf{JEANN VICTOR BATISTA}
+
+        \vspace*{5cm}
+
+        \textbf{RESUMO DO ARTIGO ``A NEW HUMAN-BASED METAHEURISTIC
+        OPTIMIZATION METHOD BASED ON MIMICKING COOKING TRAINING''}
+    \end{center}
+
+    \vspace*{3cm}
+
+    \hfill
+    \begin{minipage}{0.55\textwidth}
+        \singlespacing
+        Relatório apresentado à disciplina DCE770 -- Heurísticas e
+        Metaheurísticas, do curso de Bacharelado em Ciência da Computação da
+        Universidade Federal de Alfenas, como requisito da primeira etapa do
+        Trabalho Final.
+
+        \vspace{\baselineskip}
+
+        Professor: Prof. Dr. Iago Augusto de Carvalho.
+    \end{minipage}
+
+    \vfill
+
+    \begin{center}
+        \textbf{ALFENAS -- MG}\\
+        \textbf{2026}
+    \end{center}
+\end{titlepage}
+
+% SUMÁRIO
+\tableofcontents
+\clearpage
+
+% A capa não é contada; folha de rosto e sumário são contados, mas não numerados.
+\hypersetup{pageanchor=true}
+\pagenumbering{arabic}
+\setcounter{page}{3}
+
+\section{Identificação e contextualização do artigo}
+
+O artigo \textit{A new human-based metaheuristic optimization method based on
+mimicking cooking training}, de Eva Trojovská e Mohammad Dehghani, foi
+publicado em 2022 no periódico de acesso aberto \textit{Scientific Reports}.
+O trabalho apresenta o \textit{Chef-Based Optimization Algorithm} (CBOA), uma
+meta-heurística populacional inspirada no processo de formação de cozinheiros
+em cursos de culinária. O CBOA integra, portanto, a categoria das
+meta-heurísticas baseadas em atividades humanas, ao lado de métodos como o
+TLBO e o WSO. Sua finalidade é resolver problemas de otimização nos quais
+métodos determinísticos podem ser inadequados em razão de não linearidade,
+não convexidade, alta dimensionalidade, descontinuidade ou grande número de
+ótimos locais (Trojovská; Dehghani, 2022).
+
+\section{Problema estudado e motivações}
+
+O problema geral considerado é encontrar, em um espaço de busca limitado, os
+valores das variáveis que minimizam uma função objetivo. Em aplicações reais,
+enumerar todas as soluções pode ser inviável e técnicas baseadas em gradientes
+nem sempre podem ser empregadas. As meta-heurísticas utilizam busca estocástica
+para produzir soluções próximas do ótimo global sem exigir derivadas. Contudo,
+nenhum algoritmo é superior em todas as classes de problemas, conforme o
+teorema \textit{No Free Lunch} (Wolpert; Macready, 1997). Essa ausência de um
+otimizador universal constitui a motivação apresentada pelos autores para
+desenvolver uma nova estratégia que equilibre exploração global e exploração
+intensiva das regiões promissoras.
+
+\section{Contribuições apresentadas}
+
+A contribuição central é a formulação matemática do CBOA, que associa cada
+solução candidata às habilidades de uma pessoa em treinamento culinário. A
+população é reordenada a cada iteração e dividida entre chefs instrutores, que
+correspondem aos indivíduos mais bem avaliados, e estudantes. Os autores
+formalizam duas estratégias para atualizar os instrutores e três estratégias
+para atualizar os estudantes. Também apresentam fluxograma, pseudocódigo,
+análise de complexidade, análise de sensibilidade e uma avaliação experimental
+contra doze meta-heurísticas conhecidas. Por fim, testam o método em quatro
+problemas de projeto de engenharia e disponibilizam publicamente sua
+implementação em MATLAB (Trojovská; Dehghani, 2022).
+
+\section{Meta-heurística proposta}
+
+Inicialmente, o CBOA gera aleatoriamente uma matriz com $N$ soluções, cada uma
+formada por $m$ variáveis dentro dos respectivos limites. Após calcular a
+função objetivo, as soluções são ordenadas: as $N_C$ melhores tornam-se chefs
+instrutores e as demais tornam-se estudantes. O melhor indivíduo da população
+é denominado melhor chef.
+
+Na primeira fase, cada instrutor tenta melhorar sua solução de duas maneiras.
+Na estratégia de exploração, ele se desloca em função da posição do melhor
+chef, com perturbações aleatórias. Na estratégia de aproveitamento, realiza uma
+busca local ao redor da própria posição. Os limites dessa vizinhança diminuem
+com o número da iteração, produzindo passos progressivamente menores. Uma nova
+posição somente substitui a anterior se melhorar o valor da função objetivo.
+
+Concluída a atualização dos instrutores, o processo avança para a segunda
+fase, dedicada aos estudantes, que escolhem aleatoriamente um instrutor e
+atualizam sua posição seguindo três estratégias. Primeiro, aproxima todas as
+suas variáveis das habilidades do instrutor selecionado. Depois, copia apenas
+uma variável, interpretada como o aprendizado integral de uma habilidade. Por
+fim, realiza uma pequena busca local em uma coordenada escolhida
+aleatoriamente. Também nesse grupo prevalece uma regra gulosa: apenas
+mudanças que melhoram a solução são aceitas. Ao final da iteração, toda a
+população é novamente classificada e os papéis de instrutor e estudante podem
+mudar. O processo é repetido por um número fixo de iterações. A complexidade
+total do algoritmo depende do tamanho da população, do número de instrutores
+e do número de iterações, sendo apresentada pelos autores em notação O grande
+(Trojovská; Dehghani, 2022).
+
+\section{Resultados obtidos}
+
+O estudo empregou 23 funções clássicas: sete unimodais para avaliar
+aproveitamento, seis multimodais de alta dimensão para avaliar exploração e dez
+multimodais de dimensão fixa para avaliar o equilíbrio entre ambas. O CBOA e
+os concorrentes foram executados vinte vezes, com mil iterações por execução.
+Os indicadores foram média, melhor valor, desvio-padrão, mediana, tempo de
+execução e posição no ranking. As comparações incluíram GA, PSO, GSA, TLBO,
+GWO, MVO, WOA, TSA, MPA, HBA, DE e CMA.
+
+Nos testes unimodais, o CBOA alcançou o ótimo global em cinco das sete funções
+e obteve a primeira colocação geral. Nas funções multimodais de alta dimensão,
+atingiu exatamente o ótimo em F9 e F11 e voltou a apresentar o melhor ranking
+geral. Nas funções multimodais de dimensão fixa, também ficou em primeiro
+lugar pela média das posições. O teste de soma de postos de Wilcoxon, com nível
+de significância de 5\%, produziu valores de $p$ inferiores a 0,05 contra os
+doze concorrentes, resultado interpretado pelos autores como superioridade
+estatisticamente significativa (Wilcoxon, 1945; Trojovská; Dehghani, 2022).
+
+O algoritmo também foi avaliado nas 29 funções da competição CEC 2017 (Awad et
+al., 2016), obtendo a primeira colocação pelo ranking médio. Na análise de
+sensibilidade, populações de 20, 30, 50 e 100 indivíduos produziram resultados
+semelhantes em muitas funções, enquanto o aumento de 200 para mil iterações
+geralmente melhorou as soluções. Nas aplicações reais --- projeto de vaso de
+pressão, redutor de velocidade, viga soldada e mola de tração/compressão --- o
+CBOA recebeu a primeira posição entre os algoritmos comparados nos quatro
+casos.
+
+\section{Conclusões}
+
+Os autores concluem que a combinação das cinco estratégias permite ao CBOA
+equilibrar a exploração de novas regiões com o refinamento local das soluções.
+Os experimentos indicam desempenho competitivo em funções com características
+distintas e em problemas restritos de engenharia. Entretanto, por ser um
+método estocástico, o CBOA não garante o ótimo global e pode falhar em classes
+de problemas não contempladas nos testes. Como trabalhos futuros, o artigo
+sugere desenvolver versões binária e multiobjetivo e aplicar o algoritmo em
+outros domínios. Assim, a principal conclusão é que o CBOA constitui uma
+alternativa geral e relativamente simples para otimização contínua, embora sua
+eficácia deva ser verificada experimentalmente para cada nova aplicação
+(Trojovská; Dehghani, 2022).
+
+\clearpage
+\section*{REFERÊNCIAS}
+\addcontentsline{toc}{section}{REFERÊNCIAS}
+
+\begin{singlespace}
+\noindent AWAD, N. H.; ALI, M. Z.; LIANG, J. J.; QU, B. Y.; SUGANTHAN, P. N.
+\textbf{Evaluation criteria for the CEC 2017 special session and competition on
+single objective real-parameter numerical optimization}. Daegu: Kyungpook
+National University, 2016.
+
+\vspace{\baselineskip}
+
+\noindent TROJOVSKÁ, Eva; DEHGHANI, Mohammad. A new human-based metaheuristic
+optimization method based on mimicking cooking training. \textbf{Scientific
+Reports}, [s. l.], v. 12, art. 14861, 2022. DOI:
+\href{https://doi.org/10.1038/s41598-022-19313-2}{10.1038/s41598-022-19313-2}.
+
+\vspace{\baselineskip}
+
+\noindent WILCOXON, Frank. Individual comparisons by ranking methods.
+\textbf{Biometrics Bulletin}, [s. l.], v. 1, n. 6, p. 80--83, 1945.
+
+\vspace{\baselineskip}
+
+\noindent WOLPERT, David H.; MACREADY, William G. No free lunch theorems for
+optimization. \textbf{IEEE Transactions on Evolutionary Computation}, [s. l.],
+v. 1, n. 1, p. 67--82, 1997.
+\end{singlespace}
+
+\end{document}

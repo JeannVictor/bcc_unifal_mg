@@ -1,0 +1,17 @@
+#compilar
+
+javac -d bin src/main/java/gbn/*.java
+
+Em terminais diferentes, execute os seguintes comandos:
+Nota: tem que executar com janela sem quebrar a linha, se não os logs desformatam
+Eu coloco metade de cima da tela pro terminal do emissor e a de baixo pro receptor
+
+Emissor
+
+java -cp bin gbn.Emissor input/woman.jpg  127.0.0.1:output/woman.jpg 100 0.1
+
+Nota: Os caminhos pode ser de qualquer diretório, mas deixer uma pasta input e output para facilitar
+
+Receptor
+
+java -cp bin gbn.Receptor

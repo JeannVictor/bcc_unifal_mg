@@ -1,0 +1,254 @@
+\chapter{Marcação Fundamental de Texto em HTML}
+
+O objetivo central do HTML é fornecer aos textos planos que compõem um documento web tanto estrutura quanto significado. Quando falamos em significado, estamos falando de semântica — um conceito que será revisitado constantemente ao longo deste livro. Semântica, em poucas palavras, é a capacidade de uma marcação expressar exatamente o que um determinado trecho de texto representa para quem está lendo (ou ouvindo, no caso de leitores de tela) o documento. Este capítulo apresenta os elementos fundamentais de marcação de texto em HTML: títulos, parágrafos, listas, elementos de ênfase e os hiperlinks — provavelmente a característica mais icônica da própria web. O objetivo é que o futuro desenvolvedor saia deste capítulo sabendo estruturar qualquer texto corrido de forma correta e acessível.
+
+\section{Elementos de Título}
+
+Assim como um livro é organizado em capítulos, seções e subseções para facilitar a leitura, um documento HTML também precisa de uma estrutura hierárquica de títulos. Todo texto bem escrito — seja um artigo científico, uma reportagem ou um romance — costuma ser organizado dessa maneira, pois isso torna a experiência de leitura muito mais agradável. Imagine um texto de duzentas páginas sem nenhum parágrafo, sem capítulos e sem títulos: a leitura seria exaustiva. Em HTML, essa estruturação é feita por meio dos elementos de título, que vão de h1 até h6. Cada um desses elementos representa um nível diferente dentro do documento: o h1 é o título principal (mais genérico), o h2 funciona como um subtítulo, e assim sucessivamente até o h6, o nível mais específico.
+
+\begin{infobox}{Elementos de título não definem tamanho de fonte}
+No início da web, era comum usar os elementos h1 a h6 apenas para deixar um texto maior ou menor na tela — já que o estilo padrão dos navegadores renderiza o h1 com uma fonte maior que o h2, e assim por diante. Essa prática não faz mais sentido: os elementos de título servem para indicar a estrutura semântica do documento, não o tamanho visual do texto. Para controlar a aparência (tamanho, cor, espaçamento), a ferramenta correta é o CSS, que será estudado na Parte III deste livro.
+\end{infobox}
+
+\begin{codebox}{HTML}
+ <h1>Crime e Castigo</h1>
+ <p>Fiódor Dostoiévski</p>
+
+ <h2>Capítulo 1</h2>
+ <p>Em uma tarde excepcionalmente quente de começo de julho...</p>
+
+ <h2>Capítulo 2</h2>
+ <h3>A visita ao penhorista</h3>
+ <p>Ele desceu a escada com cautela...</p>
+\end{codebox}
+
+Observe que, no exemplo acima, existe apenas um h1 — reservado para o título mais genérico do documento (no caso, o título do livro). Os capítulos usam h2, e uma subseção dentro de um capítulo usa h3. Essa é uma boa prática fundamental: os níveis de título devem seguir uma ordem lógica, do mais genérico para o mais específico, sem ”pular”níveis (por exemplo, usar um h4 logo depois de um h1, sem passar por h2 e h3).
+
+\begin{infobox}{Dica}
+Por convenção, evite usar mais de três níveis de título (h1, h2 e h3) em uma única página. Da mesma forma que um documento científico bem escrito raramente ultrapassa a numeração 1.1.1, uma página web com muitos níveis de título aninhados costuma ser sinal de que o conteúdo deveria ser dividido em mais de uma página. Além disso, a boa prática mais comum é usar apenas um único h1 por página, reservado para o assunto principal daquele documento — lembrando que um site é composto de várias páginas, e cada uma delas pode (e deve) ter o seu próprio h1.
+\end{infobox}
+
+\section{Listas}
+
+Listas são extremamente comuns no dia a dia: uma lista de ingredientes de uma receita, o passo a passo de um manual, os tópicos de uma apresentação de slides. O HTML fornece três tipos de listas: não ordenadas, ordenadas e de descrição.
+
+\subsection{Listas Não Ordenadas}
+
+Uma lista não ordenada é usada quando a ordem dos itens não importa — por exemplo, uma lista de ingredientes. Ela é criada com o elemento ul (unordered list), e cada item da lista é delimitado pelo elemento li (list item).
+
+\begin{codebox}{HTML}
+ <ul>
+   <li>Leite</li>
+   <li>Ovos</li>
+   <li>Pão</li>
+   <li>Presunto</li>
+ </ul>
+\end{codebox}
+
+Repare que os navegadores web já possuem estilos padrão implementados para as listas: ao abrir esse código em qualquer navegador (Chrome, Firefox, Safari etc.), os itens já aparecem automaticamente marcados com marcadores (bullets). Isso é apenas o estilo de fábrica do navegador — mais adiante, com CSS, será possível personalizar completamente essa aparência, inclusive trocando os marcadores por outros símbolos ou removendo-os por completo.
+
+\subsection{Listas Ordenadas}
+
+Quando a ordem dos itens importa — como em um passo a passo de instruções — utiliza-se o elemento ol (ordered list), cujo estilo padrão dos navegadores é a numeração sequencial (1, 2, 3...).
+
+\begin{codebox}{HTML}
+<ol>
+  <li>Dirija até o final da estrada.</li>
+  <li>Vire à direita.</li>
+  <li>Siga em frente nas próximas duas rotatórias.</li>
+  <li>Vire à esquerda na terceira rotatória.</li>
+  <li>A escola estará à sua direita, 300 metros à frente.</li>
+</ol>
+\end{codebox}
+
+É possível, ainda, aninhar uma lista dentro de outra — por exemplo, quando um dos passos de uma receita se desdobra em subpassos:
+
+\begin{codebox}{HTML}
+<ol>
+  <li>Separe os ingredientes.</li>
+  <li>Pré-aqueça o forno a 180°C.</li>
+  <li>Bata os ovos com o açúcar.</li>
+  <li>Adicione a farinha aos poucos.</li>
+  <li>Processe os temperos:
+    <ul>
+      <li>Descasque o alho.</li>
+      <li>Pique as ervas finas.</li>
+    </ul>
+  </li>
+  <li>Leve ao forno por 40 minutos.</li>
+</ol>
+\end{codebox}
+
+\subsection{Listas de Descrição}
+
+Um terceiro tipo de lista, menos conhecido mas bastante útil, é a lista de descrição. Ela é usada quando existe um termo e, associado a ele, uma definição — como em um glossário. Os elementos envolvidos são dl (description list), dt (description term) e dd (description definition).
+
+\begin{codebox}{HTML}
+<dl>
+  <dt>Solilóquio</dt>
+  <dd>Tipo de fala em uma peça de teatro na qual um personagem
+      expressa seus pensamentos em voz alta, sozinho no palco.</dd>
+
+    <dt>Monólogo</dt>
+    <dd>Longo discurso proferido por um único personagem,
+        geralmente dirigido a outros personagens presentes em cena.</dd>
+
+  <dt>Aparte</dt>
+  <dd>Comentário breve feito por um personagem diretamente
+      ao público, sem que os demais personagens o percebam.</dd>
+</dl>
+\end{codebox}
+
+Ao renderizar esse código, o estilo padrão dos navegadores exibe o termo (dt) e, logo abaixo, um pouco recuada, a sua definição (dd). O ganho em relação a um texto sem marcação é enorme: o significado de cada trecho fica evidente tanto para o navegador quanto para leitores de tela.
+
+\section{Ênfase e Destaque de Texto}
+
+É muito comum, ao falar ou escrever, querer enfatizar determinadas palavras — alterando a entonação da fala ou destacando visualmente um trecho do texto. O HTML oferece elementos semânticos específicos para isso.
+
+\subsection{Os Elementos em e strong}
+
+O elemento em (emphasis) indica ênfase: o texto é normalmente exibido em itálico, mas, mais importante, ele carrega um significado semântico — leitores de tela pronunciam esse trecho com uma entonação diferenciada.
+
+\begin{codebox}{HTML}
+<p>Estou <em>muito</em> feliz que você não tenha se atrasado.</p>
+\end{codebox}
+
+Já o elemento strong indica importância ou urgência forte, sendo exibido em negrito e, da mesma forma, pronunciado com ênfase por leitores de tela.
+
+\begin{codebox}{HTML}
+<p><strong>Aviso:</strong> este líquido é altamente tóxico.</p>
+<p><strong>Não</strong> use este produto perto de crianças.</p>
+\end{codebox}
+
+É possível, inclusive, combinar os dois elementos, aninhando um dentro do outro:
+
+\begin{codebox}{HTML}
+<p>Se você comer isso, <strong>você <em>pode</em> morrer</strong>.</p>
+\end{codebox}
+
+\subsection{Os Elementos i, b e u}
+
+O HTML também possui elementos mais antigos, herdados dos primórdios da linguagem: i (itálico), b (negrito, de bold) e u (sublinhado, de underline). A diferença fundamental é que esses três elementos são puramente apresentacionais — eles alteram apenas a aparência visual, sem carregar nenhum significado semântico.
+
+\begin{codebox}{HTML}
+ <p>O termo <i>habeas corpus</i> vem do latim.</p>
+ <p>Esta é uma <b>palavra-chave</b> do glossário.</p>
+ <p>A palavra <u>spell</u> está incorreta.</p>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Tenha muito cuidado ao usar o elemento u para sublinhar texto. Os usuários da web estão culturalmente acostumados a associar sublinhado a link. Se você sublinhar um texto que não é um link, pode confundir o leitor. Se realmente precisar de um sublinhado decorativo (por exemplo, para indicar um erro ortográfico, como em corretores automáticos), prefira usar CSS para estilizar esse sublinhado de uma forma visualmente distinta de um link — por exemplo, com uma linha ondulada em vermelho.
+\end{infobox}
+
+A recomendação geral é: sempre que possível, prefira em e strong a i, b e u, pois os primeiros comunicam significado tanto para navegadores quanto para leitores de tela, enquanto os últimos comunicam apenas aparência.
+
+\section{Hiperlinks}
+
+Se há um conceito que definiu a própria existência da web, esse conceito é o hiperlink. É a capacidade de, a partir de um texto (ou imagem), clicar e ser redirecionado para outro documento — seja ele hospedado no mesmo site ou em qualquer lugar do mundo.
+
+\subsection{O Elemento de Âncora}
+
+Um hiperlink é criado com o elemento a (anchor, âncora), utilizando o atributo href (hypertext reference) para indicar o destino do link.
+
+\begin{codebox}{HTML}
+ <p>
+   <a href="https://www.mozilla.org">Link para a página principal da Mozilla</a>
+ </p>
+\end{codebox}
+
+No estilo padrão dos navegadores, links são exibidos sublinhados e em uma cor diferenciada. Ao clicar, o navegador realiza uma requisição HTTP para o endereço indicado no atributo href. É possível, inclusive, transformar uma imagem em um link, envolvendo-a com o elemento âncora:
+
+\begin{codebox}{HTML}
+<a href="https://www.mozilla.org">
+  <img src="mozilla-logo.png" alt="Logotipo da Mozilla">
+</a>
+\end{codebox}
+
+O elemento a também aceita o atributo title, global a vários elementos HTML, que exibe uma dica (tooltip) quando o usuário passa o mouse sobre o link e aguarda alguns segundos.
+
+\begin{codebox}{HTML}
+<a href="https://www.mozilla.org" title="Visite o site oficial da Mozilla">
+  Mozilla home page
+</a>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Nem todo usuário navega com o mouse — algumas pessoas usam apenas o teclado. Como o atributo title só é revelado ao passar o mouse, ele não é acessível a esses usuários. Se a informação for realmente importante, prefira colocá-la como texto visível na página em vez de escondê-la em um atributo title.
+\end{infobox}
+
+\subsection{Caminhos Relativos e Absolutos}
+
+Ao criar um link, é preciso indicar o endereço (URL) de destino, que pode ser um caminho relativo ou um caminho absoluto. Uma URL absoluta contém todas as informações necessárias, desde o protocolo até o domínio: https://www.mozilla.org/pt-BR/. Já um caminho relativo localiza o recurso a partir da posição atual dentro do próprio sistema de arquivos do servidor web — o mesmo conceito usado para navegar entre pastas no Windows, macOS ou Linux. Considere a seguinte estrutura de arquivos de um site:
+
+Estrutura de diretórios / (raiz do site) ��� index.html ��� curriculo.pdf ��� projetos/ ��� index.html
+
+Se estivermos dentro de index.html (na raiz) e quisermos criar um link para projetos/index.html, que está em um subdiretório, o caminho relativo seria:
+
+\begin{codebox}{HTML}
+<a href="projetos/index.html">Veja meus projetos</a>
+\end{codebox}
+
+Se, ao contrário, estivermos dentro de projetos/index.html e quisermos voltar para a raiz e acessar o curriculo.pdf, usamos .. para ”subir”um nível no sistema de arquivos:
+
+\begin{codebox}{HTML}
+<a href="../curriculo.pdf">Baixe meu currículo</a>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Sempre que o link apontar para um recurso dentro do seu próprio site, prefira caminhos relativos: eles são mais curtos e não dependem do domínio completo. Reserve caminhos absolutos para links que apontam para sites externos.
+\end{infobox}
+
+\subsection{Links para Seções Específicas e Outros Esquemas de URL}
+
+Também é possível criar um link para uma seção específica de um documento (ao invés do documento inteiro), usando o atributo id para identificar de forma única um elemento, e referenciando-o com \# no href:
+
+\begin{codebox}{HTML}
+<!-- Em contato.html -->
+<h2 id="endereco">Endereço de correspondência</h2>
+<p>Rua das Flores, 123 - Centro</p>
+
+<!-- Em outra página -->
+<a href="contato.html#endereco">Ver nosso endereço</a>
+\end{codebox}
+
+O HTML também permite criar links que abrem o cliente de e-mail padrão do usuário, usando o esquema mailto:, e links de download, usando o atributo download:
+
+\begin{codebox}{HTML}
+<a href="mailto:contato@exemplo.com?subject=Duvida&body=Ola">
+  Envie um e-mail
+</a>
+
+<a href="instalador.exe" download="instalador-programa.exe">
+  Baixar instalador
+</a>
+\end{codebox}
+
+\begin{infobox}{Dica}
+Evite textos de link genéricos como ”clique aqui”. Muitos usuários (e leitores de tela) fazem uma leitura rápida (skimming) de uma página, prestando atenção apenas nos links e títulos. Um texto de link como ”Baixe o Firefox”é muito mais informativo do que ”clique aqui para baixar o Firefox”com o link apenas na palavra ”aqui”. Da mesma forma, informe sempre que um link aponta para um recurso pesado (como um vídeo em alta definição ou um arquivo grande), para que o usuário decida conscientemente se quer prosseguir.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item Os elementos h1 a h6 estruturam hierarquicamente o documento e não devem ser usados apenas para alterar o tamanho da fonte — essa é uma tarefa do CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item Existem três tipos de listas em HTML: não ordenadas (ul), ordenadas (ol) e de descrição (dl/dt/dd), e listas podem ser aninhadas dentro de outras listas.
+\end{itemize}
+
+\begin{itemize}
+  \item Os elementos em e strong carregam significado semântico (afetando inclusive a entonação de leitores de tela), enquanto i, b e u são puramente apresentacionais.
+\end{itemize}
+
+\begin{itemize}
+  \item Hiperlinks são criados com o elemento a e o atributo href, podendo apontar para outros documentos, seções específicas (com \#id), endereços de e-mail (mailto:) ou arquivos para download.
+\end{itemize}
+
+\begin{itemize}
+  \item URLs podem ser relativas (baseadas na posição atual dentro do sistema de arquivos do site) ou absolutas (endereço completo); prefira relativas para recursos internos ao próprio site.
+\end{itemize}
+
+\begin{itemize}
+  \item Boas práticas de acessibilidade recomendam textos de link descritivos, evitando frases genéricas como ”clique aqui”.
+\end{itemize}

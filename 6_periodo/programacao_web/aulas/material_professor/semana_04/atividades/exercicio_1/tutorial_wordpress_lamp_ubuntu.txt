@@ -1,0 +1,417 @@
+TUTORIAL — DOIS WEBSITES WORDPRESS COM LAMP NO UBUNTU
+============================================================
+
+Objetivo
+--------
+Criar dois websites independentes com WordPress usando um servidor LAMP
+(Apache + PHP + MySQL) no Ubuntu e permitir o acesso aos dois a partir de:
+
+    http://localhost
+
+Estrutura final esperada:
+
+    http://localhost/
+    ├── http://localhost/wordpress1/
+    └── http://localhost/wordpress2/
+
+1. VERIFICAR O LAMP
+-------------------
+
+    apache2 -v
+    mysql --version
+    php -v
+    sudo systemctl status apache2
+
+Também é possível testar:
+
+    curl http://localhost
+
+No navegador:
+
+    http://localhost
+
+
+2. INSTALAR EXTENSÕES PHP NECESSÁRIAS
+-------------------------------------
+
+    sudo apt update
+
+    sudo apt install php-mysql php-curl php-gd php-mbstring php-xml php-zip php-intl -y
+
+Depois:
+
+    sudo systemctl restart apache2
+
+Para verificar módulos:
+
+    php -m
+
+Procure por:
+    mysqli
+    curl
+    gd
+    mbstring
+    xml
+    zip
+    intl
+
+
+3. BAIXAR O WORDPRESS
+---------------------
+
+Ir para a raiz do Apache:
+
+    cd /var/www/html
+
+Baixar:
+
+    sudo wget https://wordpress.org/latest.tar.gz
+
+Extrair:
+
+    sudo tar -xzf latest.tar.gz
+
+Renomear para o primeiro site:
+
+    sudo mv wordpress wordpress1
+
+Criar a segunda instalação:
+
+    sudo cp -a /var/www/html/wordpress1 /var/www/html/wordpress2
+
+Agora devem existir:
+
+    /var/www/html/wordpress1
+    /var/www/html/wordpress2
+
+
+4. CORRIGIR PERMISSÕES
+----------------------
+
+Primeiro site:
+
+    sudo chown -R www-data:www-data /var/www/html/wordpress1
+
+    sudo find /var/www/html/wordpress1 -type d -exec chmod 755 {} \;
+    sudo find /var/www/html/wordpress1 -type f -exec chmod 644 {} \;
+
+Segundo site:
+
+    sudo chown -R www-data:www-data /var/www/html/wordpress2
+
+    sudo find /var/www/html/wordpress2 -type d -exec chmod 755 {} \;
+    sudo find /var/www/html/wordpress2 -type f -exec chmod 644 {} \;
+
+
+5. CRIAR OS DOIS BANCOS DE DADOS
+---------------------------------
+
+Entrar no MySQL:
+
+    sudo mysql
+
+Executar:
+
+    CREATE DATABASE wordpress1_db;
+    CREATE DATABASE wordpress2_db;
+
+Criar um usuário para o WordPress:
+
+    CREATE USER 'wordpress'@'localhost' IDENTIFIED BY 'SenhaWordPress123!';
+
+Dar acesso ao primeiro banco:
+
+    GRANT ALL PRIVILEGES ON wordpress1_db.* TO 'wordpress'@'localhost';
+
+Dar acesso ao segundo:
+
+    GRANT ALL PRIVILEGES ON wordpress2_db.* TO 'wordpress'@'localhost';
+
+Aplicar permissões:
+
+    FLUSH PRIVILEGES;
+
+Sair:
+
+    EXIT;
+
+IMPORTANTE:
+Cada WordPress possui seu próprio banco de dados.
+
+
+6. INSTALAR O PRIMEIRO WORDPRESS
+--------------------------------
+
+Abrir no navegador:
+
+    http://localhost/wordpress1
+
+Escolher:
+    Português do Brasil
+
+Dados do banco:
+
+    Banco de dados:       wordpress1_db
+    Usuário:              wordpress
+    Senha:                SenhaWordPress123!
+    Servidor:             localhost
+    Prefixo:              wp1_
+
+Depois criar:
+    Título:               Hello World 1
+    Usuário administrador: admin1
+    Senha:                escolher uma senha
+    E-mail:               seu e-mail
+
+Concluir a instalação.
+
+Site:
+    http://localhost/wordpress1
+
+Painel:
+    http://localhost/wordpress1/wp-admin
+
+
+7. INSTALAR O SEGUNDO WORDPRESS
+-------------------------------
+
+Abrir:
+
+    http://localhost/wordpress2
+
+Escolher:
+    Português do Brasil
+
+Dados do banco:
+
+    Banco de dados:       wordpress2_db
+    Usuário:              wordpress
+    Senha:                SenhaWordPress123!
+    Servidor:             localhost
+    Prefixo:              wp2_
+
+Configurar:
+
+    Título:               Hello World 2
+    Usuário administrador: admin2
+    Senha:                escolher uma senha
+    E-mail:               seu e-mail
+
+Site:
+    http://localhost/wordpress2
+
+Painel:
+    http://localhost/wordpress2/wp-admin
+
+
+8. CRIAR O CONTEÚDO "HELLO WORLD"
+---------------------------------
+
+No primeiro WordPress:
+
+    http://localhost/wordpress1/wp-admin
+
+Ir em:
+    Páginas -> Adicionar nova
+
+Criar uma página chamada:
+
+    Hello World
+
+Conteúdo sugerido:
+
+    Hello World!
+
+    Este é o primeiro website criado com WordPress
+    utilizando LAMP no Linux.
+
+Publicar.
+
+No segundo WordPress:
+
+    http://localhost/wordpress2/wp-admin
+
+Criar também:
+
+    Hello World
+
+Conteúdo sugerido:
+
+    Hello World!
+
+    Este é o segundo website criado com WordPress
+    utilizando LAMP no Linux.
+
+Publicar.
+
+
+9. CRIAR A PÁGINA PRINCIPAL EM HTTP://LOCALHOST
+-----------------------------------------------
+
+O Apache utiliza normalmente:
+
+    /var/www/html/
+
+O arquivo inicial costuma ser:
+
+    /var/www/html/index.html
+
+Fazer backup:
+
+    sudo cp /var/www/html/index.html /var/www/html/index.html.backup
+
+Editar:
+
+    sudo nano /var/www/html/index.html
+
+Substituir o conteúdo pelo HTML abaixo:
+
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Meus Websites WordPress</title>
+    </head>
+    <body>
+
+        <h1>Meus Websites WordPress</h1>
+
+        <p>Escolha um dos websites:</p>
+
+        <ul>
+            <li>
+                <a href="/wordpress1/">
+                    Hello World 1
+                </a>
+            </li>
+
+            <li>
+                <a href="/wordpress2/">
+                    Hello World 2
+                </a>
+            </li>
+        </ul>
+
+    </body>
+    </html>
+
+No nano:
+    Ctrl + O
+    Enter
+    Ctrl + X
+
+
+10. TESTAR
+----------
+
+Página principal:
+
+    http://localhost
+
+Deve apresentar links para:
+
+    Hello World 1
+    Hello World 2
+
+Primeiro site:
+
+    http://localhost/wordpress1/
+
+Segundo site:
+
+    http://localhost/wordpress2/
+
+Painel do primeiro:
+
+    http://localhost/wordpress1/wp-admin
+
+Painel do segundo:
+
+    http://localhost/wordpress2/wp-admin
+
+
+11. ESTRUTURA FINAL DOS ARQUIVOS
+--------------------------------
+
+    /var/www/html/
+    |
+    +-- index.html
+    |
+    +-- wordpress1/
+    |   +-- wp-admin/
+    |   +-- wp-content/
+    |   +-- wp-includes/
+    |   +-- wp-config.php
+    |   +-- ...
+    |
+    +-- wordpress2/
+        +-- wp-admin/
+        +-- wp-content/
+        +-- wp-includes/
+        +-- wp-config.php
+        +-- ...
+
+
+12. ESTRUTURA FINAL DO MYSQL
+----------------------------
+
+    MySQL
+    |
+    +-- wordpress1_db
+    |   +-- tabelas do WordPress 1
+    |
+    +-- wordpress2_db
+        +-- tabelas do WordPress 2
+
+
+13. O QUE O EXERCÍCIO EXIGE
+----------------------------
+
+O exercício pede:
+
+    [x] Primeiro website Hello World com WordPress
+    [x] Segundo website Hello World com WordPress
+    [x] Os dois funcionando localmente
+    [x] Acesso aos dois a partir de http://localhost
+
+URLs finais:
+
+    Página principal:
+        http://localhost
+
+    Website 1:
+        http://localhost/wordpress1
+
+    Website 2:
+        http://localhost/wordpress2
+
+    Administração 1:
+        http://localhost/wordpress1/wp-admin
+
+    Administração 2:
+        http://localhost/wordpress2/wp-admin
+
+
+14. OBSERVAÇÃO IMPORTANTE SOBRE LAMP
+------------------------------------
+
+Não é necessário instalar XAMPP, WAMP ou MAMP.
+
+No Ubuntu, o LAMP nativo é suficiente:
+
+    Ubuntu
+       |
+       +-- Apache
+       |
+       +-- PHP
+       |
+       +-- MySQL
+              |
+              +-- wordpress1_db
+              |
+              +-- wordpress2_db
+
+Não é recomendável instalar outro pacote como XAMPP por cima do LAMP,
+pois isso pode causar conflitos de serviços e portas.
+
+FIM

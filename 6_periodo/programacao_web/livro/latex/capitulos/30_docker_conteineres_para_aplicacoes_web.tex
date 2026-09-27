@@ -1,0 +1,140 @@
+\chapter{Docker: Contêineres para Aplicações Web}
+
+\section{O problema da divergência de ambientes}
+
+No desenvolvimento de software, é comum a existência de diferentes tipos de ambiente ao longo do ciclo de vida de uma aplicação: o ambiente de desenvolvimento (a máquina local do desenvolvedor, onde ele testa e aperfeiçoa seu código livremente); o ambiente de homologação, no qual uma equipe de qualidade (QA) verifica se tudo está de acordo com o especificado; o ambiente de staging, no qual pessoas interessadas no produto — como product owners e outros stakeholders — podem validar o que foi desenvolvido; e, por fim, o ambiente de produção, onde o sistema efetivamente opera para os usuários finais. Um problema recorrente nesse cenário é a divergência entre ambientes: a máquina de desenvolvimento pode ter uma arquitetura diferente, uma quantidade diferente de recursos de processamento e, principalmente, versões diferentes de softwares instalados em comparação com os ambientes de homologação, staging e produção. Esse tipo de divergência é responsável por uma das frases mais repetidas — e mais frustrantes — no universo do desenvolvimento de software: ”na minha máquina funciona”.
+
+\begin{infobox}{O problema resolvido pelo Docker}
+O Docker resolve o problema da divergência de ambientes ao empacotar uma aplicação junto de todas as suas dependências (bibliotecas, variáveis de ambiente, configurações) em uma unidade isolada e portátil, chamada contêiner, garantindo que ela se comporte da mesma forma independentemente de onde for executada.
+\end{infobox}
+
+Antes do Docker, a solução mais comum para esse problema era a virtualização convencional, por meio de máquinas virtuais (VirtualBox, VMware, Parallels). O problema dessa abordagem é que, para instalar qualquer software dentro de uma máquina virtual, é necessário primeiro instalar um sistema operacional completo — e, caso uma mesma biblioteca precise estar disponível em várias máquinas virtuais, ela precisa ser instalada manualmente em cada uma delas, junto com todo o hardware virtualizado
+
+exigido por aquele sistema operacional.
+
+\section{O que é um contêiner}
+
+O Docker propõe uma abordagem de virtualização não convencional: ele não depende de um sistema operacional completo por trás de cada aplicação, sendo autossuficiente por meio do conceito de contêineres. Uma boa analogia para entender o conceito vem do transporte de cargas. Antes da invenção do contêiner de transporte marítimo, carregar e descarregar um navio era um processo lento, manual e sujeito a perdas — mercadorias podiam quebrar, deteriorar ou ser desviadas. Com o contêiner físico, tornou-se possível transportar mercadorias de forma segura, padronizada e com o mínimo de trabalho manual, já que máquinas especializadas passaram a lidar com a movimentação. O Docker aplica essa mesma lógica ao software: em vez de instalar manualmente cada dependência em cada ambiente, empacota-se a aplicação inteira, com tudo que ela precisa para funcionar, dentro de uma unidade padronizada e facilmente movimentável — o contêiner de software.
+
+\begin{infobox}{Contêiner}
+Um contêiner é um pacote de software que reúne uma aplicação e todas as suas dependências necessárias para execução. As instruções para iniciar ou parar um contêiner são determinadas por uma imagem do Docker; toda vez que uma imagem é executada, um novo contêiner é criado a partir dela.
+\end{infobox}
+
+O gerenciamento de contêineres é feito por meio da API do Docker ou de sua interface de linha de comando (ILC, ou CLI em inglês). Quando é necessário orquestrar vários contêineres simultaneamente, entra em cena o Docker Compose, ferramenta que será apresentada mais adiante neste capítulo. Historicamente, o Docker se apoiava em um projeto chamado LXC (Linux Container), que por sua vez utiliza recursos do kernel Linux como chroot, control groups (cgroups) e namespaces do kernel.
+
+\section{Trabalhando com imagens e contêineres}
+
+O Docker está disponível em duas edições: Community Edition (gratuita, mais do que suficiente para o uso de um desenvolvedor individual) e Enterprise Edition (voltada a ambientes corporativos, com infraestrutura homologada e certificada). Para os propósitos deste livro, a Community Edition é adequada.
+
+\subsection{Imagens: o ponto de partida de um contêiner}
+
+Para colocar um contêiner em funcionamento, o Docker precisa antes ter, em sua máquina hospedeira (host), uma imagem correspondente ao software desejado — por exemplo, uma imagem do MongoDB, do MySQL ou do Nginx. Essas imagens podem ser baixadas de um repositório remoto (chamado registry), sendo o Docker Hub o mais conhecido e utilizado deles, ou podem ser criadas localmente pelo próprio desenvolvedor.
+
+O comando docker pull realiza o download de uma imagem a partir de um registry: Docker \# Baixa a versao mais recente (latest) da imagem do Ubuntu docker pull ubuntu
+
+\# Baixa uma versao especifica de uma imagem docker pull mysql:5.7
+
+Uma vez baixadas, as imagens disponíveis localmente podem ser listadas com o comando docker images, que exibe o repositório, a versão (tag), o identificador da imagem, a data de criação e o tamanho ocupado em disco.
+
+\subsection{Executando e gerenciando contêineres}
+
+A partir de uma imagem já baixada, é possível iniciar quantos contêineres forem necessários utilizando o comando docker run. Para acessar interativamente o terminal de um contêiner — por exemplo, um contêiner baseado na imagem do Ubuntu — utiliza-se: Docker \# -i mantém o contêiner interativo \# -t anexa um terminal virtual ao host docker run -it ubuntu
+
+É importante ter em mente que o Docker não fornece interface gráfica: ao ”instalar”o Ubuntu por meio de uma imagem Docker, o que se obtém é um ambiente de linha de comando, e não uma área de trabalho gráfica como a fornecida pelo GNOME em uma instalação convencional. Para listar os contêineres em execução no momento, utiliza-se docker ps; para listar também os contêineres que já foram encerrados (mas que ainda existem, apenas não estão rodando), utiliza-se docker ps -a: Docker \# Lista apenas os contêineres em execução docker ps
+
+\# Lista todos os contêineres, inclusive os parados docker ps -a
+
+\section{Criando imagens próprias: o Dockerfile}
+
+Até aqui, foram utilizadas apenas imagens já publicadas por terceiros no Docker Hub. Mas como criar uma imagem própria — por exemplo, uma imagem customizada do MySQL, já configurada com scripts específicos de inicialização de um banco de dados? A resposta está no Dockerfile, um arquivo de definição no qual se declaram, por meio de diretivas específicas, as instruções necessárias para montar a imagem.
+
+Docker \# Dockerfile
+
+\# Toda imagem geralmente parte de uma imagem-base já existente FROM mysql:latest
+
+\# Copia scripts locais de inicializacao do banco para dentro do contêiner \# Esses scripts serao executados automaticamente na primeira inicializacao COPY ./db/ /docker-entrypoint-initdb.d/
+
+Um Dockerfile é compilado (ou ”construído”) por meio do comando docker build, que gera uma imagem a partir das instruções contidas no arquivo: Docker \# Constroi uma imagem chamada bluevelvet-db a partir do Dockerfile \# no diretorio atual docker build -t bluevelvet-db .
+
+\# Executa um contêiner a partir da imagem recem-criada docker run -d --name meu-banco bluevelvet-db
+
+\begin{infobox}{Dica}
+É útil pensar na relação entre Dockerfile, imagem e contêiner como uma cadeia de transformações: o Dockerfile é a receita; a imagem, gerada a partir dessa receita, é algo estático — comparável a um programa gravado em disco; e o contêiner, criado a partir da execução da imagem, é a instância dinâmica em execução — comparável a um processo rodando na memória.
+\end{infobox}
+
+A figura a seguir resume essa cadeia de transformações:
+
+Dockerfile docker build Imagem docker run Contêiner 1 (receita, texto) (estática, em disco) (em execução)
+
+\begin{infobox}{docker run}
+Contêiner 2 (em execução)
+\end{infobox}
+
+Note que uma mesma imagem pode dar origem a múltiplos contêineres independentes entre si, exatamente como uma mesma classe em Java pode dar origem a múltiplos objetos independentes.
+
+\section{Orquestrando múltiplos contêineres com o Docker Compose}
+
+Quando uma aplicação depende de mais de um serviço — por exemplo, um banco de dados relacional e um sistema de mensageria — gerenciar cada contêiner manualmente se torna trabalhoso. O Docker Compose resolve esse problema por meio de
+
+um arquivo de definição no formato YAML (YAML Ain’t Markup Language), uma linguagem de serialização de dados criada para ser legível e de fácil escrita, também utilizada, por exemplo, nos arquivos application.yml do Spring Boot.
+
+\begin{infobox}{Docker}
+\# docker-compose.yml
+\end{infobox}
+
+\begin{infobox}{services:}
+db: image: mysql:5.7 restart: unless-stopped environment: MYSQL\_DATABASE: DB MYSQL\_USER: user MYSQL\_PASSWORD: password MYSQL\_ROOT\_PASSWORD: password ports: - "3306:3306" expose: - "3306" volumes: - mydb:/var/lib/mysql
+\end{infobox}
+
+\begin{infobox}{volumes:}
+mydb:
+\end{infobox}
+
+Alguns pontos merecem atenção nessa estrutura. Em YAML, a indentação define hierarquia: tudo que está indentado sob services pertence a services, e tudo que está indentado sob db pertence especificamente a esse serviço. O nome db funciona como um simples identificador (alias) — poderia ser qualquer outro nome — utilizado para referenciar esse serviço dentro do arquivo. A chave image define qual imagem e qual versão serão utilizadas; nesse exemplo, a versão 5.7 do MySQL foi fixada propositalmente, eliminando qualquer ambiguidade sobre qual versão está rodando em cada ambiente — justamente o problema de divergência discutido no início deste capítulo. A chave restart define a política de reinicialização do contêiner em caso de falha (no, on-failure, always ou unless-stopped). A seção environment define variáveis de ambiente específicas da imagem — no caso do MySQL, o nome do banco, o usuário, a senha e a senha do usuário administrador (root). A seção ports expõe uma porta do contêiner para a máquina hospedeira: no formato "porta-externa:porta-interna", o exemplo expõe a porta 3306 do contêiner (padrão do MySQL) também como porta 3306 na máquina local — mas nada impede que se exponha, por exemplo, como porta 3307 externamente, caso a 3306 já esteja em uso por outro serviço. Por fim, a seção volumes resolve um detalhe importante: por padrão, tudo o que ocorre dentro de um contêiner é volátil, ou seja, é perdido quando o contêiner é encerrado. Ao mapear um volume — nesse caso, associando o diretório /var/lib/mysql do contêiner a um volume nomeado mydb na máquina hospedeira — os dados persistem mesmo após o contêiner ser encerrado e reiniciado.
+
+\begin{infobox}{Dica}
+Em versões mais antigas do Docker Compose, era comum declarar, no topo do arquivo, uma chave version (por exemplo, version: "3.8"), indicando a versão da especificação do Compose sendo utilizada. Essa chave tornou-se obsoleta nas versões mais recentes do Docker e pode ser omitida — mas, como ferramentas de inteligência artificial treinadas com dados mais antigos ainda costumam sugeri-la, vale saber que ela não é mais necessária.
+\end{infobox}
+
+Para subir todos os contêineres definidos no arquivo, basta executar, no mesmo diretório do arquivo docker-compose.yml:
+
+\begin{infobox}{Docker}
+\# Sobe todos os contêineres definidos no docker-compose.yml docker compose up
+\end{infobox}
+
+\# Encerra e remove os contêineres criados pelo compose docker compose down
+
+\section{Visão geral da arquitetura do Docker}
+
+A arquitetura do Docker é composta por quatro elementos principais: o cliente Docker, utilizado para emitir comandos como build, pull e run; o servidor Docker (ou daemon), que aguarda solicitações via API REST do cliente para gerenciar imagens e contêineres; as imagens, que instruem o servidor sobre como criar um contêiner; e o registry, aplicação responsável por hospedar e distribuir imagens — podendo ser o Docker Hub público ou um registry privado mantido pela própria organização. Vale destacar que o Docker não realiza limpeza automática de imagens não utilizadas: cabe ao próprio usuário remover imagens que não sejam mais necessárias, seja pela linha de comando, seja pelo Docker Desktop — interface gráfica que facilita bastante o dia a dia de quem prefere não memorizar todos os comandos apresentados neste capítulo.
+
+\section{Vantagens e desvantagens do Docker}
+
+Entre as principais vantagens do Docker, destacam-se:
+
+\begin{itemize}
+  \item Portabilidade: um Dockerfile, um arquivo Docker Compose ou mesmo uma imagem isolada funcionam de forma idêntica independentemente do sistema operacional da máquina hospedeira, eliminando o problema de ”na minha máquina funciona”.
+\end{itemize}
+
+\begin{itemize}
+  \item Automação: combinado a ferramentas de automação (como cron jobs), o Docker permite replicar ambientes de desenvolvimento, homologação, staging e produção de forma consistente, sem configuração manual repetida.
+\end{itemize}
+
+\begin{itemize}
+  \item Comunidade: o Docker conta com uma comunidade extensa e madura, com canais dedicados, fóruns próprios e milhões de imagens disponíveis publicamente no Docker Hub. Por outro lado, algumas desvantagens merecem consideração:
+  \item Desempenho: embora um contêiner seja mais rápido que uma máquina virtual tradicional, ele ainda é mais lento do que executar uma aplicação nativamente em um servidor físico.
+  \item Curva de aprendizado: o Docker não é trivial para quem não tem familiaridade com linha de comando, e cenários com múltiplos serviços dependentes entre si (como Kafka e Zookeeper) exigem uma orquestração cuidadosa, adicionando complexidade.
+  \item Segurança: como o Docker é executado sobre o sistema operacional da máquina hospedeira, qualquer software malicioso escondido em uma imagem não oficial pode, em tese, comprometer a máquina host — reforçando a importância de utilizar apenas imagens confiáveis e, preferencialmente, oficiais. Compreendidos esses conceitos, o leitor está preparado para utilizar o Docker como ferramenta de suporte ao desenvolvimento das próximas etapas deste livro — em especial, para executar bancos de dados de forma isolada e reprodutível, sem a necessidade de instalá-los diretamente na máquina local.
+\end{itemize}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O Docker resolve o problema da divergência entre ambientes de desenvolvimento, homologação, staging e produção, empacotando aplicações e suas dependências em contêineres.
+  \item Um contêiner é uma instância em execução de uma imagem; a imagem, por sua vez, é estática e definida por um Dockerfile.
+  \item Comandos essenciais incluem docker pull (baixar imagem), docker run (executar contêiner), docker images e docker ps (listar imagens e contêineres) e docker build (gerar imagem a partir de um Dockerfile).
+  \item O Docker Compose, definido em um arquivo YAML, permite orquestrar múltiplos contêineres simultaneamente, com configuração de portas, variáveis de ambiente e volumes persistentes.
+  \item A arquitetura do Docker é composta por cliente, servidor (daemon), imagens e registry (como o Docker Hub).
+  \item As principais vantagens do Docker são portabilidade, automação e uma comunidade madura; as desvantagens incluem desempenho inferior ao nativo, curva de aprendizado acentuada e riscos de segurança ao usar imagens não confiáveis.
+  \item O domínio básico do Docker é um pré-requisito prático comum para trabalhar com bancos de dados e outras dependências de infraestrutura em projetos Spring Boot modernos.
+\end{itemize}

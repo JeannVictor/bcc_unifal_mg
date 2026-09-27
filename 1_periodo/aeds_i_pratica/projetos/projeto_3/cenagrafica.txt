@@ -1,0 +1,9 @@
+quadrado 5.5
+retangulo 4.5 4.8
+triangulo 4.4 4.6
+cubo 9.4
+paralelepipedo 4.6 7.92 4.75
+cilindro 4.91 4.54 4.78
+cone 4.8 4.9
+esfera 4.7 4.9
+fim

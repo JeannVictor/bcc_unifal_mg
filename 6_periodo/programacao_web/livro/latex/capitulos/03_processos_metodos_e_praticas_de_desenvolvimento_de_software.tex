@@ -1,0 +1,159 @@
+\chapter{Processos, Métodos e Práticas de Desenvolvimento de Software}
+
+\section{O que é um processo de desenvolvimento de software}
+
+Ao desenvolver software, é preciso seguir uma sequência de atividades e produzir uma série de artefatos intermediários até chegar ao produto final, executado na máquina do cliente ou em um ambiente de produção. Esse caminho percorrido — da ideia inicial até o software em produção — é chamado de processo de desenvolvimento de software: uma sequência de atividades desempenhadas para produzir software de valor.
+
+\begin{infobox}{Ciclo de vida em cascata}
+Em engenharia tradicional, é muito comum usar o chamado ciclo de vida em cascata (waterfall), no qual as etapas do processo — geralmente requisitos, design, desenvolvimento, teste e implantação — são executadas sequencialmente, uma após a outra. Apenas ao final da última etapa o produto é entregue ao cliente.
+\end{infobox}
+
+O grande problema do modelo em cascata aplicado a software é que o tempo entre a coleta inicial de requisitos e a entrega final costuma ser de meses, período durante o qual o cliente não recebe nenhum código executável para validar se o time está no caminho correto. Embora o ciclo em cascata funcione bem em várias áreas da engenharia, ele não é adequado para a maioria dos projetos de software por um motivo simples: software é algo intangível. Diferente de uma ponte ou de um prédio, o cliente não tem um produto físico e palpável para usar como referência enquanto imagina o que está sendo desenvolvido. Isso faz com que os requisitos sejam voláteis e mudem constantemente ao longo do projeto — o que contraria a premissa do modelo em cascata, que assume que 100\% dos requisitos podem ser capturados antes de se iniciar o design e o desenvolvimento. O modelo em cascata só funciona bem quando os requisitos já são muito bem definidos e o grau de variação esperado é pequeno — casos que constituem exceção, e não regra, no desenvolvimento de software.
+
+\section{Métodos ágeis e o ciclo de vida iterativoincremental}
+
+Os métodos ágeis surgem como alternativa ao modelo em cascata, substituindo-o pelo chamado ciclo de vida iterativo e incremental. A ideia central é que o produto de software é construído ao longo de diversas iterações que se repetem no tempo, e cada iteração contém todas as disciplinas de desenvolvimento — requisitos, design, desenvolvimento, teste e implantação. Cada iteração é um período curto de tempo (por isso “curto ciclo”), ao final do qual o cliente recebe um produto funcional, ainda que pequeno e incompleto. Ao final de uma iteração, uma nova começa, repassando todas as disciplinas de desenvolvimento novamente — e o software vai crescendo e evoluindo ao longo dessas iterações sucessivas. Essa é a razão pela qual o modelo iterativo-incremental é hoje o mais recomendado para desenvolvimento de software: ele fornece pontos de inspeção frequentes, nos quais o cliente pode verificar se o projeto está indo na direção correta e, caso necessário, solicitar ajustes já na iteração seguinte — ao contrário do modelo em cascata, no qual eventuais insatisfações só são percebidas (e corrigidas, a um custo muito maior) depois de meses de trabalho.
+
+\subsection{Scrum}
+
+O Scrum é, provavelmente, o método ágil mais famoso baseado no ciclo de vida iterativo-incremental. É importante entender uma característica central do Scrum: ele é um framework de gerenciamento do processo de desenvolvimento — ele não prescreve práticas técnicas de programação, como TDD, testes automatizados, refatoração ou programação em par. O Scrum foca em como organizar o trabalho da equipe ao longo de ciclos curtos chamados Sprints.
+
+\begin{infobox}{Sprint}
+Um Sprint é uma iteração de tempo limitado (tipicamente entre uma e quatro semanas) na qual a equipe se compromete a entregar a maior quantidade possível de valor funcional ao cliente.
+\end{infobox}
+
+O funcionamento básico do Scrum envolve os seguintes artefatos e eventos:
+
+\begin{itemize}
+  \item Product Backlog: lista de itens de trabalho (incluindo requisitos) priorizados pelo time e pelo cliente;
+  \item Sprint Backlog: subconjunto de tarefas do Product Backlog selecionado para ser desenvolvido dentro de um Sprint específico;
+  \item Daily Scrum: reunião diária e curta em que cada membro da equipe responde a três perguntas: o que fiz ontem para hoje? o que farei hoje para amanhã? há algo me impedindo de avançar?
+\end{itemize}
+
+Ao final de um Sprint, a equipe não entrega documentação — entrega software funcionando, ainda que incompleto, para que o cliente possa avaliar, aceitar ou solicitar mudanças a serem tratadas no próximo Sprint.
+
+\subsection{Extreme Programming (XP)}
+
+Enquanto o Scrum organiza o gerenciamento do projeto, o Extreme Programming (XP) é o método ágil mais famoso voltado às práticas técnicas de desenvolvimento de software, sendo comum usar os dois métodos em conjunto: Scrum para gestão das entregas, XP para as práticas de engenharia.
+
+\begin{infobox}{Feedback loop}
+Um feedback loop (laço de retroalimentação) é uma interação em que alguém realiza uma ação, observa o resultado dessa ação e, com base nesse resultado, decide qual será a próxima ação. É um conceito central tanto no Scrum quanto no XP.
+\end{infobox}
+
+O XP trabalha explicitamente com múltiplos ciclos de feedback, em diferentes escalas de tempo:
+
+\begin{itemize}
+  \item Segundos: ao escrever uma função e compilá-la/executá-la, o desenvolvedor obtém feedback instantâneo;
+\end{itemize}
+
+\begin{itemize}
+  \item Minutos: ao rodar um teste automatizado, o resultado aparece como uma “barra verde” (sucesso) ou “barra vermelha” (falha);
+\end{itemize}
+
+\begin{itemize}
+  \item Diário: a reunião diária do Scrum (Daily Scrum) fornece um ponto de inspeção diário sobre o andamento do trabalho;
+\end{itemize}
+
+\begin{itemize}
+  \item Semanas: ao final de um Sprint, o cliente avalia o que foi entregue e fornece feedback sobre a direção do projeto;
+\end{itemize}
+
+\begin{itemize}
+  \item Meses: liberações maiores (releases), compostas por vários Sprints, representam pontos de feedback em nível macro do projeto.
+\end{itemize}
+
+\section{DevOps}
+
+O DevOps pode ser entendido como uma evolução natural dos métodos ágeis, combinando Development (desenvolvimento) e Operations (operação). Tradicionalmente, o time que desenvolve o software não é o mesmo que opera esse software em produção no dia a dia: o time de desenvolvimento entrega o software e, a partir daí, uma equipe de operações (muitas vezes do próprio cliente) cuida da execução em produção. Uma analogia útil: da mesma forma que os métodos ágeis eliminaram a barreira entre o time de desenvolvimento e o cliente (que, no modelo em cascata tradicional, ficava restrita a analistas de sistemas que levantavam requisitos meses antes da entrega), o DevOps busca eliminar a barreira — ou o “silo” — entre o time de desenvolvimento e o time de operação. A ideia é que ambos os times trabalhem de forma integrada, com pessoas representando operação dentro do time de desenvolvimento e vice-versa, compartilhando a mesma sinergia para entregar valor ao cliente continuamente. O objetivo principal do DevOps é reduzir o tempo entre a escrita do código e sua efetiva disponibilização em produção para os clientes, promovendo entrega contínua e monitoramento constante do software já em operação.
+
+\section{Práticas essenciais de desenvolvimento}
+
+Independentemente do método ou processo escolhido, algumas práticas são consideradas essenciais para qualquer equipe de desenvolvimento de software profissional.
+
+\subsection{Entrega contínua (Continuous Delivery)}
+
+A prática de entrega contínua busca eliminar o gargalo de tempo entre o código estar pronto e estar implantado na máquina do cliente. A ideia é que, a partir do momento em que um código é enviado (commit) ao repositório, sejam gerados automaticamente testes, verificações e o empacotamento do software para colocação em produção — tudo de forma automatizada. Ferramentas comuns para isso incluem Jenkins, Travis CI e GitHub Actions.
+
+\subsection{Testes automatizados}
+
+Um dos pilares do XP é o uso de testes automatizados, que podem ser escritos após a criação do código (para validá-lo) ou, em uma prática ainda mais rigorosa chamada Test-Driven Development (TDD), escritos antes mesmo do código que deverá passar neles.
+
+\begin{infobox}{Dica}
+Um erro comum de quem está começando é testar o código manualmente: implementar uma funcionalidade, rodá-la, olhar a saída no console e comparar visualmente com o resultado esperado (às vezes usando print ou console.log espalhados pelo código). Esse tipo de teste manual não é recomendável, porque depende de intervenção humana constante e não escala à medida que a aplicação cresce. Quando uma nova funcionalidade é adicionada, é comum que funcionalidades anteriores quebrem sem que ninguém perceba — daí a importância dos chamados testes de regressão: sempre que uma nova funcionalidade é adicionada, todos os testes anteriores também devem ser executados, para garantir que nada foi quebrado.
+\end{infobox}
+
+Com testes automatizados, o próprio computador executa os testes e reporta o resultado (barra verde ou vermelha) em tempo real, assim que uma alteração é feita. Isso permite identificar erros de forma muito mais rápida do que a verificação manual, especialmente à medida que a aplicação cresce em tamanho e complexidade.
+
+\subsection{Controle de versão}
+
+Trabalhar em equipe pressupõe algum sistema de controle de versão por trás das operações, permitindo que várias pessoas trabalhem sobre a mesma base de código sem conflitos descontrolados. O XP, inclusive, prega a propriedade coletiva de código: não existe a noção de ”esse código é meu”; qualquer pessoa da equipe pode alterar qualquer parte do código, desde que passe pelos testes automatizados.
+
+\begin{infobox}{Dica}
+Mesmo trabalhando sozinho em projetos pessoais, vale adotar um sistema de controle de versão desde o início. Fazendo commits pequenos e frequentes, fica muito mais fácil desfazer (rollback) uma alteração equivocada e voltar a uma versão anterior do código — algo bem mais difícil de fazer sem esse histórico.
+\end{infobox}
+
+O Git é hoje, disparadamente, o sistema de controle de versão mais usado no mercado. Trata-se de um sistema de controle de versão distribuído, criado por Linus Torvalds (o mesmo criador do kernel do Linux). É importante não confundir Git com GitHub: o Git é o software de controle de versão em si, enquanto o GitHub é um site que hospeda repositórios criados com Git, permitindo colaboração online — alternativas populares incluem GitLab e Bitbucket. É perfeitamente possível usar Git localmente, sem depender de nenhum desses serviços, inclusive configurando um servidor Git dentro da própria intranet de uma organização.
+
+\subsection{Documentação}
+
+A prática de documentação é importante tanto do ponto de vista do usuário final (manuais de uso, muitas vezes produzidos por um escritor técnico especializado) quanto do ponto de vista técnico, voltado para os desenvolvedores responsáveis pela manutenção futura do software — que frequentemente não são os mesmos que o criaram originalmente. Essa documentação pode assumir diversas formas: texto corrido, diagramas UML, esquemas de banco de dados ou qualquer outro artefato que sirva de base para a evolução do sistema.
+
+\subsection{Trabalho em equipe}
+
+Vale desfazer um estereótipo comum: a imagem de que profissionais de TI são pessoas isoladas, que trabalham sozinhas com fones de ouvido sem interagir com ninguém. Na prática, o desenvolvimento de software de qualidade depende fortemente do trabalho em equipe, seguindo algum processo ou método compartilhado por todos. É recomendável, inclusive durante a formação universitária, buscar oportunidades de formar equipes para trabalhos práticos, começando a desenvolver essa habilidade desde cedo. Essa ideia se conecta diretamente ao conceito de profissional em formato T apresentado no capítulo anterior: nada impede que, em uma equipe ágil, um desenvolvedor back-end contribua ocasionalmente com uma página HTML ou uma folha de estilo CSS, ainda que sua especialidade principal seja outra.
+
+\section{O padrão arquitetural MVC}
+
+Um padrão arquitetural que qualquer desenvolvedor web — front-end, back-end ou full stack — certamente vai encontrar é o MVC (Model-View-Controller).
+
+\begin{infobox}{MVC — Model-View-Controller}
+O MVC é uma separação explícita entre o conteúdo de uma aplicação, sua apresentação e o componente que faz a ponte entre os dois:
+\end{infobox}
+
+\begin{itemize}
+  \item Model (Modelo): os dados e a lógica de negócio da aplicação;
+\end{itemize}
+
+\begin{itemize}
+  \item View (Visão): a apresentação desses dados para o usuário, seja em um navegador web, seja em uma tela de aplicativo móvel;
+\end{itemize}
+
+\begin{itemize}
+  \item Controller (Controlador): o componente que faz a interação entre o Model e a View.
+\end{itemize}
+
+O MVC é tão relevante para aplicações web que a maioria das linguagens de backend possui frameworks que já implementam esse padrão de forma nativa: Laravel para PHP, Spring Boot ou JavaServer Faces para Java, Express.js para Node.js, entre outros. É tecnicamente possível implementar o MVC ”na mão”, em qualquer linguagem, mas na prática quase ninguém faz isso: usar um framework que já aplica o padrão de forma consistente aumenta muito a produtividade.
+
+\section{A importância da flexibilidade}
+
+Para encerrar, vale reforçar uma mensagem central deste capítulo: o desenvolvedor web vai, ao longo da carreira, aprender diversos métodos, processos, padrões e práticas de desenvolvimento. O mais importante não é memorizar essas práticas de forma rígida, mas entender que novas práticas continuarão a surgir e que outras cairão em desuso com o tempo. Quando um projeto termina, é provável que o próximo — talvez com outra equipe, outra abordagem, mesmo dentro da mesma empresa — exija adaptação a novos métodos. Ser flexível o suficiente para incorporar essas mudanças é o que efetivamente impulsiona uma carreira de sucesso em desenvolvimento web: o profissional competente não domina apenas a implementação de código, mas também os padrões, métodos e processos que organizam esse trabalho.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O modelo em cascata (waterfall) entrega valor apenas ao final do projeto e não lida bem com a natureza volátil dos requisitos de software.
+\end{itemize}
+
+\begin{itemize}
+  \item Métodos ágeis usam o ciclo de vida iterativo-incremental, entregando software funcional em iterações curtas e sucessivas, criando pontos frequentes de inspeção e adaptação.
+\end{itemize}
+
+\begin{itemize}
+  \item Scrum é um framework de gerenciamento organizado em Sprints, com artefatos como Product Backlog e Sprint Backlog e eventos como o Daily Scrum.
+\end{itemize}
+
+\begin{itemize}
+  \item Extreme Programming (XP) prescreve práticas técnicas (testes automatizados, TDD, propriedade coletiva de código) organizadas em torno do conceito de feedback loops.
+\end{itemize}
+
+\begin{itemize}
+  \item DevOps combina desenvolvimento e operação em um único time integrado, eliminando o ”silo”entre quem escreve o código e quem o mantém em produção.
+\end{itemize}
+
+\begin{itemize}
+  \item Testes automatizados e controle de versão (especialmente com Git) são práticas essenciais e praticamente indispensáveis no desenvolvimento profissional moderno.
+\end{itemize}
+
+\begin{itemize}
+  \item O padrão arquitetural MVC separa dados (Model), apresentação (View) e lógica de controle (Controller), e está presente na maioria dos frameworks de back-end atuais.
+\end{itemize}

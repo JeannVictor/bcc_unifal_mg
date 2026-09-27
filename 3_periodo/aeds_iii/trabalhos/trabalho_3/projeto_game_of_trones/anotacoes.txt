@@ -1,0 +1,71 @@
+Brandes pseudo-código, uma versão modifica do que 
+tem na wikipédia, lá o algoritmo é para grafo sem peso:
+
+"A faster algorithm for betweenness centrality."
+Journal of Mathematical Sociology, 25(2):163–177, 2001.
+
+function Brandes(Graph):
+    for each node v in V:
+        C_B[v] = 0                  # Inicialização da centralidade
+
+    for each node s in V:           # Caminhos mais curtos a partir de s
+        Stack S = empty
+        PriorityQueue PQ = empty     # Fila de prioridade para Dijkstra
+        for each node t in V:
+            P[t] = []               # Predecessores
+            σ[t] = 0                # Número de caminhos curtos
+            dist[t] = ∞
+        σ[s] = 1
+        dist[s] = 0
+        PQ.enqueue(s, 0)            # Prioridade = distância (0 para s)
+
+        # Algoritmo de Dijkstra com fila de prioridade
+        while PQ not empty:
+            v = PQ.extract_min()    # Extrai o vértice com menor distância
+            S.push(v)
+            for each neighbor w of v:
+                if dist[w] > dist[v] + weight(v, w):
+                    dist[w] = dist[v] + weight(v, w)
+                    σ[w] = σ[v]
+                    P[w] = [v]
+                    PQ.enqueue(w, dist[w])  # Atualiza a fila
+                elif dist[w] == dist[v] + weight(v, w):
+                    σ[w] += σ[v]           # Caminho alternativo
+                    P[w].append(v)
+
+        # Fase de Acumulação (Brandes)
+        δ = {v: 0 for v in V}
+        while S not empty:
+            w = S.pop()
+            for v in P[w]:
+                δ[v] += (σ[v] / σ[w]) * (1 + δ[w])
+            if w != s:
+                C_B[w] += δ[w]
+
+    return C_B
+
+-----------------------------------------------------------------------------
+
+Alguns códigos prontos caso seja necessário usar
+
+arq  = fopen("Pers_pos.txt", "w");
+    for (int i=0; i < lista->tam; i++){
+        fprintf(arq, "%s: %d\n", personagens[lista->elm[i].nome], lista->elm[i].posicao);
+    }
+    fclose(arq);
+
+// Cria o arquivo CSV e escreve os cabeçalhos com a matriz de relações 
+    arq  = fopen("pesos.txt", "w");
+    fprintf(arq, "   Nome");
+    for (int i = 0; i < 10; i++) {
+        fprintf(arq, ",%7s", personagens[i]);
+    }
+    fprintf(arq, "\n");
+    for (int i = 0; i < 10; i++) {
+        fprintf(arq, "%7s", personagens[i]);  // Nome da linha
+        for (int j = 0; j < 10; j++) {
+            fprintf(arq, ",%7d", matrizRelacoes[i][j]);
+        }
+        fprintf(arq, "\n");
+    }
+    fclose(arq);

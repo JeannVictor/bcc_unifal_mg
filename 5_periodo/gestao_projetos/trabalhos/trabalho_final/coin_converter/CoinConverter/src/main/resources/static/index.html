@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoinConverter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── THEME TOKENS ─── */
+    :root[data-theme="dark"] {
+      --bg:        #0d0f0e;
+      --surf:      #141714;
+      --surf2:     #1c201c;
+      --surf3:     #232823;
+      --border:    #2a302a;
+      --green:     #b8ff3c;
+      --green2:    #7aff8c;
+      --text:      #e8ede8;
+      --text2:     #a0b0a0;
+      --muted:     #5a6b5a;
+      --red:       #ff5252;
+      --shadow:    rgba(0,0,0,.4);
+      --topbar-bg: rgba(13,15,14,.88);
+    }
+    :root[data-theme="light"] {
+      --bg:        #f0f4f0;
+      --surf:      #ffffff;
+      --surf2:     #f4f7f4;
+      --surf3:     #eaeeea;
+      --border:    #d0d8d0;
+      --green:     #3a8a00;
+      --green2:    #2db34a;
+      --text:      #1a221a;
+      --text2:     #4a5c4a;
+      --muted:     #7a927a;
+      --red:       #cc2222;
+      --shadow:    rgba(0,0,0,.10);
+      --topbar-bg: rgba(240,244,240,.92);
+    }
+
+    html, body {
+      background: var(--bg); color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      min-height: 100vh; overflow-x: hidden;
+      transition: background .25s, color .25s;
+    }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 50; gap: 16px;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px; letter-spacing: 2.5px;
+      color: var(--green); line-height: 1; white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ─── NAV PILLS ─── */
+    .nav-pills {
+      display: flex; gap: 6px;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 5px;
+    }
+    .nav-pill {
+      padding: 9px 20px; border-radius: 8px;
+      cursor: pointer; font-size: 13px; font-weight: 500;
+      background: transparent; border: none; color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      transition: all .18s; letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .nav-pill:hover { color: var(--text); background: var(--surf3); }
+    .nav-pill.active {
+      background: var(--green); color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(184,255,60,.25);
+    }
+    [data-theme="light"] .nav-pill.active { color: #fff; }
+
+    /* ─── TOPBAR RIGHT ─── */
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* Theme toggle */
+    .theme-btn {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: var(--surf2); border: 1px solid var(--border);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 17px; transition: all .18s; color: var(--text2);
+    }
+    .theme-btn:hover { border-color: var(--green); background: var(--surf3); }
+
+    /* Profile button — bigger, clearer */
+    .profile-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 14px; border-radius: 10px;
+      background: var(--surf2); border: 1px solid var(--border);
+      cursor: pointer; transition: all .18s; color: var(--text2);
+      font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    }
+    .profile-btn:hover, .profile-btn.open {
+      border-color: var(--green); color: var(--green);
+      background: var(--surf3);
+    }
+    .profile-btn .pb-icon { font-size: 20px; line-height: 1; }
+    .profile-btn .pb-label { font-size: 12px; color: var(--muted); }
+    .profile-btn.logged .pb-label { color: var(--green2); }
+
+    /* ─── STAGE ─── */
+    .stage {
+      padding-top: 62px; min-height: 100vh;
+      display: flex; justify-content: center; position: relative;
+    }
+
+    /* ─── PANEL ─── */
+    .panel {
+      position: fixed; top: 62px; right: 0; bottom: 0; width: 540px;
+      background: var(--surf);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 32px var(--shadow);
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      z-index: 40; overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .panel.open { transform: translateX(0); }
+
+    .panel-header {
+      padding: 22px 28px 0;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-shrink: 0;
+    }
+    .panel-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px; letter-spacing: 1.5px; color: var(--green);
+    }
+    .panel-close {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--surf2); border: 1px solid var(--border);
+      cursor: pointer; color: var(--muted); font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .panel-close:hover { color: var(--text); border-color: var(--border); background: var(--surf3); }
+
+    /* panel tabs */
+    .panel-tabs {
+      display: flex; background: var(--surf2); border-radius: 10px;
+      padding: 4px; margin: 0 28px 20px; border: 1px solid var(--border);
+    }
+    .ptab {
+      flex: 1; padding: 9px 6px; text-align: center; border-radius: 7px;
+      cursor: pointer; font-size: 12px; color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace; background: none; border: none;
+      transition: all .15s; letter-spacing: .03em;
+    }
+    .ptab:hover { color: var(--text); }
+    .ptab.active { background: var(--green); color: #fff; font-weight: 600; }
+    [data-theme="light"] .ptab.active { color: #fff; }
+
+    .p-section { padding: 0 28px 28px; }
+
+    /* auth tabs */
+    .auth-tabs {
+      display: flex; background: var(--surf2); border-radius: 10px;
+      padding: 4px; margin-bottom: 22px; border: 1px solid var(--border);
+    }
+    .atab {
+      flex: 1; padding: 10px; text-align: center; border-radius: 7px;
+      cursor: pointer; font-size: 13px; color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace; background: none; border: none;
+      transition: all .15s;
+    }
+    .atab.active { background: var(--green); color: #fff; font-weight: 600; }
+    [data-theme="light"] .atab.active { color: #fff; }
+
+    /* ─── CONTENT ─── */
+    .content {
+      width: 100%; max-width: 860px;
+      padding: 52px 40px;
+      margin: 0 auto;
+      transition: margin .3s cubic-bezier(.4,0,.2,1), max-width .3s cubic-bezier(.4,0,.2,1);
+    }
+    /* When panel is open: shift content left so it doesn't hide behind panel */
+    .content.shifted {
+      margin-left: 0;
+      margin-right: 540px;
+      max-width: 860px;
+    }
+
+    /* ─── VIEWS ─── */
+    .view { display: none; flex-direction: column; gap: 28px; }
+    .view.active { display: flex; animation: fadeUp .22s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ─── HERO ─── */
+    .hero { margin-bottom: 4px; }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 96px; letter-spacing: 5px; line-height: .9;
+    }
+    .hero h1 em { color: var(--green); font-style: normal; }
+    .hero-sub {
+      margin-top: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .hero-badge {
+      font-size: 12px; font-weight: 500; letter-spacing: .07em;
+      padding: 5px 12px; border-radius: 20px;
+    }
+    .hb-green  {
+      background: rgba(184,255,60,.12); color: var(--green);
+      border: 1px solid rgba(184,255,60,.28);
+    }
+    .hb-dim {
+      background: var(--surf2); color: var(--text2);
+      border: 1px solid var(--border);
+    }
+    [data-theme="light"] .hb-green {
+      background: rgba(58,138,0,.1); color: var(--green);
+      border-color: rgba(58,138,0,.22);
+    }
+    .hero-dot { color: var(--border); font-size: 18px; line-height: 1; }
+
+    /* ─── FORMS ─── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .field input, .field select {
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 12px 15px;
+      color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 14px;
+      outline: none; transition: border-color .2s, box-shadow .2s; width: 100%;
+    }
+    .field input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(184,255,60,.1); }
+    [data-theme="light"] .field input:focus { box-shadow: 0 0 0 3px rgba(58,138,0,.12); }
+    .coin-inp { text-transform: uppercase; letter-spacing: 3px; font-size: 18px; font-weight: 500; }
+
+    /* panel fields */
+    .pf { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .pf label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .pf input {
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 13px;
+      color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+      outline: none; transition: border-color .2s; width: 100%;
+    }
+    .pf input:focus { border-color: var(--green); }
+
+    /* ─── BUTTONS ─── */
+    .btn-go {
+      width: 100%; padding: 15px; border-radius: 10px;
+      background: var(--green); color: #fff;
+      border: none; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600;
+      letter-spacing: .05em; transition: all .15s;
+    }
+    [data-theme="dark"] .btn-go { color: #0d0f0e; }
+    .btn-go:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(184,255,60,.25); }
+
+    .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; transition: all .15s; border: none; letter-spacing: .03em; }
+    .btn-prim { background: var(--green); color: #fff; font-weight: 600; }
+    [data-theme="dark"] .btn-prim { color: #0d0f0e; }
+    .btn-prim:hover { filter: brightness(1.1); }
+    .btn-sec { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-sec:hover { border-color: var(--green2); color: var(--green2); }
+    .btn-wide { width: 100%; padding: 12px; font-size: 13.5px; }
+    .btn-del { background: transparent; border: 1px solid rgba(204,34,34,.3); color: var(--red); font-size: 11px; padding: 5px 11px; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; transition: all .15s; }
+    .btn-del:hover { background: rgba(204,34,34,.08); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text2); border-radius: 9px; padding: 11px 20px; width: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 13px; cursor: pointer; transition: all .15s; }
+    .btn-ghost:hover { border-color: var(--green2); color: var(--green2); }
+
+    /* ─── CONVERTER ─── */
+    .conv-box {
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 14px; padding: 30px;
+      box-shadow: 0 2px 16px var(--shadow);
+    }
+    .conv-grid {
+      display: grid; grid-template-columns: 1fr 50px 1fr; gap: 14px;
+      align-items: flex-end; margin-bottom: 18px;
+    }
+    @media (max-width: 560px) { .conv-grid { grid-template-columns: 1fr; } }
+    .swap-wrap { display: flex; align-items: flex-end; justify-content: center; }
+    .swap-btn {
+      width: 44px; height: 44px; border-radius: 9px;
+      background: var(--surf2); border: 1px solid var(--border);
+      cursor: pointer; font-size: 18px; color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .25s;
+    }
+    .swap-btn:hover { background: var(--green); color: #fff; transform: rotate(180deg); }
+    [data-theme="dark"] .swap-btn:hover { color: #0d0f0e; }
+
+    .result-box {
+      margin-top: 18px; border-radius: 11px; padding: 24px 28px;
+      background: var(--surf2);
+      border: 1px solid var(--green); display: none;
+    }
+    .result-box.show { display: block; animation: fadeUp .2s ease; }
+    .result-label {
+      font-size: 10px; color: var(--muted);
+      letter-spacing: .14em; text-transform: uppercase; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .result-label::after { content: ''; flex: 1; height: 1px; background: rgba(184,255,60,.2); }
+    .result-main {
+      display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    }
+    .result-from {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 17px; font-weight: 400; color: var(--text2); letter-spacing: .03em;
+    }
+    .result-eq { font-size: 20px; color: var(--muted); margin: 0 4px; }
+    .result-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px; letter-spacing: 2px; color: var(--green); line-height: 1;
+    }
+    .result-currency {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px; letter-spacing: 2px; color: var(--green2); opacity: .8;
+    }
+    .result-rate {
+      font-size: 11.5px; color: var(--text2); margin-top: 10px;
+      padding-top: 10px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .result-rate span { color: var(--green); font-weight: 500; }
+
+    /* fav bar */
+    .fav-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .fav-bar .label { font-size: 10px; color: var(--muted); letter-spacing: .07em; white-space: nowrap; }
+    .chip {
+      padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
+      background: var(--surf2); border: 1px solid var(--border);
+      cursor: pointer; transition: all .15s; letter-spacing: 1px; font-weight: 500;
+    }
+    .chip:hover { border-color: var(--green); color: var(--green); }
+
+    /* ─── CARDS & GRID ─── */
+    .card {
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 12px; padding: 22px;
+      box-shadow: 0 1px 8px var(--shadow);
+    }
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; letter-spacing: .8px; margin-bottom: 18px; color: var(--text);
+    }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+    @media (max-width: 960px)  { .grid3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px)  { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+    /* ─── FILTERS ─── */
+    .filter-row {
+      display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 22px;
+      box-shadow: 0 1px 6px var(--shadow);
+    }
+
+    /* ─── SECTION TITLE ─── */
+    .sec-title {
+      font-size: 10.5px; text-transform: uppercase; letter-spacing: .12em;
+      color: var(--muted); display: flex; align-items: center; gap: 10px;
+    }
+    .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── TABLES ─── */
+    .tbl-wrap {
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 12px; overflow: auto;
+      box-shadow: 0 1px 8px var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      padding: 12px 18px; font-size: 10px; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--muted); background: var(--surf2);
+      border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+    }
+    td { padding: 13px 18px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surf2); }
+    .tag {
+      display: inline-block; padding: 3px 9px;
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 5px; font-size: 11.5px; font-weight: 500; letter-spacing: 1px;
+    }
+    .arr { color: var(--muted); margin: 0 4px; font-size: 11px; }
+
+    /* ─── STAT BARS ─── */
+    .stat-list { display: flex; flex-direction: column; gap: 14px; }
+    .stat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12.5px; }
+    .stat-val { color: var(--green); font-weight: 600; }
+    .stat-pct { font-size: 10.5px; color: var(--muted); margin-left: 5px; }
+    .bar-bg { height: 4px; background: var(--border); border-radius: 2px; }
+    .bar-fill { height: 4px; border-radius: 2px; background: var(--green); transition: width .7s ease; }
+    .bar-fill.teal { background: var(--green2); }
+
+    /* ─── USER HEADER ─── */
+    .user-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 10px; margin-bottom: 16px;
+    }
+    .user-email-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+    .user-email-val { font-size: 13px; color: var(--green2); }
+
+    /* ─── FAVORITES GRID ─── */
+    .fav-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .fav-card {
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px;
+      transition: border-color .15s;
+    }
+    .fav-card:hover { border-color: var(--green); }
+
+    /* ─── DIVIDER ─── */
+    .divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 10px; margin: 14px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ─── AUTH MSG ─── */
+    .auth-msg { font-size: 12px; text-align: center; min-height: 18px; margin-top: 8px; }
+
+    /* ─── TOAST ─── */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 11px; padding: 13px 20px; font-size: 13px;
+      box-shadow: 0 4px 20px var(--shadow);
+      animation: fadeUp .3s ease; max-width: 300px;
+      pointer-events: none; display: none;
+    }
+    #toast.success { border-color: var(--green2); color: var(--green2); }
+    #toast.error   { border-color: var(--red);    color: var(--red); }
+
+    /* ─── COIN AUTOCOMPLETE ─── */
+    .coin-wrap { position: relative; }
+    .coin-dropdown {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 9px; z-index: 200; overflow: hidden;
+      box-shadow: 0 8px 28px var(--shadow);
+      max-height: 220px; overflow-y: auto;
+      display: none;
+    }
+    .coin-dropdown.show { display: block; animation: fadeUp .14s ease; }
+    .coin-opt {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; cursor: pointer; transition: background .12s;
+      border-bottom: 1px solid var(--border); font-size: 13px;
+    }
+    .coin-opt:last-child { border-bottom: none; }
+    .coin-opt:hover, .coin-opt.focused { background: var(--surf2); }
+    .coin-opt .co-code { font-weight: 600; letter-spacing: 1.5px; font-size: 14px; color: var(--text); min-width: 44px; }
+    .coin-opt .co-name { color: var(--muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .coin-opt .co-match { color: var(--green); }
+
+    /* ─── MISC ─── */
+    .loading { padding: 32px; text-align: center; color: var(--muted); font-size: 12px; }
+    .empty   { padding: 28px; text-align: center; color: var(--muted); font-size: 12px; }
+    .hidden  { display: none !important; }
+    .flex-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+    .flex-1 { flex: 1; min-width: 110px; }
+    .amount-row { margin-bottom: 16px; }
+    .gap-s { display: flex; flex-direction: column; gap: 10px; }
+
+    /* ─── AUTOCOMPLETE ─── */
+    .coin-wrap { position: relative; }
+    .ac-dropdown {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--surf); border: 1px solid var(--border);
+      border-radius: 10px; z-index: 100; overflow: hidden;
+      box-shadow: 0 8px 28px var(--shadow);
+      max-height: 220px; overflow-y: auto;
+    }
+    .ac-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; cursor: pointer; transition: background .12s;
+      font-size: 13px;
+    }
+    .ac-item:hover, .ac-item.focused { background: var(--surf2); }
+    .ac-code {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 17px; letter-spacing: 1.5px;
+      color: var(--green); min-width: 44px;
+    }
+    .ac-name { color: var(--text2); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ac-flag { font-size: 18px; flex-shrink: 0; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ─── TOPBAR ─── -->
+<header class="topbar">
+  <div class="logo">CoinConverter</div>
+
+  <div class="nav-pills">
+    <button class="nav-pill active" onclick="switchView('convert')">⇄ Convert</button>
+    <button class="nav-pill" onclick="switchView('stats')">▣ Public Stats</button>
+    <button class="nav-pill" onclick="switchView('history')">◎ History</button>
+  </div>
+
+  <div class="topbar-right">
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark mode">🌙</button>
+    <button class="profile-btn" id="profile-btn" onclick="togglePanel()">
+      <span class="pb-icon">👤</span>
+      <span class="pb-label" id="pb-label">Sign in</span>
+    </button>
+  </div>
+</header>
+
+<!-- ─── STAGE ─── -->
+<div class="stage">
+  <div class="content" id="content">
+
+    <!-- ══ CONVERT ══ -->
+    <div class="view active" id="view-convert">
+      <div class="hero">
+        <h1>REAL<br/><em>TIME</em><br/>RATES</h1>
+        <div class="hero-sub">
+          <span class="hero-badge hb-green">Live exchange rates</span>
+          <span class="hero-dot">·</span>
+          <span class="hero-badge hb-dim">No account needed</span>
+          <span class="hero-dot">·</span>
+          <span class="hero-badge hb-dim">170+ currencies</span>
+        </div>
+      </div>
+
+      <div id="fav-bar-wrap" class="hidden">
+        <div class="fav-bar">
+          <span class="label">FAVORITES →</span>
+          <div id="quick-favs"></div>
+        </div>
+      </div>
+
+      <div class="conv-box">
+        <div class="amount-row field">
+          <label>Amount</label>
+          <input type="number" id="c-amount" placeholder="100.00" min="0.01" step="0.01"/>
+        </div>
+        <div class="conv-grid">
+          <div class="field">
+            <label>From</label>
+            <div class="coin-wrap">
+              <input type="text" id="c-from" placeholder="USD" maxlength="3" class="coin-inp" autocomplete="off"
+                oninput="onCoinInput('c-from','dd-from')" onkeydown="onCoinKey(event,'c-from','dd-from')" onblur="hideDd('dd-from')"/>
+              <div class="ac-dropdown" id="dd-from"></div>
+            </div>
+          </div>
+          <div class="swap-wrap">
+            <button class="swap-btn" onclick="swapCoins()">⇄</button>
+          </div>
+          <div class="field">
+            <label>To</label>
+            <div class="coin-wrap">
+              <input type="text" id="c-to" placeholder="BRL" maxlength="3" class="coin-inp" autocomplete="off"
+                oninput="onCoinInput('c-to','dd-to')" onkeydown="onCoinKey(event,'c-to','dd-to')" onblur="hideDd('dd-to')"/>
+              <div class="ac-dropdown" id="dd-to"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-go" onclick="doConvert()">CONVERT →</button>
+        <div class="result-box" id="conv-result">
+          <div class="result-label">Result</div>
+          <div class="result-main">
+            <span class="result-from" id="res-from"></span>
+            <span class="result-eq">=</span>
+            <span class="result-num" id="res-num"></span>
+            <span class="result-currency" id="res-cur"></span>
+          </div>
+          <div class="result-rate" id="res-rate"></div>
+        </div>
+      </div>
+
+      <div class="sec-title">Recent Global Conversions</div>
+      <div class="tbl-wrap" id="recent-tbl"><div class="loading">Loading…</div></div>
+    </div>
+
+    <!-- ══ STATS ══ -->
+    <div class="view" id="view-stats">
+      <div class="hero">
+        <h1>PUBLIC<br/><em>STATS</em></h1>
+        <div class="hero-sub">
+          <span class="hero-badge hb-dim">Platform-wide analytics</span>
+          <span class="hero-dot">·</span>
+          <span class="hero-badge hb-dim">No login required</span>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="field"><label>Limit</label><input type="number" id="s-limit" value="10" min="1" max="100" style="width:90px"/></div>
+        <div class="field"><label>From date</label><input type="datetime-local" id="s-start"/></div>
+        <div class="field"><label>To date</label><input type="datetime-local" id="s-end"/></div>
+        <button class="btn btn-prim" onclick="loadStats()">Apply</button>
+      </div>
+      <div class="grid3">
+        <div class="card"><div class="card-title">TOP PAIRS</div><div id="st-pairs"><div class="loading">Loading…</div></div></div>
+        <div class="card"><div class="card-title">SOURCE COINS</div><div id="st-from"><div class="loading">Loading…</div></div></div>
+        <div class="card"><div class="card-title">TARGET COINS</div><div id="st-to"><div class="loading">Loading…</div></div></div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="view" id="view-history">
+      <div class="hero">
+        <h1>GLOBAL<br/><em>HISTORY</em></h1>
+        <div class="hero-sub">
+          <span class="hero-badge hb-dim">All platform conversions</span>
+          <span class="hero-dot">·</span>
+          <span class="hero-badge hb-green">Public log</span>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="field"><label>Records</label><input type="number" id="h-limit" value="20" min="1" max="500" style="width:110px"/></div>
+        <button class="btn btn-prim" onclick="loadHistory()">Load</button>
+      </div>
+      <div class="tbl-wrap" id="hist-tbl"><div class="empty">Click Load to fetch records.</div></div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- ─── RIGHT PANEL ─── -->
+  <div class="panel" id="panel">
+    <div class="panel-header">
+      <span class="panel-title" id="panel-title">PROFILE</span>
+      <button class="panel-close" onclick="togglePanel()">✕</button>
+    </div>
+
+    <!-- AUTH PANEL -->
+    <div id="panel-auth">
+      <div class="auth-tabs" style="margin:0 28px 20px">
+        <button class="atab active" id="atab-login" onclick="switchAuthTab('login')">Login</button>
+        <button class="atab" id="atab-reg" onclick="switchAuthTab('register')">Register</button>
+      </div>
+      <div class="p-section" id="pf-login">
+        <div class="pf"><label>Email</label><input type="email" id="l-email" placeholder="you@email.com" autocomplete="email"/></div>
+        <div class="pf"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <button class="btn btn-prim btn-wide" onclick="doLogin()">Enter →</button>
+        <div class="divider">or</div>
+        <button class="btn-ghost" onclick="guestMode()">Continue as Guest</button>
+        <div class="auth-msg" id="auth-msg"></div>
+      </div>
+      <div class="p-section hidden" id="pf-reg">
+        <div class="pf"><label>Email</label><input type="email" id="r-email" placeholder="you@email.com"/></div>
+        <div class="pf"><label>Password</label><input type="password" id="r-pass" placeholder="••••••••"/></div>
+        <div class="pf"><label>Confirm Password</label><input type="password" id="r-confirm" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()"/></div>
+        <button class="btn btn-prim btn-wide" onclick="doRegister()">Create Account →</button>
+        <div class="auth-msg" id="reg-msg"></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PANEL (after login) -->
+    <div id="panel-dash" class="hidden">
+      <div class="panel-tabs">
+        <button class="ptab active" onclick="switchDashTab('overview')">Overview</button>
+        <button class="ptab" onclick="switchDashTab('favorites')">Favorites</button>
+        <button class="ptab" onclick="switchDashTab('mystats')">My Stats</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="p-section" id="dt-overview">
+        <div class="user-header">
+          <div>
+            <div class="user-email-label">Logged in as</div>
+            <div class="user-email-val" id="dash-email"></div>
+          </div>
+          <button class="btn-del" onclick="doLogout()">↩ Logout</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="gap-s" style="margin-bottom:16px">
+          <div class="flex-row">
+            <div class="pf flex-1"><label>Limit</label><input type="number" id="d-limit" value="10" min="1" max="100"/></div>
+            <div class="pf flex-1"><label>From date</label><input type="datetime-local" id="d-start"/></div>
+          </div>
+          <div class="flex-row">
+            <div class="pf flex-1"><label>To date</label><input type="datetime-local" id="d-end"/></div>
+            <button class="btn btn-prim" onclick="loadDashboard()">Apply</button>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sec" style="flex:1;font-size:11px" onclick="exportDash('JSON')">↓ Export JSON</button>
+            <button class="btn btn-sec" style="flex:1;font-size:11px" onclick="exportDash('CSV')">↓ Export CSV</button>
+          </div>
+        </div>
+
+        <div class="sec-title" style="margin-bottom:12px">My Conversion History</div>
+        <div id="d-history"><div class="loading">Loading…</div></div>
+
+        <div class="sec-title" style="margin:16px 0 12px">Top Conversions (my pairs)</div>
+        <div id="d-top-conv"><div class="loading">Loading…</div></div>
+      </div>
+
+      <!-- FAVORITES -->
+      <div class="p-section hidden" id="dt-favorites">
+        <div class="flex-row" style="margin-bottom:20px">
+          <div class="pf flex-1">
+            <label>Currency code</label>
+            <input type="text" id="fav-input" placeholder="EUR" maxlength="10" style="text-transform:uppercase;letter-spacing:2px;font-size:16px;font-weight:500" onkeydown="if(event.key==='Enter')addFav()"/>
+          </div>
+          <button class="btn btn-prim" onclick="addFav()" style="padding:10px 18px;align-self:flex-end">+ Add</button>
+        </div>
+        <div class="fav-grid" id="fav-list"><div class="loading">Loading…</div></div>
+      </div>
+
+      <!-- MY STATS -->
+      <div class="p-section hidden" id="dt-mystats">
+        <div class="filter-row" style="margin-bottom:18px;padding:14px 16px">
+          <div class="pf"><label>Limit</label><input type="number" id="ms-limit" value="5" min="1" max="50" style="width:80px"/></div>
+          <div class="pf flex-1"><label>From</label><input type="datetime-local" id="ms-start"/></div>
+          <div class="pf flex-1"><label>To</label><input type="datetime-local" id="ms-end"/></div>
+          <button class="btn btn-prim" onclick="loadMyStats()">Apply</button>
+        </div>
+        <div class="gap-s">
+          <div class="card"><div class="card-title">MY TOP PAIRS</div><div id="my-pairs"><div class="loading">Loading…</div></div></div>
+          <div class="card"><div class="card-title">MY SOURCE COINS</div><div id="my-from"><div class="loading">Loading…</div></div></div>
+          <div class="card"><div class="card-title">MY TARGET COINS</div><div id="my-to"><div class="loading">Loading…</div></div></div>
+        </div>
+      </div>
+    </div><!-- /panel-dash -->
+
+  </div><!-- /panel -->
+</div><!-- /stage -->
+
+<div id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+const BASE = 'http://localhost:8080';
+
+// ─── SESSION ─────────────────────────────────────────────────────
+const S = {
+  get token()   { return localStorage.getItem('cc_tok'); },
+  get email()   { return localStorage.getItem('cc_em'); },
+  get isGuest() { return localStorage.getItem('cc_guest') === '1'; },
+  get logged()  { return !!this.token; },
+  save(t,e) { localStorage.setItem('cc_tok',t); localStorage.setItem('cc_em',e); localStorage.removeItem('cc_guest'); },
+  guest()   { localStorage.removeItem('cc_tok'); localStorage.removeItem('cc_em'); localStorage.setItem('cc_guest','1'); },
+  clear()   { ['cc_tok','cc_em','cc_guest'].forEach(k=>localStorage.removeItem(k)); },
+};
+
+// ─── THEME ───────────────────────────────────────────────────────
+let _theme = localStorage.getItem('cc_theme') || 'dark';
+function applyTheme(t) {
+  _theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('theme-btn').textContent = t === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('cc_theme', t);
+}
+function toggleTheme() { applyTheme(_theme === 'dark' ? 'light' : 'dark'); }
+applyTheme(_theme);
+
+// ─── API ─────────────────────────────────────────────────────────
+async function api(path, method='GET', body=null, auth=true) {
+  const h = {'Content-Type':'application/json'};
+  if (auth && S.token) h['Authorization'] = 'Bearer ' + S.token;
+  const opts = {method, headers:h};
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(BASE + path, opts);
+  if (!res.ok) {
+    let m = `Error ${res.status}`;
+    try { const j = await res.json(); m = j.message||j.error||m; } catch(_){}
+    throw new Error(m);
+  }
+  const text = await res.text();
+  if (!text) return {};
+  try { return JSON.parse(text); } catch(_){ return text; }
+}
+
+function qs(p) {
+  const pairs = Object.entries(p).filter(([,v])=>v!=null&&v!=='');
+  return pairs.length ? '?'+pairs.map(([k,v])=>`${k}=${encodeURIComponent(v)}`).join('&') : '';
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let _tt;
+function toast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = type; el.style.display = 'block';
+  clearTimeout(_tt); _tt = setTimeout(()=> el.style.display='none', 3500);
+}
+
+// ─── VIEWS ───────────────────────────────────────────────────────
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.nav-pill').forEach((p,i)=>{
+    p.classList.toggle('active', ['convert','stats','history'][i]===name);
+  });
+  if (name==='stats')   loadStats();
+  if (name==='history') loadHistory();
+}
+
+// ─── PANEL ───────────────────────────────────────────────────────
+let panelOpen = false;
+function togglePanel() {
+  panelOpen = !panelOpen;
+  document.getElementById('panel').classList.toggle('open', panelOpen);
+  document.getElementById('content').classList.toggle('shifted', panelOpen);
+  document.getElementById('profile-btn').classList.toggle('open', panelOpen);
+  if (panelOpen) S.logged || S.isGuest ? showDash() : showAuth();
+}
+
+function showAuth() {
+  document.getElementById('panel-auth').classList.remove('hidden');
+  document.getElementById('panel-dash').classList.add('hidden');
+  document.getElementById('panel-title').textContent = 'PROFILE';
+}
+
+function showDash() {
+  document.getElementById('panel-auth').classList.add('hidden');
+  document.getElementById('panel-dash').classList.remove('hidden');
+  document.getElementById('panel-title').textContent = S.isGuest ? 'GUEST' : 'DASHBOARD';
+  document.getElementById('dash-email').textContent = S.isGuest ? 'Guest mode' : (S.email||'');
+  updateProfileBtn();
+  if (!S.isGuest) { loadDashboard(); loadFavs(); loadMyStats(); }
+}
+
+function updateProfileBtn() {
+  const btn = document.getElementById('profile-btn');
+  const lbl = document.getElementById('pb-label');
+  if (S.logged) {
+    btn.classList.add('logged');
+    lbl.textContent = S.email ? S.email.split('@')[0] : 'Account';
+  } else if (S.isGuest) {
+    btn.classList.remove('logged');
+    lbl.textContent = 'Guest';
+  } else {
+    btn.classList.remove('logged');
+    lbl.textContent = 'Sign in';
+  }
+}
+
+// ─── AUTH ────────────────────────────────────────────────────────
+function switchAuthTab(t) {
+  const isL = t==='login';
+  document.getElementById('atab-login').classList.toggle('active',  isL);
+  document.getElementById('atab-reg').classList.toggle('active',   !isL);
+  document.getElementById('pf-login').classList.toggle('hidden',   !isL);
+  document.getElementById('pf-reg').classList.toggle('hidden',      isL);
+}
+function setMsg(id, msg, ok) {
+  const el=document.getElementById(id); el.textContent=msg;
+  el.style.color = ok ? 'var(--green2)' : 'var(--red)';
+}
+
+async function doLogin() {
+  const email=document.getElementById('l-email').value.trim();
+  const password=document.getElementById('l-pass').value;
+  if (!email||!password) return setMsg('auth-msg','Fill all fields.',false);
+  try {
+    const d = await api('/api/auth/login','POST',{email,password},false);
+    S.save(d.token, d.email);
+    showDash(); loadQuickFavs(); toast('Welcome back, '+d.email.split('@')[0]+'!','success');
+  } catch(e){ setMsg('auth-msg',e.message,false); }
+}
+
+async function doRegister() {
+  const email=document.getElementById('r-email').value.trim();
+  const password=document.getElementById('r-pass').value;
+  const confirmPassword=document.getElementById('r-confirm').value;
+  if (!email||!password||!confirmPassword) return setMsg('reg-msg','Fill all fields.',false);
+  try {
+    await api('/api/auth/register','POST',{email,password,confirmPassword},false);
+    setMsg('reg-msg','Account created! Log in now.', true);
+    document.getElementById('l-email').value=email;
+    switchAuthTab('login');
+  } catch(e){ setMsg('reg-msg',e.message,false); }
+}
+
+function guestMode() { S.guest(); showDash(); toast('Continuing as guest','success'); }
+
+function doLogout() {
+  S.clear();
+  document.getElementById('quick-favs').innerHTML='';
+  document.getElementById('fav-bar-wrap').classList.add('hidden');
+  updateProfileBtn();
+  showAuth();
+  toast('Logged out','success');
+}
+
+// ─── CONVERT ─────────────────────────────────────────────────────
+async function doConvert() {
+  const amount = document.getElementById('c-amount').value;
+  const from   = document.getElementById('c-from').value.trim().toUpperCase();
+  const to     = document.getElementById('c-to').value.trim().toUpperCase();
+  if (!amount||!from||!to) return toast('Fill all fields.','error');
+  try {
+    const d = await api('/api/conversion','POST',{amount:parseFloat(amount),fromCoin:from,toCoin:to},S.logged);
+    document.getElementById('res-from').textContent  = `${fmt(d.amount)} ${d.fromCoin}`;
+    document.getElementById('res-num').textContent   = fmt(d.convertedAmount);
+    document.getElementById('res-cur').textContent   = d.toCoin;
+    const rateEl = document.getElementById('res-rate');
+    rateEl.innerHTML = `1 ${d.fromCoin} = <span>${fmtRate(d.rate)}</span> ${d.toCoin}`;
+    document.getElementById('conv-result').classList.add('show');
+    loadRecent();
+  } catch(e){ toast(e.message,'error'); }
+}
+function swapCoins() {
+  const f=document.getElementById('c-from'), t=document.getElementById('c-to');
+  [f.value,t.value]=[t.value,f.value];
+}
+
+// ─── QUICK FAVS ──────────────────────────────────────────────────
+async function loadQuickFavs() {
+  if (!S.logged) return;
+  try {
+    const favs = await api('/api/favorite-coin/favorite-coins-user');
+    const wrap = document.getElementById('fav-bar-wrap');
+    if (favs.length) {
+      document.getElementById('quick-favs').innerHTML = favs.map(f =>
+        `<span class="chip" onclick="document.getElementById('c-from').value='${f.coinName}'">${f.coinName}</span>`
+      ).join('');
+      wrap.classList.remove('hidden');
+    }
+  } catch(_){}
+}
+
+// ─── RECENT ──────────────────────────────────────────────────────
+async function loadRecent() {
+  const el=document.getElementById('recent-tbl');
+  el.innerHTML='<div class="loading">Loading…</div>';
+  try {
+    const d = await api('/api/conversion-stats/historical-conversions?limit=10','GET',null,false);
+    el.innerHTML = renderHistTable(d);
+  } catch(e){ el.innerHTML=`<div class="empty">${e.message}</div>`; }
+}
+
+// ─── PUBLIC STATS ────────────────────────────────────────────────
+async function loadStats() {
+  const limit=document.getElementById('s-limit').value||10;
+  const begin=document.getElementById('s-start').value;
+  const end=document.getElementById('s-end').value;
+  const q=qs({limit,begin:begin||null,end:end||null});
+  ['st-pairs','st-from','st-to'].forEach(id=>document.getElementById(id).innerHTML='<div class="loading">Loading…</div>');
+  try {
+    const [pairs,from,to] = await Promise.all([
+      api('/api/conversion-stats/top-conversions'+q,'GET',null,false),
+      api('/api/conversion-stats/top-from-coin'+q,'GET',null,false),
+      api('/api/conversion-stats/top-to-coins'+q,'GET',null,false),
+    ]);
+    document.getElementById('st-pairs').innerHTML = renderPairs(pairs);
+    document.getElementById('st-from').innerHTML  = renderCoins(from,'');
+    document.getElementById('st-to').innerHTML    = renderCoins(to,'teal');
+  } catch(e){ toast('Stats error: '+e.message,'error'); }
+}
+
+// ─── GLOBAL HISTORY ──────────────────────────────────────────────
+async function loadHistory() {
+  const limit=document.getElementById('h-limit').value||20;
+  const el=document.getElementById('hist-tbl');
+  el.innerHTML='<div class="loading">Loading…</div>';
+  try {
+    const d = await api(`/api/conversion-stats/historical-conversions?limit=${limit}`,'GET',null,false);
+    el.innerHTML = renderHistTable(d);
+  } catch(e){ el.innerHTML=`<div class="empty">${e.message}</div>`; }
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────
+async function loadDashboard() {
+  const limit=document.getElementById('d-limit').value||10;
+  const start=document.getElementById('d-start').value;
+  const end=document.getElementById('d-end').value;
+  const q=qs({limit,start:start||null,end:end||null});
+  document.getElementById('d-history').innerHTML='<div class="loading">Loading…</div>';
+  document.getElementById('d-top-conv').innerHTML='<div class="loading">Loading…</div>';
+  try {
+    const d = await api('/api/dashboard/dashboard'+q);
+    // Full history table
+    const histRows = d.userHistory||[];
+    document.getElementById('d-history').innerHTML = histRows.length
+      ? `<div class="tbl-wrap">${renderHistTable(histRows)}</div>`
+      : '<div class="empty">No conversions yet.</div>';
+    // Top pairs
+    document.getElementById('d-top-conv').innerHTML = renderPairs(d.topConversionsLast30Days||[]);
+  } catch(e){
+    document.getElementById('d-history').innerHTML=`<div class="empty">${e.message}</div>`;
+  }
+}
+
+async function loadMyStats() {
+  const limit=document.getElementById('ms-limit').value||5;
+  const begin=document.getElementById('ms-start').value;
+  const end=document.getElementById('ms-end').value;
+  const q=qs({limit,begin:begin||null,end:end||null});
+  ['my-pairs','my-from','my-to'].forEach(id=>document.getElementById(id).innerHTML='<div class="loading">Loading…</div>');
+  try {
+    const [pairs,from,to] = await Promise.all([
+      api('/api/conversion-stats-by-user/top-conversions-by-user'+q),
+      api('/api/conversion-stats-by-user/top-from-coin-by-user'+q),
+      api('/api/conversion-stats-by-user/top-to-coins-by-user'+q),
+    ]);
+    document.getElementById('my-pairs').innerHTML = renderPairs(pairs);
+    document.getElementById('my-from').innerHTML  = renderCoins(from,'');
+    document.getElementById('my-to').innerHTML    = renderCoins(to,'teal');
+  } catch(e){ toast('My stats error: '+e.message,'error'); }
+}
+
+// ─── FAVORITES ───────────────────────────────────────────────────
+async function loadFavs() {
+  const el=document.getElementById('fav-list');
+  el.innerHTML='<div class="loading">Loading…</div>';
+  try {
+    const favs = await api('/api/favorite-coin/favorite-coins-user');
+    if (!favs.length){ el.innerHTML='<div class="empty">No favorites yet.</div>'; return; }
+    el.innerHTML = favs.map(f=>`
+      <div class="fav-card">
+        ${f.coinName}
+        <button class="btn-del" onclick="removeFav('${f.coinName}')">✕</button>
+      </div>`).join('');
+    loadQuickFavs();
+  } catch(e){ el.innerHTML=`<div class="empty">${e.message}</div>`; }
+}
+
+async function addFav() {
+  const coin=document.getElementById('fav-input').value.trim().toUpperCase();
+  if (!coin) return toast('Enter a currency code.','error');
+  try {
+    await api('/api/favorite-coin/favorite-a-coin?coin='+coin,'POST');
+    document.getElementById('fav-input').value='';
+    toast(coin+' added!','success');
+    loadFavs();
+  } catch(e){ toast(e.message,'error'); }
+}
+
+async function removeFav(coin) {
+  try {
+    await api('/api/favorite-coin/delete-favorite-coins?coin='+coin,'DELETE');
+    toast(coin+' removed.','success');
+    loadFavs();
+  } catch(e){ toast(e.message,'error'); }
+}
+
+// ─── EXPORT ──────────────────────────────────────────────────────
+async function exportDash(format) {
+  const limit=document.getElementById('d-limit').value||10;
+  const start=document.getElementById('d-start').value;
+  const end=document.getElementById('d-end').value;
+  const q=qs({format,limit,start:start||null,end:end||null});
+  try {
+    const h={}; if(S.token) h['Authorization']='Bearer '+S.token;
+    const res=await fetch(`${BASE}/api/dashboard/export${q}`,{headers:h});
+    if(!res.ok) throw new Error('Export failed');
+    const blob=await res.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='dashboard.'+format.toLowerCase(); a.click();
+    URL.revokeObjectURL(url);
+    toast('Exported as '+format,'success');
+  } catch(e){ toast(e.message,'error'); }
+}
+
+// ─── PANEL DASH TABS ─────────────────────────────────────────────
+function switchDashTab(t) {
+  ['overview','favorites','mystats'].forEach(n=>{
+    document.getElementById('dt-'+n).classList.toggle('hidden', n!==t);
+  });
+  document.querySelectorAll('.ptab').forEach((b,i)=>{
+    b.classList.toggle('active', ['overview','favorites','mystats'][i]===t);
+  });
+}
+
+// ─── RENDER HELPERS ──────────────────────────────────────────────
+function renderHistTable(rows) {
+  if (!rows||!rows.length) return '<div class="empty">No data.</div>';
+  return `<table>
+    <thead><tr><th>Pair</th><th>Amount</th><th>Rate</th><th>Result</th><th>Date</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td><span class="tag">${r.fromCoin}</span><span class="arr">→</span><span class="tag">${r.toCoin}</span></td>
+      <td>${fmt(r.amount)}</td>
+      <td>${fmtRate(r.rate)}</td>
+      <td>${fmt(r.convertedAmount)}</td>
+      <td>${fmtDate(r.convertedDateTime)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function renderPairs(rows) {
+  if (!rows||!rows.length) return '<div class="empty">No data.</div>';
+  const mx=rows[0]?.totalConversions||1;
+  return `<div class="stat-list">${rows.map(r=>`<div>
+    <div class="stat-head">
+      <span><span class="tag">${r.fromCoin}</span><span class="arr">→</span><span class="tag">${r.toCoin}</span></span>
+      <span><span class="stat-val">${r.totalConversions}</span><span class="stat-pct">${r.totalPercentage}%</span></span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${(r.totalConversions/mx*100).toFixed(1)}%"></div></div>
+  </div>`).join('')}</div>`;
+}
+
+function renderCoins(rows, cls) {
+  if (!rows||!rows.length) return '<div class="empty">No data.</div>';
+  const mx=rows[0]?.totalConversions||1;
+  return `<div class="stat-list">${rows.map(r=>`<div>
+    <div class="stat-head">
+      <span class="tag">${r.coin}</span>
+      <span><span class="stat-val">${r.totalConversions}</span><span class="stat-pct">${r.totalPercentage}%</span></span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill ${cls}" style="width:${(r.totalConversions/mx*100).toFixed(1)}%"></div></div>
+  </div>`).join('')}</div>`;
+}
+
+function fmt(n,d=4){ if(n==null)return'—'; return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:d}); }
+function fmtRate(n){ if(n==null)return'—'; return Number(n).toFixed(6); }
+function fmtDate(s){ if(!s)return'—'; try{return new Date(s).toLocaleString('en-US',{dateStyle:'short',timeStyle:'short'});}catch(_){return s;} }
+
+// ─── COIN DATABASE (ISO 4217 + popular crypto) ────────────────────
+const COINS = [
+  {c:'AED',n:'UAE Dirham',f:'🇦🇪'},{c:'AFN',n:'Afghan Afghani',f:'🇦🇫'},{c:'ALL',n:'Albanian Lek',f:'🇦🇱'},
+  {c:'AMD',n:'Armenian Dram',f:'🇦🇲'},{c:'ANG',n:'Dutch Guilder',f:'🇳🇱'},{c:'AOA',n:'Angolan Kwanza',f:'🇦🇴'},
+  {c:'ARS',n:'Argentine Peso',f:'🇦🇷'},{c:'AUD',n:'Australian Dollar',f:'🇦🇺'},{c:'AWG',n:'Aruban Florin',f:'🇦🇼'},
+  {c:'AZN',n:'Azerbaijani Manat',f:'🇦🇿'},{c:'BAM',n:'Bosnian Mark',f:'🇧🇦'},{c:'BBD',n:'Barbadian Dollar',f:'🇧🇧'},
+  {c:'BDT',n:'Bangladeshi Taka',f:'🇧🇩'},{c:'BGN',n:'Bulgarian Lev',f:'🇧🇬'},{c:'BHD',n:'Bahraini Dinar',f:'🇧🇭'},
+  {c:'BIF',n:'Burundian Franc',f:'🇧🇮'},{c:'BMD',n:'Bermudian Dollar',f:'🇧🇲'},{c:'BND',n:'Brunei Dollar',f:'🇧🇳'},
+  {c:'BOB',n:'Bolivian Boliviano',f:'🇧🇴'},{c:'BRL',n:'Brazilian Real',f:'🇧🇷'},{c:'BSD',n:'Bahamian Dollar',f:'🇧🇸'},
+  {c:'BTC',n:'Bitcoin',f:'₿'},{c:'BTN',n:'Bhutanese Ngultrum',f:'🇧🇹'},{c:'BWP',n:'Botswana Pula',f:'🇧🇼'},
+  {c:'BYN',n:'Belarusian Ruble',f:'🇧🇾'},{c:'BZD',n:'Belize Dollar',f:'🇧🇿'},{c:'CAD',n:'Canadian Dollar',f:'🇨🇦'},
+  {c:'CDF',n:'Congolese Franc',f:'🇨🇩'},{c:'CHF',n:'Swiss Franc',f:'🇨🇭'},{c:'CLP',n:'Chilean Peso',f:'🇨🇱'},
+  {c:'CNY',n:'Chinese Yuan',f:'🇨🇳'},{c:'COP',n:'Colombian Peso',f:'🇨🇴'},{c:'CRC',n:'Costa Rican Colón',f:'🇨🇷'},
+  {c:'CUP',n:'Cuban Peso',f:'🇨🇺'},{c:'CVE',n:'Cape Verdean Escudo',f:'🇨🇻'},{c:'CZK',n:'Czech Koruna',f:'🇨🇿'},
+  {c:'DJF',n:'Djiboutian Franc',f:'🇩🇯'},{c:'DKK',n:'Danish Krone',f:'🇩🇰'},{c:'DOP',n:'Dominican Peso',f:'🇩🇴'},
+  {c:'DZD',n:'Algerian Dinar',f:'🇩🇿'},{c:'EGP',n:'Egyptian Pound',f:'🇪🇬'},{c:'ERN',n:'Eritrean Nakfa',f:'🇪🇷'},
+  {c:'ETB',n:'Ethiopian Birr',f:'🇪🇹'},{c:'ETH',n:'Ethereum',f:'⟠'},{c:'EUR',n:'Euro',f:'🇪🇺'},
+  {c:'FJD',n:'Fijian Dollar',f:'🇫🇯'},{c:'FKP',n:'Falkland Pound',f:'🇫🇰'},{c:'GBP',n:'British Pound',f:'🇬🇧'},
+  {c:'GEL',n:'Georgian Lari',f:'🇬🇪'},{c:'GHS',n:'Ghanaian Cedi',f:'🇬🇭'},{c:'GIP',n:'Gibraltar Pound',f:'🇬🇮'},
+  {c:'GMD',n:'Gambian Dalasi',f:'🇬🇲'},{c:'GNF',n:'Guinean Franc',f:'🇬🇳'},{c:'GTQ',n:'Guatemalan Quetzal',f:'🇬🇹'},
+  {c:'GYD',n:'Guyanese Dollar',f:'🇬🇾'},{c:'HKD',n:'Hong Kong Dollar',f:'🇭🇰'},{c:'HNL',n:'Honduran Lempira',f:'🇭🇳'},
+  {c:'HRK',n:'Croatian Kuna',f:'🇭🇷'},{c:'HTG',n:'Haitian Gourde',f:'🇭🇹'},{c:'HUF',n:'Hungarian Forint',f:'🇭🇺'},
+  {c:'IDR',n:'Indonesian Rupiah',f:'🇮🇩'},{c:'ILS',n:'Israeli Shekel',f:'🇮🇱'},{c:'INR',n:'Indian Rupee',f:'🇮🇳'},
+  {c:'IQD',n:'Iraqi Dinar',f:'🇮🇶'},{c:'IRR',n:'Iranian Rial',f:'🇮🇷'},{c:'ISK',n:'Icelandic Króna',f:'🇮🇸'},
+  {c:'JMD',n:'Jamaican Dollar',f:'🇯🇲'},{c:'JOD',n:'Jordanian Dinar',f:'🇯🇴'},{c:'JPY',n:'Japanese Yen',f:'🇯🇵'},
+  {c:'KES',n:'Kenyan Shilling',f:'🇰🇪'},{c:'KGS',n:'Kyrgyzstani Som',f:'🇰🇬'},{c:'KHR',n:'Cambodian Riel',f:'🇰🇭'},
+  {c:'KMF',n:'Comorian Franc',f:'🇰🇲'},{c:'KPW',n:'North Korean Won',f:'🇰🇵'},{c:'KRW',n:'South Korean Won',f:'🇰🇷'},
+  {c:'KWD',n:'Kuwaiti Dinar',f:'🇰🇼'},{c:'KYD',n:'Cayman Dollar',f:'🇰🇾'},{c:'KZT',n:'Kazakhstani Tenge',f:'🇰🇿'},
+  {c:'LAK',n:'Lao Kip',f:'🇱🇦'},{c:'LBP',n:'Lebanese Pound',f:'🇱🇧'},{c:'LKR',n:'Sri Lankan Rupee',f:'🇱🇰'},
+  {c:'LRD',n:'Liberian Dollar',f:'🇱🇷'},{c:'LSL',n:'Lesotho Loti',f:'🇱🇸'},{c:'LYD',n:'Libyan Dinar',f:'🇱🇾'},
+  {c:'MAD',n:'Moroccan Dirham',f:'🇲🇦'},{c:'MDL',n:'Moldovan Leu',f:'🇲🇩'},{c:'MGA',n:'Malagasy Ariary',f:'🇲🇬'},
+  {c:'MKD',n:'Macedonian Denar',f:'🇲🇰'},{c:'MMK',n:'Myanmar Kyat',f:'🇲🇲'},{c:'MNT',n:'Mongolian Tögrög',f:'🇲🇳'},
+  {c:'MOP',n:'Macanese Pataca',f:'🇲🇴'},{c:'MRU',n:'Mauritanian Ouguiya',f:'🇲🇷'},{c:'MUR',n:'Mauritian Rupee',f:'🇲🇺'},
+  {c:'MVR',n:'Maldivian Rufiyaa',f:'🇲🇻'},{c:'MWK',n:'Malawian Kwacha',f:'🇲🇼'},{c:'MXN',n:'Mexican Peso',f:'🇲🇽'},
+  {c:'MYR',n:'Malaysian Ringgit',f:'🇲🇾'},{c:'MZN',n:'Mozambican Metical',f:'🇲🇿'},{c:'NAD',n:'Namibian Dollar',f:'🇳🇦'},
+  {c:'NGN',n:'Nigerian Naira',f:'🇳🇬'},{c:'NIO',n:'Nicaraguan Córdoba',f:'🇳🇮'},{c:'NOK',n:'Norwegian Krone',f:'🇳🇴'},
+  {c:'NPR',n:'Nepalese Rupee',f:'🇳🇵'},{c:'NZD',n:'New Zealand Dollar',f:'🇳🇿'},{c:'OMR',n:'Omani Rial',f:'🇴🇲'},
+  {c:'PAB',n:'Panamanian Balboa',f:'🇵🇦'},{c:'PEN',n:'Peruvian Sol',f:'🇵🇪'},{c:'PGK',n:'Papua New Guinean Kina',f:'🇵🇬'},
+  {c:'PHP',n:'Philippine Peso',f:'🇵🇭'},{c:'PKR',n:'Pakistani Rupee',f:'🇵🇰'},{c:'PLN',n:'Polish Złoty',f:'🇵🇱'},
+  {c:'PYG',n:'Paraguayan Guaraní',f:'🇵🇾'},{c:'QAR',n:'Qatari Riyal',f:'🇶🇦'},{c:'RON',n:'Romanian Leu',f:'🇷🇴'},
+  {c:'RSD',n:'Serbian Dinar',f:'🇷🇸'},{c:'RUB',n:'Russian Ruble',f:'🇷🇺'},{c:'RWF',n:'Rwandan Franc',f:'🇷🇼'},
+  {c:'SAR',n:'Saudi Riyal',f:'🇸🇦'},{c:'SBD',n:'Solomon Dollar',f:'🇸🇧'},{c:'SCR',n:'Seychellois Rupee',f:'🇸🇨'},
+  {c:'SDG',n:'Sudanese Pound',f:'🇸🇩'},{c:'SEK',n:'Swedish Krona',f:'🇸🇪'},{c:'SGD',n:'Singapore Dollar',f:'🇸🇬'},
+  {c:'SHP',n:'Saint Helena Pound',f:'🇸🇭'},{c:'SLL',n:'Sierra Leonean Leone',f:'🇸🇱'},{c:'SOS',n:'Somali Shilling',f:'🇸🇴'},
+  {c:'SRD',n:'Surinamese Dollar',f:'🇸🇷'},{c:'STN',n:'São Tomé Dobra',f:'🇸🇹'},{c:'SVC',n:'Salvadoran Colón',f:'🇸🇻'},
+  {c:'SYP',n:'Syrian Pound',f:'🇸🇾'},{c:'SZL',n:'Swazi Lilangeni',f:'🇸🇿'},{c:'THB',n:'Thai Baht',f:'🇹🇭'},
+  {c:'TJS',n:'Tajikistani Somoni',f:'🇹🇯'},{c:'TMT',n:'Turkmenistani Manat',f:'🇹🇲'},{c:'TND',n:'Tunisian Dinar',f:'🇹🇳'},
+  {c:'TOP',n:'Tongan Paʻanga',f:'🇹🇴'},{c:'TRY',n:'Turkish Lira',f:'🇹🇷'},{c:'TTD',n:'Trinidad Dollar',f:'🇹🇹'},
+  {c:'TVD',n:'Tuvaluan Dollar',f:'🇹🇻'},{c:'TWD',n:'New Taiwan Dollar',f:'🇹🇼'},{c:'TZS',n:'Tanzanian Shilling',f:'🇹🇿'},
+  {c:'UAH',n:'Ukrainian Hryvnia',f:'🇺🇦'},{c:'UGX',n:'Ugandan Shilling',f:'🇺🇬'},{c:'USD',n:'US Dollar',f:'🇺🇸'},
+  {c:'UYU',n:'Uruguayan Peso',f:'🇺🇾'},{c:'UZS',n:'Uzbekistani Sum',f:'🇺🇿'},{c:'VES',n:'Venezuelan Bolívar',f:'🇻🇪'},
+  {c:'VND',n:'Vietnamese Dong',f:'🇻🇳'},{c:'VUV',n:'Vanuatu Vatu',f:'🇻🇺'},{c:'WST',n:'Samoan Tālā',f:'🇼🇸'},
+  {c:'XAF',n:'CFA Franc BEAC',f:'🌍'},{c:'XCD',n:'East Caribbean Dollar',f:'🌎'},{c:'XOF',n:'CFA Franc BCEAO',f:'🌍'},
+  {c:'XPF',n:'CFP Franc',f:'🌊'},{c:'YER',n:'Yemeni Rial',f:'🇾🇪'},{c:'ZAR',n:'South African Rand',f:'🇿🇦'},
+  {c:'ZMW',n:'Zambian Kwacha',f:'🇿🇲'},{c:'ZWL',n:'Zimbabwean Dollar',f:'🇿🇼'},
+];
+
+// ─── AUTOCOMPLETE ENGINE ──────────────────────────────────────────
+let _acFocus = {};  // { ddId: focusedIndex }
+
+function onCoinInput(inputId, ddId) {
+  const val = document.getElementById(inputId).value.trim().toUpperCase();
+  const dd  = document.getElementById(ddId);
+  if (!val) { dd.innerHTML=''; return; }
+
+  const matches = COINS.filter(x =>
+    x.c.startsWith(val) || x.n.toUpperCase().includes(val)
+  ).slice(0, 8);
+
+  if (!matches.length) { dd.innerHTML=''; return; }
+
+  _acFocus[ddId] = -1;
+  dd.innerHTML = matches.map((m,i) => `
+    <div class="ac-item" data-idx="${i}" data-code="${m.c}"
+         onmousedown="pickCoin('${inputId}','${ddId}','${m.c}')"
+         onmouseover="hoverAc('${ddId}',${i})">
+      <span class="ac-flag">${m.f}</span>
+      <span class="ac-code">${m.c}</span>
+      <span class="ac-name">${m.n}</span>
+    </div>`).join('');
+}
+
+function onCoinKey(e, inputId, ddId) {
+  const dd    = document.getElementById(ddId);
+  const items = dd.querySelectorAll('.ac-item');
+  if (!items.length) return;
+
+  let idx = _acFocus[ddId] ?? -1;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    idx = Math.min(idx + 1, items.length - 1);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    idx = Math.max(idx - 1, 0);
+  } else if (e.key === 'Enter' && idx >= 0) {
+    e.preventDefault();
+    const code = items[idx].dataset.code;
+    pickCoin(inputId, ddId, code);
+    return;
+  } else if (e.key === 'Escape') {
+    dd.innerHTML=''; return;
+  } else { return; }
+
+  _acFocus[ddId] = idx;
+  items.forEach((el,i) => el.classList.toggle('focused', i === idx));
+  items[idx]?.scrollIntoView({block:'nearest'});
+}
+
+function hoverAc(ddId, idx) {
+  _acFocus[ddId] = idx;
+  document.getElementById(ddId).querySelectorAll('.ac-item').forEach((el,i) => el.classList.toggle('focused', i===idx));
+}
+
+function pickCoin(inputId, ddId, code) {
+  document.getElementById(inputId).value = code;
+  document.getElementById(ddId).innerHTML = '';
+}
+
+function hideDd(ddId) {
+  // Small delay so mousedown on item fires first
+  setTimeout(() => { document.getElementById(ddId).innerHTML=''; }, 150);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+updateProfileBtn();
+loadRecent();
+if (S.logged) loadQuickFavs();
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+/* || General setup */
+
+body {
+  margin: 0;
+}
+
+html {
+  font-size: 10px;
+  background-color: darkgrey;
+}
+
+body {
+  width: 70%;
+  min-width: 800px;
+  margin: 0 auto;
+}
+
+/* || typography */
+
+h1,
+h2 {
+  font-family: "Cinzel Decorative", cursive;
+  color: #2a2a2a;
+}
+
+p,
+li {
+  font-family: "Roboto Condensed", sans-serif;
+  color: #2a2a2a;
+}
+
+h1 {
+  font-size: 4rem;
+  text-align: center;
+  text-shadow: 2px 2px 10px black;
+}
+
+h2 {
+  font-size: 3rem;
+  text-align: center;
+}
+
+p,
+li {
+  font-size: 1.6rem;
+  line-height: 1.5;
+}
+
+/* || header layout */
+
+header {
+  margin-bottom: 10px;
+}
+
+main,
+header,
+nav,
+article,
+aside,
+footer,
+section {
+  background-color: #00ff0080;
+  padding: 1%;
+}
+
+h1 {
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+header img {
+  height: 60px;
+}
+
+nav ul {
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+}
+
+nav li {
+  text-align: center;
+  flex: 1;
+}
+
+nav a {
+  font-size: 2rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: black;
+}
+
+nav a:hover,
+nav a:focus {
+  color: red;
+}
+
+/* || main layout */
+
+main {
+  display: flex;
+  gap: 10px;
+}
+
+article {
+  flex: 4;
+}
+
+aside {
+  flex: 1;
+}
+
+aside a {
+  display: block;
+  float: left;
+  width: 50%;
+}
+
+aside img {
+  max-width: 100%;
+}
+
+footer {
+  margin-top: 10px;
+}

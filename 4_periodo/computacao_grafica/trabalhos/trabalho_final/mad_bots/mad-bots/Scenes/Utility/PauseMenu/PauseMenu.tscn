@@ -1,0 +1,230 @@
+[gd_scene load_steps=21 format=3 uid="uid://btaahi0mulu2w"]
+
+[ext_resource type="Script" uid="uid://bjc7yvpty6etl" path="res://Scenes/Utility/PauseMenu/pause_menu.gd" id="1_ffgm4"]
+[ext_resource type="Shader" uid="uid://pfbxbdydxb57" path="res://Scenes/Utility/PauseMenu/PauseMenu.gdshader" id="1_g5yg5"]
+[ext_resource type="FontFile" uid="uid://jtemo7px1tum" path="res://Assets/Font/CyberpunkCraftpixPixel.otf" id="2_ffgm4"]
+[ext_resource type="Texture2D" uid="uid://dsmnuk2pgbt6w" path="res://Assets/Textures/GUI/GUI_expecificas/menu_option_upgrade.png" id="3_vcx1i"]
+[ext_resource type="Texture2D" uid="uid://bkh7ir0jprcdj" path="res://Assets/Textures/GUI/GUI_expecificas/main_menu_label.png" id="5_yrbre"]
+[ext_resource type="Texture2D" uid="uid://cax5i6hjg388c" path="res://Assets/Textures/GUI/GUI_expecificas/leve_up2.png" id="6_rfekm"]
+[ext_resource type="Texture2D" uid="uid://bq0w0baqqj8vj" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio7.png" id="7_j3tnx"]
+[ext_resource type="Texture2D" uid="uid://dkx2ich612wxu" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio3.png" id="8_ef30k"]
+[ext_resource type="Texture2D" uid="uid://cbm3tpc6voqj3" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio8.png" id="9_jghks"]
+[ext_resource type="Texture2D" uid="uid://bddcu460271pd" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio6.png" id="10_m4rj5"]
+[ext_resource type="Texture2D" uid="uid://j5amgqk0osbb" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio5.png" id="11_v8j87"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g5yg5"]
+shader = ExtResource("1_g5yg5")
+shader_parameter/lod = 0.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wx6am"]
+texture = ExtResource("3_vcx1i")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fdgha"]
+texture = ExtResource("5_yrbre")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6dqm"]
+texture = ExtResource("6_rfekm")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ejxql"]
+texture = ExtResource("6_rfekm")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m6tt1"]
+texture = ExtResource("6_rfekm")
+
+[sub_resource type="Animation" id="Animation_vcx1i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Panel:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ffgm4"]
+resource_name = "blur"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.886000042085]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Panel:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mavqb"]
+_data = {
+&"RESET": SubResource("Animation_vcx1i"),
+&"blur": SubResource("Animation_ffgm4")
+}
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ffgm4")
+metadata/_edit_vertical_guides_ = [-525.0]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_g5yg5")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -9.0
+offset_top = -4.0
+offset_right = -9.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.25
+offset_top = -209.0
+offset_right = 209.0
+offset_bottom = 193.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wx6am")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.625
+offset_top = -201.25
+offset_right = 163.625
+offset_bottom = 190.75
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="Pause" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ffgm4")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxTexture_fdgha")
+text = "PAUSE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Resume" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ffgm4")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_j6dqm")
+text = "Resume"
+
+[node name="Restart" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ffgm4")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_ejxql")
+text = "Restart"
+
+[node name="Quit" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ffgm4")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_m6tt1")
+text = "Quit"
+
+[node name="fio7" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 347.25
+offset_top = 48.0
+offset_right = 387.25
+offset_bottom = 112.0
+rotation = 1.5707964
+texture = ExtResource("7_j3tnx")
+
+[node name="fio3" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 60.25
+offset_top = 328.0
+offset_right = 109.25
+offset_bottom = 391.0
+texture = ExtResource("8_ef30k")
+
+[node name="fio8" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 399.25
+offset_top = 153.0
+offset_right = 457.25
+offset_bottom = 261.0
+texture = ExtResource("9_jghks")
+
+[node name="fio6" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 4.25
+offset_top = 159.0
+offset_right = 66.25
+offset_bottom = 239.0
+rotation = 3.1415927
+texture = ExtResource("10_m4rj5")
+
+[node name="fio5" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 357.25
+offset_top = 403.0
+offset_right = 407.25
+offset_bottom = 478.8181
+rotation = 1.5707964
+texture = ExtResource("11_v8j87")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_mavqb")
+}
+
+[connection signal="pressed" from="Panel/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

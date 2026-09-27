@@ -1,0 +1,228 @@
+\chapter{Docker e Spring Data JPA: Entidades e Repositórios}
+
+\section{Subindo o banco de dados com Docker Compose}
+
+Em disciplinas de Banco de Dados é comum ter o MySQL instalado localmente, seja via XAMPP, seja via um pacote nativo do sistema operacional. Neste curso, entretanto, optou-se por não depender dessa instalação: o banco de dados é executado dentro de um contêiner Docker, descrito por um arquivo docker-compose.yml na raiz do projeto. Essa escolha tem uma vantagem prática importante: qualquer pessoa que clone o repositório consegue subir um ambiente de banco de dados idêntico ao do professor, sem precisar instalar nada além do Docker.
+
+Docker Compose O Docker Compose é uma ferramenta que permite descrever, em um único arquivo YAML, um ou mais serviços (contêineres) que devem ser executados em conjunto — por exemplo, um banco de dados, uma fila de mensagens e a própria aplicação. Em vez de executar comandos docker run longos e repetitivos, basta executar docker compose up e todos os serviços descritos sobem de forma coordenada.
+
+O arquivo de composição para o banco de dados do projeto define um serviço chamado database, utilizando a imagem mysql:latest. Nesse serviço são configuradas quatro variáveis de ambiente essenciais: o nome do banco de dados a ser criado (MYSQL\_DATABASE), o usuário de acesso (MYSQL\_USER), a senha desse usuário (MYSQL\_PASSWORD) e a senha do usuário administrador root (MYSQL\_ROOT\_PASSWORD). Além disso, a porta padrão do MySQL, 3306, é exposta para que a aplicação Java, rodando fora do contêiner, consiga se conectar a ela — e, caso essa porta já esteja em uso na máquina do leitor (por exemplo, por uma instalação local de MySQL), basta redirecioná-la para outra porta livre, como 3307. Dois volumes são mapeados no serviço. O primeiro garante a persistência dos
+
+dados: todo o conteúdo interno do contêiner é, por padrão, volátil — se o contêiner for removido, os dados são perdidos junto com ele, a menos que sejam gravados em um volume mapeado para fora do contêiner. O segundo volume aponta para o diretório especial /docker-entrypoint-initdb.d/ dentro da imagem oficial do MySQL: qualquer script SQL colocado nesse diretório é executado automaticamente na primeira inicialização do banco.
+
+\begin{infobox}{Dica}
+Se você dividir a inicialização em múltiplos arquivos SQL dentro dessa pasta, lembre-se de que a execução respeita a ordem alfabética dos nomes de arquivo, não a ordem em que foram criados. Nomeie os scripts de criação de tabelas de forma que precedam, alfabeticamente, os scripts de inserção de dados — caso contrário, o banco tentará inserir registros em tabelas que ainda não existem.
+\end{infobox}
+
+\section{O script de inicialização e o modelo de dados}
+
+O script initial.sql, colocado dentro de src/main/resources/static, contém os comandos CREATE TABLE e INSERT que estruturam o banco de dados do projeto e populam-no com alguns produtos de exemplo. A escolha de mantê-lo em static — e não em uma pasta específica de migrações, como faria uma ferramenta como o Flyway — é deliberadamente simples: o foco da disciplina é o desenvolvimento back-end com Spring, não a gestão avançada de versionamento de esquema de banco de dados. O modelo relacional gira em torno de três tabelas. A tabela product concentra os atributos principais: identificador, nome, descrições curta e completa, marca, categoria, preço, desconto, disponibilidade em estoque, datas de criação e atualização, e custo. Seguindo os princípios de normalização estudados em disciplinas de Banco de Dados, duas tabelas dependentes foram extraídas: box\_dimension, que guarda as dimensões físicas (largura, altura, comprimento, peso) da caixa usada para embalar o produto, e product\_detail, que guarda pares de nome e valor associados ao produto — por exemplo, cada faixa de um CD, identificada por um nome e uma posição. A relação entre product e box\_dimension é de um-para-um: cada produto tem exatamente uma dimensão de caixa associada. Já a relação entre product e product\_detail é de um-para-muitos: um único produto pode ter diversos detalhes (as várias faixas de um CD, por exemplo), mas cada detalhe pertence a um único produto.
+
+\section{Conectando o Spring Boot ao banco de dados}
+
+Ter um banco de dados em execução não conecta magicamente a aplicação a ele. São necessários dois passos adicionais: adicionar as dependências corretas e configurar as credenciais de acesso. No arquivo de build (build.gradle ou pom.xml, dependendo da ferramenta escolhida), duas dependências precisam ser adicionadas. A primeira é o starter do Spring Data JPA, responsável por toda a infraestrutura de mapeamento objeto-relacional:
+
+\begin{codebox}{Java}
+implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+\end{codebox}
+
+A segunda é o driver JDBC específico do banco de dados utilizado — no caso do MySQL, o conector oficial:
+
+\begin{codebox}{Java}
+implementation 'com.mysql:mysql-connector-j:9.1.0'
+\end{codebox}
+
+Com as dependências baixadas, a aplicação ainda falhará ao iniciar, pois o Spring Boot não sabe qual banco de dados acessar nem com qual credencial. Essas informações são fornecidas no arquivo application.properties (ou application.yml):
+
+\begin{codebox}{Java}
+spring.datasource.username=rei
+spring.datasource.password=rei-pass
+spring.datasource.url=jdbc:mysql://localhost:3306/db
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+   A estrutura da URL — jdbc:mysql://host:porta/nome_do_banco — é o padrão
+\end{codebox}
+
+de qualquer conexão JDBC ao MySQL; ao usar outro SGBD, tanto o prefixo quanto o nome da classe do driver mudam (por exemplo, PostgreSQL e MariaDB possuem seus próprios drivers e prefixos). Com apenas essas cinco linhas de configuração e as duas dependências declaradas, o Spring Boot passa a abrir e fechar sozinho as conexões com o banco — o desenvolvedor não precisa escrever nenhum código de baixo nível para isso.
+
+\section{Mapeando tabelas como entidades JPA}
+
+Uma entidade JPA é a representação, em uma classe Java, de uma tabela do banco de dados. Cada atributo da classe corresponde a uma coluna da tabela, e o Spring Data JPA se encarrega de converter tipos — um INT do banco vira um tipo numérico Java (geralmente Long, mesmo quando a coluna é um inteiro simples), um VARCHAR vira String, um DECIMAL vira BigDecimal, e assim por diante.
+
+Entidade JPA Uma entidade é uma classe Java anotada com @Entity, que informa ao Spring que aquela classe deve ser tratada como uma tabela do banco de dados. Toda entidade precisa declarar um identificador único, marcado com @Id, que corresponde à chave primária da tabela.
+
+O exemplo a seguir mostra a entidade Product, com as anotações principais explicadas em seguida:
+
+\begin{codebox}{Java}
+package com.bluevelvet.api.infrastructure.persistence.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(schema = "db", name = "product")
+public class Product implements Serializable {
+
+       @Id
+       @GeneratedValue(strategy = GenerationType.AUTO)
+       private Long id;
+
+       private String name;
+
+       @Column(name = "short_description")
+       private String shortDescription;
+
+       @Column(name = "full_description")
+       private String fullDescription;
+
+       private String brand;
+
+       private String category;
+
+       @Column(name = "list_price")
+       private BigDecimal listPrice;
+
+       private BigDecimal discount;
+
+       @Column(name = "in_stock")
+       private Boolean inStock;
+
+       @Column(name = "creation_time")
+       private LocalDateTime creationTime;
+
+       @Column(name = "update_time")
+       private LocalDateTime updateTime;
+
+
+
+        private BigDecimal cost;
+ }
+
+   Repare no papel de cada anotação. @Table indica o esquema (db) e o nome da
+\end{codebox}
+
+tabela (product) a que a classe corresponde — útil sobretudo quando o nome da classe Java difere do nome da tabela. @Id marca o atributo que representa a chave primária; sem essa anotação, o Spring recusa a classe como entidade válida. @GeneratedValue define como o valor do identificador é gerado: a estratégia AUTO delega a geração ao próprio banco de dados, apropriada quando a coluna foi criada como AUTO\_INCREMENT no MySQL (outros bancos, como o PostgreSQL, costumam usar a estratégia IDENTITY ou SEQUENCE). Por fim, @Column resolve um problema de convenção: o banco de dados usa snake\_case (short\_description), enquanto o Java usa camelCase (shortDescription). Sempre que o nome do atributo Java, convertido para snake\_case, coincidir exatamente com o nome da coluna, a anotação @Column é dispensável — é o caso de brand e category no exemplo acima.
+
+\section{Relacionamentos entre entidades}
+
+As tabelas box\_dimension e product\_detail possuem uma chave estrangeira apontando para product. Esse relacionamento pode ser expresso em Java por meio das anotações @OneToOne, @OneToMany, @ManyToOne e @ManyToMany, que instruem o JPA a realizar os joins necessários automaticamente, sem que o desenvolvedor escreva SQL manualmente. Do lado de BoxDimension, o relacionamento com Product é declarado como muitospara-um (na prática, um-para-um) usando @JoinColumn para indicar qual coluna local guarda a chave estrangeira:
+
+\begin{codebox}{Java}
+ @Entity
+ @Getter
+ @Setter
+ @Builder
+ @NoArgsConstructor
+ @AllArgsConstructor
+ @Table(schema = "db", name = "box_dimension")
+ public class BoxDimension implements Serializable {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        private Float width;
+        private Float length;
+        private Float height;
+        private Float weight;
+
+
+
+       @OneToOne
+       @JoinColumn(name = "product", referencedColumnName = "id")
+       private Product product;
+}
+\end{codebox}
+
+Do lado de Product, em vez de repetir a chave estrangeira, usa-se o atributo mappedBy, que indica qual atributo da outra entidade já é responsável pelo relacionamento:
+
+\begin{codebox}{Java}
+@OneToOne(mappedBy = "product")
+private BoxDimension boxDimension;
+
+@OneToMany(mappedBy = "product")
+private List<ProductDetail> productDetails;
+\end{codebox}
+
+Assim, ao buscar um produto, o Spring Data JPA consegue trazer junto, de forma automática, tanto a sua dimensão de caixa quanto a lista de detalhes associados — sem que o desenvolvedor precise escrever nenhuma consulta SQL com JOIN manualmente.
+
+\section{O repositório: acesso a dados sem SQL manual}
+
+Com as entidades definidas, o próximo passo é criar um repositório: uma interface responsável por mediar o acesso da aplicação ao banco de dados.
+
+\begin{codebox}{Código}
+Repositório JPA
+Um repositório é uma interface anotada com @Repository que estende
+JpaRepository<T, ID>, onde T é o tipo da entidade gerenciada e ID é o tipo
+do seu identificador. Ao estendê-la, a interface ganha automaticamente métodos
+prontos como findAll(), findById(ID), save(T) e deleteById(ID), sem que
+uma única linha de implementação precise ser escrita.
+\end{codebox}
+
+\begin{codebox}{Java}
+package com.bluevelvet.api.infrastructure.persistence.repository;
+
+import com.bluevelvet.api.infrastructure.persistence.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+}
+\end{codebox}
+
+\begin{codebox}{Código}
+Apenas com essa declaração, ProductRepository já oferece consultas básicas
+de CRUD (Create, Read, Update, Delete). Um detalhe merece atenção: o método
+findById não retorna um Product diretamente, mas um Optional<Product>.
+\end{codebox}
+
+\begin{codebox}{Código}
+Optional
+Optional<T> é um tipo genérico que representa um valor que pode existir ou não.
+Uma busca por identificador pode ou não encontrar um registro correspondente no
+banco; em vez de retornar null — fonte clássica de NullPointerException — o
+JPA retorna um Optional, obrigando o código chamador a tratar explicitamente
+os dois casos: valor presente ou ausente.
+\end{codebox}
+
+Vale reforçar uma boa prática de arquitetura, mesmo que ela ainda não tenha sido implementada neste ponto do curso: o controlador não deve injetar o repositório diretamente. Do ponto de vista do controlador, é irrelevante se os dados vêm de um MySQL, um PostgreSQL, um MongoDB ou um arquivo texto — essa responsabilidade pertence à camada de serviço, que será apresentada no próximo capítulo. Usar o repositório dentro do controlador, como foi feito apenas para fins de teste e depuração nesta etapa, é uma prática que deve ser evitada em código de produção.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O Docker Compose permite descrever e subir um banco de dados MySQL em contêiner, com variáveis de ambiente para nome do banco, usuário e senhas.
+\end{itemize}
+
+\begin{itemize}
+  \item Volumes Docker garantem a persistência dos dados e permitem a execução automática de scripts SQL de inicialização, respeitando ordem alfabética.
+\end{itemize}
+
+\begin{infobox}{• Conectar o Spring Boot ao banco exige duas dependências}
+(spring-boot-starter-data-jpa e o driver JDBC) e cinco propriedades de configuração (usuário, senha, URL e driver).
+\end{infobox}
+
+\begin{itemize}
+  \item Uma entidade JPA é uma classe anotada com @Entity e @Table, com um atributo marcado como @Id e, opcionalmente, @GeneratedValue para geração automática de chave primária.
+\end{itemize}
+
+\begin{itemize}
+  \item A anotação @Column resolve divergências de nome entre o snake\_case do banco e o camelCase do Java.
+\end{itemize}
+
+\begin{itemize}
+  \item Relacionamentos entre entidades (@OneToOne, @OneToMany) evitam a necessidade de escrever joins SQL manualmente.
+\end{itemize}
+
+\begin{itemize}
+  \item Um repositório que estende JpaRepository<T, ID> já oferece métodos prontos de CRUD, e o controlador nunca deve acessá-lo diretamente em uma arquitetura bem estruturada.
+\end{itemize}

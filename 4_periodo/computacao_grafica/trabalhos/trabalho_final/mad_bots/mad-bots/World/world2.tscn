@@ -1,0 +1,67 @@
+[gd_scene load_steps=14 format=3 uid="uid://c4lhxp5ycv3qg"]
+
+[ext_resource type="Texture2D" uid="uid://dga2rrwus1s7f" path="res://Assets/Maps/earth.png" id="1_2swha"]
+[ext_resource type="PackedScene" uid="uid://bktn2d8pc84ta" path="res://Scenes/Player/player_test.tscn" id="2_2inwb"]
+[ext_resource type="PackedScene" uid="uid://bk54nw0n6l0nk" path="res://Scenes/Utility/EnemySpawner/enemy_spawner.tscn" id="3_yp7v2"]
+[ext_resource type="Script" uid="uid://bq30v575devcx" path="res://Scenes/Utility/EnemySpawner/spawn_info.gd" id="4_bpncs"]
+[ext_resource type="PackedScene" uid="uid://b5758pa2s054w" path="res://Scenes/Enemys/2angel_wings.tscn" id="5_7p1xw"]
+[ext_resource type="PackedScene" uid="uid://txrtkeewadsu" path="res://Scenes/Enemys/2robotic_dog.tscn" id="6_2oueb"]
+[ext_resource type="PackedScene" uid="uid://ch2sd5552m2go" path="res://Scenes/Enemys/2blue_corn.tscn" id="6_7p1xw"]
+[ext_resource type="PackedScene" uid="uid://c3a1tucd4ypr8" path="res://Scenes/Enemys/2drill_drone.tscn" id="7_2oueb"]
+[ext_resource type="AudioStream" uid="uid://c1muc7w6ilhhr" path="res://Assets/Audio/Music/Track Industrial.mp3" id="7_g3r8l"]
+
+[sub_resource type="Resource" id="Resource_v8cix"]
+script = ExtResource("4_bpncs")
+time_end = 300
+enemy = ExtResource("5_7p1xw")
+enemy_num = 2
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_ve8ng"]
+script = ExtResource("4_bpncs")
+time_end = 300
+enemy = ExtResource("6_7p1xw")
+enemy_num = 1
+enemy_spawn_delay = 3
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_3wv6a"]
+script = ExtResource("4_bpncs")
+time_end = 300
+enemy = ExtResource("7_2oueb")
+enemy_num = 2
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[sub_resource type="Resource" id="Resource_2fhn8"]
+script = ExtResource("4_bpncs")
+time_end = 300
+enemy = ExtResource("6_2oueb")
+enemy_num = 1
+enemy_spawn_delay = 2
+metadata/_custom_type_script = "uid://bq30v575devcx"
+
+[node name="World2" type="Node2D"]
+
+[node name="Parallax2D" type="Parallax2D" parent="."]
+z_index = -4096
+scroll_offset = Vector2(251, -426)
+repeat_size = Vector2(32, 32)
+repeat_times = 81
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
+texture = ExtResource("1_2swha")
+
+[node name="Player_test" parent="." instance=ExtResource("2_2inwb")]
+
+[node name="EnemySpawner" parent="." instance=ExtResource("3_yp7v2")]
+spawns = Array[ExtResource("4_bpncs")]([SubResource("Resource_v8cix"), SubResource("Resource_ve8ng"), SubResource("Resource_3wv6a"), SubResource("Resource_2fhn8")])
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("7_g3r8l")
+volume_db = -10.0
+autoplay = true
+bus = &"Music"
+parameters/looping = true

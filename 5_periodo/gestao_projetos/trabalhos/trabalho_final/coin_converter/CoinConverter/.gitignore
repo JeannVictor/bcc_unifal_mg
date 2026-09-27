@@ -1,0 +1,43 @@
+# ===== SEGREDOS =====
+.env
+
+# ===== BUILD =====
+target/
+build/
+
+# ===== MAVEN =====
+.mvn/wrapper/maven-wrapper.jar
+
+# ===== LOGS =====
+*.log
+
+# ===== INTELLIJ =====
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ===== ECLIPSE / STS =====
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# ===== NETBEANS =====
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===== VS CODE =====
+.vscode/
+
+# ===== SISTEMA =====
+.DS_Store
+Thumbs.db
+
+# ===== DOCKER =====
+docker-data/

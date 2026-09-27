@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://fj4ep7j7o1s8"]
+
+[ext_resource type="Script" uid="uid://jklrvsfafx5y" path="res://Scenes/Enemys/Attacks/Melee/delayed_attack_melle.gd" id="1_tkg1u"]
+[ext_resource type="PackedScene" uid="uid://c8o2onfgppbo6" path="res://Scenes/Utility/Hitboxes/Hitbox/hitBox.tscn" id="2_jitl4"]
+
+[node name="Delayed_Attack_Melee" type="Node2D"]
+script = ExtResource("1_tkg1u")
+
+[node name="Delay_timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="Cooldown_timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Attack_area" parent="." groups=["attack"] instance=ExtResource("2_jitl4")]
+collision_layer = 17
+collision_mask = 3
+DisableHitBoxType = 1
+
+[node name="TogleeTimer" parent="Attack_area" index="1"]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="body_entered" from="Attack_area" to="." method="_on_attack_area_body_entered"]
+[connection signal="body_exited" from="Attack_area" to="." method="_on_attack_area_body_exited"]
+
+[editable path="Attack_area"]

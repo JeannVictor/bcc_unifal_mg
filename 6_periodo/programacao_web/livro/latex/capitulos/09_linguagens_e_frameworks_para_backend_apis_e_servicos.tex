@@ -1,0 +1,85 @@
+\chapter{Linguagens e Frameworks para Backend, APIs e Serviços}
+
+\section{Persistência de dados e bancos de dados relacionais}
+
+Quem trabalha com desenvolvimento back-end normalmente precisa integrar sua aplicação a um sistema de gestão de banco de dados. Para bancos de dados relacionais, o modelo conceitual amplamente utilizado desde a década de 1970 é o modelo entidaderelacionamento: identificam-se as entidades do domínio do problema e as associações entre elas (relacionamentos do tipo um-para-um, um-para-muitos, muitos-paramuitos). Em um sistema de hospedagem, por exemplo, poderíamos ter entidades como Hóspede, Quarto, Tipo de Quarto e Reserva, relacionadas entre si.
+
+\begin{codebox}{SQL}
+ SQL (Structured Query Language, Linguagem de Consulta Estruturada) é a lin-
+ guagem padrão para criar esquemas de bancos de dados relacionais e para con-
+ sultar e manipular as informações neles armazenadas. Pode-se pronunciar tanto
+ soletrando “S-Q-L” quanto como a palavra “sequel” — ambas as formas são de
+ uso corrente.
+\end{codebox}
+
+Uma característica marcante dos bancos relacionais é possuírem um esquema bem definido: toda linha de uma tabela segue a mesma estrutura de colunas. Existem diversos sistemas gerenciadores de bancos de dados relacionais no mercado, gratuitos e pagos, como MySQL, MariaDB, PostgreSQL e Oracle, entre outros. Nos últimos anos, bancos de dados não relacionais — os chamados NoSQL — têm ganhado espaço tanto na indústria quanto na academia. Sua principal característica é a ausência de um esquema rígido: diferentes registros de uma mesma coleção podem ter formatos distintos entre si. Essa flexibilidade costuma trazer ganhos de escalabilidade e eficiência em determinados cenários, justamente por dispensar a validação estrutural rígida exigida pelos bancos relacionais tradicionais.
+
+\section{Linguagens dinâmicas de back-end}
+
+Além do banco de dados, uma aplicação web precisa de uma linguagem de back-end responsável por consultar os dados, processá-los e uni-los a um template de apresentação (HTML/CSS), gerando dinamicamente o documento que será enviado ao navegador. Por isso essas linguagens são chamadas de linguagens de renderização dinâmica: o documento web não existe pronto em disco — ele é montado em tempo de execução, no servidor, a partir da combinação entre dados e template. Existem dezenas de opções de linguagens e frameworks para essa finalidade, e a escolha costuma depender de contexto, experiência da equipe e do ecossistema da empresa. Alguns exemplos amplamente utilizados no mercado:
+
+\begin{itemize}
+  \item Java: a plataforma oficial mais conhecida é o Jakarta EE (antigo Java EE), mas frameworks da comunidade como Spring e Spring Boot são extremamente populares tanto na indústria quanto na academia.
+  \item PHP: o framework mais conhecido é o Laravel, além do próprio WordPress, que é construído sobre PHP.
+  \item JavaScript no lado servidor: viabilizado pelo Node.js, com o framework Express.js sendo uma das opções mais utilizadas para construir aplicações no padrão MVC.
+  \item .NET: plataforma da Microsoft para aplicações distribuídas corporativas, com suporte a múltiplas linguagens.
+  \item Ruby: o framework mais associado a essa linguagem é o Ruby on Rails.
+  \item Python: destacam-se frameworks como Django e Flask. Apesar da diversidade de nomes, o conceito subjacente é sempre o mesmo: uma linguagem de back-end que roda no servidor, comunica-se com o banco de dados, aplica a lógica de negócio necessária e une o resultado a um template de apresentação antes de enviar a resposta ao navegador.
+\end{itemize}
+
+\section{Sistemas de gestão de conteúdo (CMS)}
+
+Nem toda aplicação web precisa ser construída do zero. Quando o objetivo principal é publicar e organizar conteúdo — e não implementar algoritmos de negócio muito específicos — é comum recorrer a um sistema de gestão de conteúdo (CMS, Content Management System). Esses sistemas oferecem uma interface pronta para cadastrar, consultar, atualizar e remover conteúdo na web, sem que o desenvolvedor precise programar essa camada. Os CMS mais conhecidos do mercado são WordPress, Drupal e Joomla, sendo o WordPress amplamente dominante — estima-se que ele sustente uma fração muito expressiva de todos os sites atualmente publicados na internet. O funcionamento interno de um CMS segue o mesmo princípio dos frameworks MVC de back-end mencionados anteriormente: uma consulta ao banco de dados obtém o conteúdo, que é então combinado com um template HTML/CSS para gerar a página final entregue ao navegador. O WordPress será estudado com mais profundidade em capítulo específico adiante.
+
+\section{APIs: quando o back-end não gera páginas}
+
+Nos últimos anos, uma alternativa ao modelo tradicional de aplicações web centradas em páginas ganhou enorme popularidade: o desenvolvimento de APIs (Application Programming Interfaces). Em vez de o servidor consultar o banco de dados e gerar uma página HTML completa, ele retorna apenas os dados, tipicamente em formato JSON ou XML, deixando a cargo do cliente — seja ele um navegador, um aplicativo móvel ou outro sistema — decidir como exibir essa informação.
+
+\begin{codebox}{JSON}
+ JSON (JavaScript Object Notation) é um formato de texto para representar dados
+ estruturados, facilmente convertido em um objeto de programação e vice-versa. É
+ hoje o formato mais utilizado para comunicação entre APIs por ser mais compacto
+ e ter menos sobrecarga (overhead) do que o XML.
+\end{codebox}
+
+Essa separação é o que torna possível que uma mesma lógica de back-end sirva simultaneamente a um site web, a um aplicativo móvel e a uma aplicação de linha de comando, por exemplo — todos consumindo a mesma API, cada um responsável por renderizar a resposta à sua própria maneira. É cada vez mais comum encontrar profissionais que trabalham exclusivamente no desenvolvimento de APIs, sem nunca escrever uma única tela de interface gráfica. Um exemplo prático e concreto: imagine um serviço dos Correios que recebe como parâmetros um endereço de origem, um endereço de destino e o peso de um produto, e retorna o valor estimado do frete em formato XML ou JSON. Os Correios não precisam desenvolver interface gráfica alguma para esse serviço — quem consome a API é que decide como exibir o resultado, seja em um site de e-commerce, em um aplicativo móvel ou em qualquer outro sistema.
+
+\subsection{O estilo arquitetural REST}
+
+O estilo de arquitetura mais utilizado atualmente para expor esse tipo de serviço é chamado REST (Representational State Transfer). Antes do REST se popularizar, era comum o uso de protocolos mais verbosos como SOAP, com mensagens baseadas em WSDL sobre HTTP. O estilo REST, em contraste, aproveita diretamente os métodos já existentes do protocolo HTTP — como GET, POST, PUT e DELETE — como mecanismo de transporte e semântica de comunicação entre sistemas distribuídos. Uma requisição GET a um serviço REST, por exemplo, tipicamente retorna uma resposta em JSON representando o recurso solicitado, e não uma página HTML pronta para visualização.
+
+\section{Autenticação delegada com OAuth}
+
+Outra necessidade comum em aplicações que se comunicam com serviços de terceiros é a autenticação. O protocolo OAuth é um padrão da indústria que permite autorizar a comunicação entre dois sistemas distribuídos de forma segura, sem que seja necessário compartilhar senhas diretamente entre eles.
+
+É graças ao OAuth, por exemplo, que um usuário pode autorizar o WordPress a publicar automaticamente em seu nome no Twitter, ou que um site pode oferecer “login com Google” ou “login com Facebook” sem nunca armazenar a senha do usuário — a aplicação apenas delega a autenticação ao serviço terceiro e recebe de volta uma confirmação de aprovação ou negação. Esse mecanismo tornou-se essencial no ecossistema atual de aplicações web integradas, e será revisitado quando o curso tratar de desenvolvimento de aplicações distribuídas com mais profundidade.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O modelo entidade-relacionamento e a linguagem SQL são a base dos bancos de dados relacionais, que possuem esquema rígido e bem definido.
+\end{itemize}
+
+\begin{itemize}
+  \item Bancos de dados NoSQL dispensam esquema fixo, trazendo flexibilidade e, em muitos cenários, ganhos de escalabilidade.
+\end{itemize}
+
+\begin{itemize}
+  \item Linguagens de back-end (Java, PHP, JavaScript/Node.js, .NET, Ruby, Python, entre outras) unem dados do banco a templates HTML/CSS para gerar páginas dinamicamente.
+\end{itemize}
+
+\begin{itemize}
+  \item Sistemas de gestão de conteúdo (CMS) como WordPress, Drupal e Joomla facilitam a publicação de conteúdo sem exigir desenvolvimento de aplicação customizada.
+\end{itemize}
+
+\begin{itemize}
+  \item APIs retornam dados (JSON ou XML) em vez de páginas prontas, permitindo que múltiplos tipos de cliente consumam a mesma lógica de back-end.
+\end{itemize}
+
+\begin{itemize}
+  \item REST é o estilo arquitetural predominante hoje para expor APIs, utilizando os métodos nativos do protocolo HTTP.
+\end{itemize}
+
+\begin{itemize}
+  \item OAuth permite autenticação e autorização seguras entre sistemas distintos, sem compartilhamento direto de senhas.
+\end{itemize}

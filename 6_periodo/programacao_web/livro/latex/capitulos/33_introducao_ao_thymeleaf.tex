@@ -1,0 +1,223 @@
+\chapter{Introdução ao Thymeleaf}
+
+\section{O que é o Thymeleaf}
+
+\begin{infobox}{Thymeleaf}
+Thymeleaf é um motor de templates Java para aplicações web, que permite criar páginas HTML dinâmicas processadas no servidor. Diferentemente de outros motores de template, o Thymeleaf trabalha sobre HTML puro: um arquivo de template Thymeleaf é um HTML válido, que pode inclusive ser aberto diretamente em um navegador (exibindo valores estáticos ou vazios), mas que ganha atributos especiais — prefixados por th: — reconhecidos e processados pelo servidor no momento em que a página é renderizada.
+\end{infobox}
+
+Essa característica é chamada de natural templating: como o Thymeleaf usa atributos HTML válidos (por exemplo, th:text em vez de uma sintaxe de chaves não reconhecida pelo navegador), designers e desenvolvedores conseguem visualizar o layout do template mesmo sem executar o servidor Spring. No momento em que a aplicação processa o template, o Spring substitui esses atributos por conteúdo real, vindo de objetos Java disponibilizados pelo controlador. O Thymeleaf é um projeto extenso, com dezenas de recursos — fragmentos reutilizáveis, internacionalização, integração com formulários complexos, entre outros. Este capítulo cobre o essencial para que o leitor entenda como ele funciona e consiga, a partir daqui, aprofundar-se de forma autônoma sempre que precisar de um recurso específico.
+
+\section{Configurando o projeto para usar Thymeleaf}
+
+O primeiro passo é adicionar a dependência do Thymeleaf ao arquivo de build do projeto:
+
+\begin{codebox}{Java}
+implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+\end{codebox}
+
+Com a dependência baixada, o Spring Boot já reconhece automaticamente dois diretórios especiais dentro de src/main/resources: templates, onde ficam os arquivos HTML processados pelo Thymeleaf, e static, onde ficam arquivos que não mudam em tempo de execução — folhas de estilo CSS, imagens, scripts JavaScript client-side. Essa separação é proposital: o CSS de uma página não é gerado dinamicamente a cada requisição, então ele pertence a static, e não a templates. Para verificar que a configuração está correta, cria-se um arquivo simples, index.html, dentro de templates, e um controlador dedicado a servir páginas HTML — diferente do controlador REST já existente, que continua respondendo em JSON:
+
+\begin{codebox}{Código}
+HTML + Thymeleaf
+<!DOCTYPE html>
+<html>
+<head>
+<title>Blue Velvet Music Store</title>
+</head>
+<body>
+<h1>Blue Velvet Music Store</h1>
+</body>
+</html>
+\end{codebox}
+
+\begin{codebox}{Java}
+ package com.bluevelvet.web.controller;
+
+ import org.springframework.stereotype.Controller;
+ import org.springframework.web.bind.annotation.GetMapping;
+
+ @Controller
+ public class ThymeleafController {
+
+        @GetMapping("/")
+        public String getHomePage() {
+            return "index";
+        }
+ }
+
+
+   Dois detalhes merecem atenção aqui. Primeiro, a anotação usada é @Controller,
+\end{codebox}
+
+e não @RestController: enquanto @RestController serializa automaticamente o retorno do método como corpo da resposta (por exemplo, JSON), @Controller espera que o valor retornado seja o nome de uma view — neste caso, "index", que o Thymeleaf resolve para o arquivo templates/index.html. Segundo, apenas colocar um arquivo HTML dentro de templates não o torna acessível: é preciso criar uma rota no controlador que devolva o nome desse template como resposta a uma requisição GET.
+
+\section{Expressões do Thymeleaf}
+
+O Thymeleaf define diferentes tipos de expressão, cada uma identificada por um símbolo específico antes dos colchetes. As três mais usadas no dia a dia são:
+
+\begin{itemize}
+  \item Expressões de variável, escritas como \$\{...\}: acessam um objeto disponibilizado pelo controlador, como um produto vindo do banco de dados.
+  \item Expressões de mensagem, escritas como \#\{...\}: exibem um texto pronto, tipicamente vindo de um arquivo de internacionalização.
+  \item Expressões de link, escritas como @\{...\}: constroem URLs relativas ao contexto da aplicação, usadas por exemplo para referenciar arquivos estáticos ou outras rotas.
+\end{itemize}
+
+\subsection{Exibindo texto com th:text}
+
+O atributo th:text substitui o conteúdo textual de uma tag HTML pelo valor de uma expressão Thymeleaf. Considere que o controlador disponibiliza um objeto chamado product para a view — assunto detalhado na próxima seção — contendo os atributos name, brand e listPrice: HTML + Thymeleaf
+
+\begin{codebox}{Código}
+<div th:object="${product}">
+<h2 th:text="*{name}">Nome do Produto</h2>
+<p th:text="*{brand}">Marca</p>
+<p th:text="|$ ${product.listPrice}|">Preco</p>
+</div>
+\end{codebox}
+
+Repare em dois recursos combinados nesse trecho. O atributo th:object, aplicado à div externa, declara que, dentro dela, o objeto de referência é o product vindo do modelo — isso permite usar o asterisco (*\{...\}) como atalho para \$\{product...\} nos elementos internos: *\{name\} é equivalente a \$\{product.name\}. Já o último parágrafo mostra como concatenar texto literal (o símbolo de cifrão) com uma expressão de variável: como o cifrão é um caractere reservado do Thymeleaf para expressões de variável, ele não pode ser escrito diretamente antes de uma expressão — é necessário envolver todo o conteúdo entre barras verticais (|...|), que sinalizam uma expressão de concatenação de texto.
+
+\subsection{Iterando sobre coleções com th:each}
+
+\begin{codebox}{Código}
+Quando um atributo do modelo é uma coleção — por exemplo, a lista de faixas de um
+CD — usa-se o atributo th:each, equivalente a um laço for-each do Java:
+HTML + Thymeleaf
+<ul>
+<li th:each="detail : ${product.productDetails}">
+<span th:text="${detail.name}">Faixa</span>
+-
+\end{codebox}
+
+\begin{codebox}{Código}
+<span th:text="${detail.value}">01</span>
+</li>
+</ul>
+\end{codebox}
+
+\begin{codebox}{Código}
+Aqui, detail é uma variável criada pelo próprio th:each, representando, a cada
+iteração, um elemento da lista product.productDetails. Se a lista tiver quinze
+elementos — como as quinze faixas de um álbum —, o <li> inteiro é repetido quinze
+vezes, uma para cada item; se a lista estiver vazia, nada é exibido, sem necessidade de
+verificação manual.
+\end{codebox}
+
+\subsection{Condicionais com th:if}
+
+O atributo th:if exibe um elemento apenas quando a expressão associada é avaliada como verdadeira; caso contrário, o elemento é omitido inteiramente do HTML final enviado ao navegador:
+
+HTML + Thymeleaf
+
+\begin{codebox}{Código}
+<span th:if="${product.inStock}">Disponivel em estoque</span>
+<span th:unless="${product.inStock}">Fora de estoque</span>
+\end{codebox}
+
+O Thymeleaf também oferece o atributo complementar th:unless, que exibe o elemento exatamente quando a condição é falsa — útil para pares de mensagens mutuamente exclusivas, como no exemplo acima. Para verificações que evitem uma NullPointerException ao acessar um atributo de um objeto que pode ser nulo, o Thymeleaf aceita o operador de segurança ?: uma expressão como \$\{product.productDetail?.name\} simplesmente não avalia .name caso productDetail seja nulo, em vez de lançar uma exceção.
+
+\section{Referenciando arquivos estáticos com expressões de link}
+
+Como vimos, arquivos CSS pertencem ao diretório static, e não a templates. Para referenciar um arquivo estático dentro de um template, usa-se uma expressão de link (@\{...\}) no atributo th:href, em vez do atributo comum href:
+
+\begin{codebox}{Código}
+HTML + Thymeleaf
+<head>
+<link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+\end{codebox}
+
+O caminho /css/styles.css é resolvido a partir da raiz de static: um arquivo salvo em src/main/resources/static/css/styles.css é acessado, em tempo de execução, por esse caminho relativo. Usar th:href em vez de um href comum garante que o Thymeleaf resolva corretamente o caminho considerando o contexto da aplicação (por exemplo, se ela estiver publicada sob um subdiretório específico do servidor).
+
+\section{Passando dados do controlador para a view com Model}
+
+Os exemplos anteriores pressupõem a existência de um objeto product disponível para o template. Essa disponibilização é feita pelo controlador, por meio da classe Model do Spring, injetada como parâmetro do método:
+
+\begin{codebox}{Java}
+@Controller
+@RequestMapping("/product")
+public class ThymeleafController {
+
+       private final ProductService productService;
+
+       public ThymeleafController(ProductService productService) {
+           this.productService = productService;
+       }
+
+       @GetMapping("/{id}")
+       public String viewProduct(@PathVariable Long id, Model model) {
+           ProductResponse response = productService.findById(id);
+           model.addAttribute("product", response);
+           return "view-product";
+       }
+}
+\end{codebox}
+
+\begin{codebox}{Código}
+O método model.addAttribute("product", response) associa, ao modelo da
+view, uma variável chamada product cujo conteúdo é o objeto response. É ex-
+atamente esse nome — product — que será usado dentro do template, tanto em
+th:object="${product}" quanto em qualquer outra expressão de variável que o ref-
+erencie. Caso o produto não seja encontrado, a camada de serviço lança a exceção
+customizada apresentada no capítulo anterior, que pode ser tratada pelo mesmo mecan-
+ismo de @ControllerAdvice já estudado.
+Um detalhe importante de arquitetura aparece aqui: o ThymeleafController não
+pode reaproveitar diretamente o @PostMapping já existente no controlador REST para
+criar produtos, porque aquele endpoint espera um corpo de requisição em JSON (via
+@RequestBody), e o Thymeleaf, ao submeter um formulário HTML, não converte auto-
+maticamente os campos preenchidos em JSON. Por essa razão, é necessário criar uma
+rota específica para o formulário, usando @ModelAttribute para vincular os campos
+do formulário a um objeto de requisição:
+HTML + Thymeleaf
+\end{codebox}
+
+\begin{codebox}{Código}
+<form th:action="@{/product}" th:object="${product}" method="post">
+<input type="text" th:field="*{name}">
+<input type="text" th:field="*{brand}">
+<button type="submit">Adicionar produto</button>
+</form>
+\end{codebox}
+
+\begin{codebox}{Java}
+@PostMapping("/product")
+public String createProductForm(@ModelAttribute ProductRequest request) {
+    ProductResponse response = productService.createProduct(request);
+    return "redirect:/product/" + response.getId();
+}
+\end{codebox}
+
+O atributo th:field substitui o name e o value tradicionais de um campo de formulário HTML, vinculando-o automaticamente ao atributo correspondente do objeto declarado em th:object. Após criar o produto com sucesso, o controlador devolve uma string prefixada com redirect:, instruindo o navegador a realizar uma nova requisição GET para a página do produto recém-criado — em vez de simplesmente reexibir o formulário, seguindo o padrão conhecido como Post/Redirect/Get, que evita o reenvio acidental do formulário caso o usuário atualize a página.
+
+\begin{infobox}{Dica}
+O Thymeleaf é um projeto extenso e este capítulo cobriu apenas o essencial para o dia a dia — th:text, th:each, th:if/th:unless, expressões de link e vínculo com formulários. Recursos mais avançados, como fragmentos reutilizáveis (th:fragment e th:insert) e internacionalização de mensagens, valem a pena ser explorados na documentação oficial sempre que o projeto exigir.
+\end{infobox}
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O Thymeleaf é um motor de templates que processa HTML puro no servidor, usando atributos th:* reconhecidos apenas em tempo de execução Spring.
+\end{itemize}
+
+\begin{itemize}
+  \item Controladores que retornam páginas HTML usam @Controller (não @RestController) e devolvem o nome do template como string.
+\end{itemize}
+
+\begin{itemize}
+  \item Templates ficam em src/main/resources/templates; arquivos estáticos como CSS ficam em src/main/resources/static.
+\end{itemize}
+
+\begin{itemize}
+  \item Existem três tipos principais de expressão: variável (\$\{...\}), mensagem (\#\{...\}) e link (@\{...\}), cada uma usada em um contexto diferente.
+\end{itemize}
+
+\begin{itemize}
+  \item th:text exibe valores dinâmicos, th:each itera sobre coleções e th:if/th:unless controlam a exibição condicional de elementos.
+\end{itemize}
+
+\begin{itemize}
+  \item A classe Model, injetada no controlador, é o mecanismo usado para disponibilizar objetos Java (como um produto vindo do serviço) para o template.
+\end{itemize}
+
+\begin{itemize}
+  \item Formulários HTML processados por Thymeleaf exigem um endpoint próprio, distinto da API REST em JSON, usando @ModelAttribute e o padrão Post/Redirect/Get.
+\end{itemize}

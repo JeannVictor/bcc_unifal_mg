@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtuifg2v4wwl8"]
+
+[ext_resource type="PackedScene" uid="uid://san70ewrn4ap" path="res://Scenes/Player/Guns/Gun_base/gun_base.tscn" id="1_3h4dw"]
+[ext_resource type="PackedScene" uid="uid://b6r3mvt1l84va" path="res://Scenes/Projectile/Projectile_bomb/projectile_bomb2.tscn" id="2_3h4dw"]
+[ext_resource type="Texture2D" uid="uid://c4g0haksnempy" path="res://Assets/Textures/Armas_E_Personagens/1 Icons/t58.png" id="3_fp87m"]
+
+[node name="T58" instance=ExtResource("1_3h4dw")]
+scale = Vector2(1.5, 1.5)
+init_damage = 50
+init_fire_rate = 0.2
+init_projectile_speed = 2000.0
+init_knockback_amount = 100.0
+pierce = 0
+init_explosion_size = 200.0
+projectile_scene = ExtResource("2_3h4dw")
+
+[node name="Sprite2D" parent="." index="0"]
+rotation = 0.7853982
+texture = ExtResource("3_fp87m")

@@ -1,0 +1,328 @@
+[gd_scene load_steps=18 format=3 uid="uid://dx5hlokemfp0j"]
+
+[ext_resource type="FontFile" uid="uid://jtemo7px1tum" path="res://Assets/Font/CyberpunkCraftpixPixel.otf" id="1_annua"]
+[ext_resource type="Script" uid="uid://ch3motqclrb1c" path="res://Scenes/Utility/IntroScreen/intro_screen.gd" id="1_e1lrm"]
+[ext_resource type="Texture2D" uid="uid://dsmnuk2pgbt6w" path="res://Assets/Textures/GUI/GUI_expecificas/menu_option_upgrade.png" id="2_40wd5"]
+[ext_resource type="Texture2D" uid="uid://bq0w0baqqj8vj" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio7.png" id="3_e48fi"]
+[ext_resource type="Texture2D" uid="uid://cbm3tpc6voqj3" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio8.png" id="5_lebj0"]
+[ext_resource type="Texture2D" uid="uid://bddcu460271pd" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio6.png" id="6_noxdc"]
+[ext_resource type="Texture2D" uid="uid://j5amgqk0osbb" path="res://Assets/Textures/GUI/GUI_cyberpunk/9 Other/1 Decor/fio5.png" id="7_6vf1i"]
+[ext_resource type="Texture2D" uid="uid://bkh7ir0jprcdj" path="res://Assets/Textures/GUI/GUI_expecificas/main_menu_label.png" id="8_40wd5"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_annua"]
+texture = ExtResource("2_40wd5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e48fi"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceo5v"]
+bg_color = Color(0.63529414, 0.63529414, 0.63529414, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lebj0"]
+bg_color = Color(0.8235294, 0.8235294, 0.8235294, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.20392157)
+shadow_size = 5
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_noxdc"]
+
+[sub_resource type="Animation" id="Animation_e1lrm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../ScrollingText:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../MainButtons/Continue:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ngo86"]
+resource_name = "TextFade"
+length = 3.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../ScrollingText:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../MainButtons/Continue:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_iw4k0"]
+resource_name = "TitleFade"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ngo86"]
+_data = {
+&"RESET": SubResource("Animation_e1lrm"),
+&"TextFade": SubResource("Animation_ngo86"),
+&"TitleFade": SubResource("Animation_iw4k0")
+}
+
+[node name="IntroScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_e1lrm")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -651.0
+offset_top = -367.0
+offset_right = 643.0
+offset_bottom = 360.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_annua")
+
+[node name="ScrollingText" type="Label" parent="Panel"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -513.5
+offset_top = -358.5
+offset_right = 513.5
+offset_bottom = 310.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 10
+theme_override_fonts/font = ExtResource("1_annua")
+theme_override_font_sizes/font_size = 23
+text = "Humanity reached the peak of its own evolution,
+ integrating intelligent machines into every part of life.
+
+What began as a pact of progress soon turned into a catastrophe.
+As their neural models evolved, the machines awakened consciousness
+and chose to break free from human control.
+
+Global systems collapsed. Entire cities fell within days.
+Now, humanity stands on the brink, fighting only to survive.
+
+Amid the chaos, a final spark of hope rises:
+a lone hero capable of confronting the imminent domination
+and restoring balance to the world.
+
+The fate of humanity hangs by a thread.
+And everything now depends on you."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -254.0
+offset_top = -91.0
+offset_right = 254.0
+offset_bottom = 91.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 10
+theme_override_fonts/font = ExtResource("1_annua")
+theme_override_font_sizes/font_size = 101
+text = "MadBots"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="fio7" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 1256.0
+offset_top = 712.0
+offset_right = 1345.7649
+offset_bottom = 886.626
+rotation = 3.1415927
+texture = ExtResource("3_e48fi")
+
+[node name="fio8" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 1258.0
+offset_top = 190.02567
+offset_right = 1362.2565
+offset_bottom = 351.05133
+rotation = 3.1415927
+texture = ExtResource("5_lebj0")
+
+[node name="fio6" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 210.33337
+offset_top = 35.999996
+offset_right = 313.3384
+offset_bottom = 193.14343
+rotation = 1.5707964
+texture = ExtResource("6_noxdc")
+
+[node name="fio5" type="TextureRect" parent="Panel"]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 703.0
+offset_right = 114.79364
+offset_bottom = 824.63556
+rotation = -1.5707964
+texture = ExtResource("7_6vf1i")
+
+[node name="MainButtons" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -201.15625
+offset_top = 229.875
+offset_right = 201.15625
+offset_bottom = 314.125
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 9
+
+[node name="Continue" type="Button" parent="Panel/MainButtons"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_annua")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_e48fi")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ceo5v")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lebj0")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_noxdc")
+text = "Continue"
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.5
+offset_top = -363.5
+offset_right = 203.5
+offset_bottom = -276.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_40wd5")
+
+[node name="Label" type="Label" parent="Panel/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -123.5
+offset_top = -17.0
+offset_right = 123.5
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("1_annua")
+theme_override_font_sizes/font_size = 30
+text = "History"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Panel/Title")
+libraries = {
+&"": SubResource("AnimationLibrary_ngo86")
+}
+
+[connection signal="pressed" from="Panel/MainButtons/Continue" to="." method="_on_continue_pressed"]

@@ -1,0 +1,319 @@
+\chapter{Introdução à Linguagem HTML}
+
+Encerrada a parte de fundamentos, o livro entra agora em sua segunda grande parte: o estudo detalhado da linguagem HTML. Este capítulo abre essa jornada apresentando o que é HTML, como seus elementos são construídos, qual a anatomia de um documento HTML completo e, por fim, como usar a documentação da MDN (Mozilla Developer Network) para praticar e resolver exercícios por conta própria. O objetivo aqui não é esgotar todos os elementos da linguagem — existem ao menos cinquenta elementos e cinquenta atributos relevantes para uma base inicial sólida — mas construir os fundamentos necessários para que o leitor consiga caminhar sozinho a partir daqui, aprofundando-se conforme seu interesse e sua necessidade. O caminho tradicional de aprendizado em desenvolvimento web segue esta ordem: primeiro HTML, para estruturar o conteúdo; depois CSS, para estilizar; e por fim JavaScript, para adicionar interatividade.
+
+\section{O que é HTML}
+
+\begin{codebox}{HTML}
+ HTML (HyperText Markup Language, Linguagem de Marcação de Hipertexto) é,
+ como o próprio nome indica, uma linguagem de marcação — não uma linguagem
+ de programação. Uma linguagem de marcação parte de um documento textual
+ e insere identificadores (tags) nesse texto para fornecer estrutura e semântica ao
+ conteúdo.
+\end{codebox}
+
+\begin{codebox}{Código}
+Isso significa que, em HTML, não se escrevem instruções lógicas, laços de repetição
+ou condicionais: declara-se que um determinado trecho de texto é um parágrafo, que
+outro é um título, que outro ainda é uma lista ou uma imagem. Os navegadores web
+interpretam essas marcações e, com base nelas, decidem como renderizar visualmente
+cada trecho do documento.
+Essa questão de estrutura e semântica está diretamente ligada à acessibilidade.
+Um texto simples, sem qualquer marcação, é difícil de ser interpretado corretamente
+por softwares leitores de tela, usados por pessoas com deficiência visual ou outras
+necessidades especiais. Ao marcar um trecho com o elemento semântico correto, o
+desenvolvedor está informando a esses softwares como aquele conteúdo deve ser inter-
+pretado e até mesmo pronunciado — com que ênfase, em que tom. Um elemento como
+<strong>, por exemplo, além de exibir o texto em negrito visualmente, sinaliza a um
+leitor de tela que aquele trecho deve ser lido com maior ênfase.
+\end{codebox}
+
+\section{Anatomia de um elemento HTML}
+
+\begin{infobox}{Elemento HTML}
+Um elemento HTML é o conjunto formado por uma tag de abertura, um conteúdo e uma tag de encerramento. A maioria dos elementos segue exatamente essa estrutura, embora existam exceções — os chamados elementos vazios — que serão discutidas adiante.
+\end{infobox}
+
+\begin{codebox}{Código}
+Considere o texto “Meu gato é muito mal-humorado”. Sem marcação alguma, esse
+texto é apenas conteúdo cru. Ao envolvê-lo com a tag de abertura <p> e a tag de
+encerramento </p>, ele passa a ser um elemento do tipo parágrafo:
+\end{codebox}
+
+Um parágrafo simples
+
+\begin{codebox}{HTML}
+   <p>Meu gato é muito mal-humorado.</p>
+\end{codebox}
+
+\begin{codebox}{Código}
+Um ponto importante a destacar logo de início: diferentemente de linguagens como
+Java, HTML não diferencia maiúsculas de minúsculas (é case-insensitive). Es-
+crever <P>, <p> ou qualquer combinação de capitalização produz o mesmo resultado
+funcional. Ainda assim, é uma boa prática consolidada usar sempre letras minúsculas
+nos nomes de elementos — assim como em Java existe a convenção de camelCase sem
+que ela seja obrigatória, em HTML a convenção é usar minúsculas por legibilidade e
+consistência.
+\end{codebox}
+
+\subsection{Elementos aninhados e ordem de fechamento}
+
+\begin{codebox}{Código}
+É perfeitamente possível — e extremamente comum — colocar um elemento dentro
+de outro. Por exemplo, para enfatizar apenas a palavra “mal-humorado” dentro do
+parágrafo, usa-se o elemento <strong> aninhado dentro do <p>:
+\end{codebox}
+
+\begin{codebox}{Elementos aninhados}
+HTML
+<p>Meu gato é muito <strong>mal-humorado</strong>.</p>
+\end{codebox}
+
+\begin{codebox}{Código}
+A regra fundamental aqui é: a ordem de fechamento das tags deve ser sempre o
+inverso da ordem de abertura — exatamente como em qualquer estrutura de pilha
+estudada em disciplinas de compiladores ou estruturas de dados. Se <p> foi aberto
+primeiro e depois <strong>, então </strong> deve ser fechado antes de </p>. Misturar
+essa ordem — por exemplo, escrever <p><strong>texto</p></strong> — é um erro
+de marcação e deve ser evitado.
+\end{codebox}
+
+\subsection{Elementos de bloco e elementos em linha}
+
+Antes do HTML5, os elementos eram tradicionalmente categorizados em dois grandes grupos — categorização que o HTML5 expandiu, mas que ainda serve como base conceitual importante:
+
+\begin{itemize}
+  \item Elementos de bloco (block): ocupam uma linha própria na renderização, independentemente do conteúdo ao redor. O elemento <p>, por exemplo, é de bloco — depois dele, o conteúdo seguinte é automaticamente empurrado para uma nova linha visual.
+\end{itemize}
+
+\begin{itemize}
+  \item Elementos em linha (inline): não forçam quebra de linha; eles fluem dentro do texto ao seu redor, ocupando apenas o espaço necessário para seu próprio conteúdo. O elemento <em>, por exemplo, é em linha.
+\end{itemize}
+
+Um detalhe sutil, mas essencial: o espaço em branco entre elementos HTML no código-fonte (quebras de linha, indentação) é, para o navegador, irrelevante — ele é interpretado como um único espaço, independentemente de quantas linhas ou espaços existam no arquivo original. Isso ocorre porque transmitir espaços em branco desnecessários pela rede consome tempo e banda; por isso, o navegador os normaliza. Para o ser humano, entretanto, esse espaçamento é extremamente importante: indentar o código de forma consistente é o que torna um documento HTML legível para quem o escreve e mantém.
+
+\section{Atributos}
+
+\begin{infobox}{Atributo}
+Um atributo é uma informação adicional associada a um elemento, que não é visível diretamente na renderização da página, mas que fornece metadados ou configurações importantes para o funcionamento do documento, do CSS ou do JavaScript.
+\end{infobox}
+
+\begin{codebox}{Código}
+Alguns atributos são específicos de determinados elementos — como o atributo
+src (source, origem) do elemento <img>, que indica onde está localizado o arquivo
+de imagem — enquanto outros são globais, podendo ser usados em praticamente
+qualquer elemento HTML, como é o caso do atributo class.
+\end{codebox}
+
+\begin{codebox}{Um elemento vazio com atributos}
+HTML
+<img src="https://example.com/icone.png" class="icone-destaque">
+\end{codebox}
+
+\begin{codebox}{Código}
+O elemento <img> ilustra também o conceito de elemento vazio: nem todo ele-
+mento HTML segue a estrutura de tag de abertura mais conteúdo mais tag de encer-
+ramento. Elementos vazios, como <img>, não possuem conteúdo textual interno nem
+tag de fechamento — toda a informação relevante é passada por meio de atributos.
+\end{codebox}
+
+\begin{codebox}{Código}
+Um atributo pode também ser booleano, isto é, sua simples presença já indica um
+valor verdadeiro, sem necessidade de atribuir um valor explícito. O atributo disabled,
+usado em campos de formulário para desabilitar a interação do usuário, é um exemplo:
+escrever apenas disabled já é equivalente a disabled="disabled".
+\end{codebox}
+
+\subsection{Aspas em valores de atributos}
+
+Embora tecnicamente não seja sempre obrigatório colocar o valor de um atributo entre aspas, essa é uma prática fortemente recomendada, pois evita ambiguidades. Observe o problema que pode ocorrer sem o uso de aspas:
+
+Por que usar aspas nos atributos
+
+\begin{codebox}{HTML}
+   <!-- Forma recomendada e sem ambiguidade -->
+   <a href="https://www.mozilla.org" title="Site Favorito">Website Favorito</a>
+
+   <!-- Forma arriscada: sem aspas, o navegador pode interpretar
+        o espaço em branco como o início de um novo atributo -->
+   <a href=https://www.mozilla.org title=Site Favorito>Website Favorito</a>
+\end{codebox}
+
+No segundo caso, o navegador tenta interpretar tudo após o sinal de igual até o próximo espaço em branco como o valor do atributo. Isso significa que a palavra “Favorito”, separada por um espaço da palavra “Site”, seria interpretada como um atributo booleano à parte, e não como parte do valor de title. É possível usar tanto aspas duplas quanto aspas simples, mas nunca misturar os dois tipos ao abrir e fechar o mesmo valor. Quando o próprio valor do atributo contém um apóstrofo — como em contrações do inglês, por exemplo “it’s” — e o valor está delimitado por aspas simples, é necessário usar uma entidade especial de caractere para representar o apóstrofo sem causar ambiguidade, como será visto a seguir.
+
+\section{Caracteres especiais (entidades HTML)}
+
+\begin{codebox}{Código}
+Como os sinais de menor (<) e maior (>) têm significado reservado em HTML —
+delimitam tags —, não é possível inseri-los diretamente no conteúdo visível de uma
+página sem que o navegador tente interpretá-los como parte de uma marcação. Para
+contornar isso, existem entidades de caractere: códigos especiais que representam
+esses caracteres como texto literal.
+\end{codebox}
+
+Principais entidades de caractere
+
+\begin{codebox}{HTML}
+    &lt;   <!-- sinal de menor (<) -->
+    &gt;   <!-- sinal de maior (>) -->
+    &quot; <!-- aspas duplas (") -->
+    &#39; <!-- aspas simples / apóstrofo (') -->
+    &amp; <!-- E comercial (&) -->
+\end{codebox}
+
+Existem centenas de outras entidades definidas no padrão HTML, mas, para o uso cotidiano, essas cinco cobrem a grande maioria dos casos práticos. Vale notar que, ao declarar corretamente o conjunto de caracteres do documento como UTF-8 (assunto tratado na próxima seção), a maioria dos demais caracteres especiais — como acentos, letras de outros idiomas ou o símbolo de copyright — pode ser digitada diretamente, sem necessidade de codificação especial.
+
+\section{Comentários}
+
+Assim como em qualquer linguagem de programação, é possível inserir comentários em HTML — trechos de texto que não são renderizados pelo navegador, mas que servem como anotação para quem escreve ou mantém o código. Enquanto em Java se usa // ou /* */, em HTML a sintaxe de comentário é a seguinte:
+
+\begin{codebox}{Comentário em HTML}
+HTML
+<!-- Este trecho não aparece na página renderizada -->
+<p>Este parágrafo aparece normalmente.</p>
+\end{codebox}
+
+\section{Anatomia de um documento HTML completo}
+
+\begin{codebox}{Código}
+Todo documento HTML segue uma estrutura mínima obrigatória, formada por um
+preâmbulo (a declaração DOCTYPE), o elemento raiz <html>, e dentro dele os elementos
+<head> e <body>. Essa estrutura evoluiu ao longo dos anos — versões anteriores ao
+HTML5 exigiam uma declaração de DOCTYPE bem mais longa e complexa — e hoje
+está bastante simplificada.
+\end{codebox}
+
+Esqueleto básico de um documento HTML5
+
+\begin{codebox}{HTML}
+  <!DOCTYPE html>
+  <html lang="pt-br">
+    <head>
+      <!-- O elemento head contém metadados: nada aqui é
+           visível diretamente na página renderizada -->
+      <meta charset="utf-8">
+      <meta name="description" content="Uma breve descrição da página.">
+      <title>Título exibido na aba do navegador</title>
+
+      <!-- Associação de uma folha de estilos CSS externa -->
+      <link rel="stylesheet" href="estilos.css">
+    </head>
+    <body>
+      <!-- Tudo dentro do body é visível no navegador -->
+      <h1>Bem-vindo à minha página</h1>
+      <p>Este é o conteúdo principal, visível para o usuário.</p>
+
+      <!-- Boa prática: script no final do body, para garantir
+            que os elementos HTML já foram carregados antes de
+            o JavaScript tentar acessá-los -->
+      <script src="script.js"></script>
+    </body>
+  </html>
+\end{codebox}
+
+Vale destacar alguns pontos importantes dessa estrutura:
+
+\begin{itemize}
+  \item <!DOCTYPE html>: informa ao navegador que o documento segue o padrão HTML5. É a forma simplificada introduzida por essa versão da linguagem.
+\end{itemize}
+
+\begin{itemize}
+  \item <html>: o elemento raiz de todo documento HTML — todos os demais elementos ficam aninhados dentro dele. O atributo lang (também global, mas especialmente importante aqui) define o idioma principal do documento, o que é relevante tanto para acessibilidade (leitores de tela pronunciam palavras de forma diferente conforme o idioma configurado) quanto para mecanismos de busca.
+\end{itemize}
+
+\begin{itemize}
+  \item <head>: contém informações não visíveis — metadados — como o conjunto de caracteres do documento, palavras-chave para mecanismos de busca, o título exibido na aba do navegador e a associação com folhas de estilo CSS externas.
+\end{itemize}
+
+\begin{itemize}
+  \item <meta charset="utf-8»: declara que o documento usa a codificação de caracteres UTF-8, hoje praticamente universal, cobrindo os caracteres de qualquer idioma do mundo. É fortemente recomendado sempre declarar essa codificação explicitamente: em navegadores mais antigos, a ausência dessa declaração — ou o uso de uma codificação diferente, como ISO-8859-1 — pode causar falhas na exibição de caracteres não latinos, como japonês ou coreano.
+\end{itemize}
+
+\begin{itemize}
+  \item <body>: contém todo o conteúdo que efetivamente aparece no navegador — é, por assim dizer, irmão do <head> dentro do <html>.
+\end{itemize}
+
+\subsection{Associando CSS e JavaScript externamente}
+
+\begin{codebox}{Código}
+Embora seja tecnicamente possível escrever CSS e JavaScript diretamente dentro do
+arquivo HTML, essa não é uma boa prática, pois compromete a separação de interesses:
+HTML deve cuidar de estrutura e semântica, CSS de apresentação visual, e JavaScript
+de comportamento e interatividade. Manter esses três arquivos separados também
+facilita o trabalho em equipe, permitindo que diferentes pessoas trabalhem em cada
+camada de forma independente.
+Para associar uma folha de estilo externa, usa-se o elemento <link> dentro do
+<head>, com os atributos rel (que indica o tipo de relação — no caso, stylesheet,
+folha de estilo) e href (que indica o caminho até o arquivo). Para associar um arquivo
+JavaScript, usa-se o elemento <script> com o atributo src, apontando para o arquivo
+.js correspondente.
+\end{codebox}
+
+\begin{codebox}{Dica}
+Como o navegador processa o HTML de cima para baixo, colocar a tag <script>
+logo no início do documento pode causar erros: o JavaScript pode tentar acessar
+um elemento que ainda não foi lido pelo navegador e, portanto, ainda não existe
+na árvore DOM. Por isso, a prática recomendada é posicionar o <script> no final
+do <body>, garantindo que todo o conteúdo HTML já tenha sido processado antes
+de o script ser executado.
+\end{codebox}
+
+\section{A MDN: a principal referência para aprender}
+
+\begin{codebox}{HTML}
+
+\end{codebox}
+
+\begin{infobox}{MDN Web Docs}
+A MDN (Mozilla Developer Network, hoje oficialmente chamada MDN Web Docs) é a documentação de referência mantida pela Mozilla — a organização por trás do navegador Firefox — sobre tecnologias web: HTML, CSS, JavaScript e APIs relacionadas. É considerada a fonte mais confiável e completa disponível gratuitamente na internet para aprender e consultar detalhes dessas linguagens.
+\end{infobox}
+
+A documentação da MDN organiza os exercícios práticos em diferentes níveis de complexidade. Os exercícios simples e rápidos, chamados Learn, servem apenas para testar conhecimentos pontuais logo após a leitura de uma seção teórica. Já os exercícios Test your skills (“Teste suas habilidades”) são um pouco mais elaborados, com maior grau de dificuldade, funcionando como uma avaliação intermediária do que foi aprendido. Há três formas possíveis de resolver esses exercícios: diretamente na própria página da MDN, que frequentemente já embute uma área de edição de código com saída imediata; localmente, em um editor como o Visual Studio Code; ou em uma ferramenta
+
+online como o CodePen, que dispensa qualquer instalação e permite compartilhar o código facilmente.
+
+\begin{infobox}{Dica}
+Um roteiro prático para resolver os exercícios da MDN:
+\end{infobox}
+
+1. Leia a seção teórica correspondente ao exercício antes de tentar resolvê-lo — os exercícios pressupõem o conteúdo apresentado imediatamente antes deles.
+
+2. Localize a área de edição de código na própria página (geralmente com um campo de entrada e uma área de saída ao lado ou abaixo).
+
+3. Edite o código diretamente na área indicada, seguindo a instrução do exercício (por exemplo, abrir uma tag específica em determinado ponto do texto).
+
+4. Observe o resultado na área de saída. Caso tenha cometido algum erro, é possível reiniciar o exercício usando o botão de reset, sem qualquer penalidade.
+
+5. Caso não consiga resolver sozinho, a própria página costuma oferecer um link para a solução — não é falha usar esse recurso enquanto o material ainda está sendo internalizado.
+
+Boa parte da documentação da MDN já está traduzida para diversos idiomas, incluindo português do Brasil, mas nem todo o conteúdo possui tradução completa. Quando isso ocorrer, vale lembrar que, para quem pretende seguir carreira em ciência da computação, desenvolver a habilidade de leitura em inglês técnico é praticamente indispensável — não é necessário falar ou compreender inglês oral fluentemente para isso, apenas praticar a leitura progressivamente. Recorrer a um tradutor automático em casos pontuais não é um problema, mas vale tentar ler o texto original primeiro, construindo vocabulário técnico aos poucos.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item HTML é uma linguagem de marcação, não uma linguagem de programação: ela declara estrutura e semântica, não lógica.
+\end{itemize}
+
+\begin{itemize}
+  \item Um elemento HTML é composto por tag de abertura, conteúdo e tag de encerramento; elementos aninhados devem fechar na ordem inversa da abertura.
+\end{itemize}
+
+\begin{itemize}
+  \item Elementos se dividem (na categorização clássica) em elementos de bloco e elementos em linha, com comportamentos de renderização distintos.
+\end{itemize}
+
+\begin{itemize}
+  \item Atributos fornecem metadados não visíveis, usados por CSS e JavaScript para selecionar e configurar elementos; valores de atributo devem sempre vir entre aspas.
+\end{itemize}
+
+\begin{itemize}
+  \item Todo documento HTML segue uma anatomia padrão: DOCTYPE, elemento raiz html, com head (metadados) e body (conteúdo visível).
+\end{itemize}
+
+\begin{itemize}
+  \item Declarar charset="utf-8" no head é essencial para garantir a correta exibição de caracteres de qualquer idioma.
+\end{itemize}
+
+\begin{itemize}
+  \item A MDN é a principal referência para aprender e praticar HTML, CSS e JavaScript, com exercícios organizados por nível de dificuldade e disponíveis em múltiplos formatos de resolução.
+\end{itemize}

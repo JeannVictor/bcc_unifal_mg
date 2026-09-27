@@ -1,0 +1,202 @@
+[gd_scene load_steps=16 format=3 uid="uid://bsxshpahvasrv"]
+
+[ext_resource type="PackedScene" uid="uid://bpuhk31jpn0dm" path="res://Scenes/Enemys/Enemy_Sniper/enemy_sniper.tscn" id="1_lb8qc"]
+[ext_resource type="Texture2D" uid="uid://dllr3bxxmvnmx" path="res://Assets/Textures/Enemys/GreenDrone/Walk.png" id="2_i78t8"]
+[ext_resource type="Texture2D" uid="uid://dyj5fydcrcxto" path="res://Assets/Textures/Enemys/GreenDrone/Attack.png" id="3_u7x7n"]
+[ext_resource type="Texture2D" uid="uid://cqs5v47oc03qm" path="res://Assets/Textures/Enemys/GreenDrone/Hurt.png" id="4_v6lvd"]
+[ext_resource type="Texture2D" uid="uid://5qbx7hyng6hn" path="res://Assets/Textures/Enemys/GreenDrone/Death.png" id="5_6s4d0"]
+[ext_resource type="PackedScene" uid="uid://bmf55wueli5ef" path="res://Scenes/Enemys/Attacks/Long_Range/long_range.tscn" id="6_3eo3m"]
+[ext_resource type="PackedScene" uid="uid://ba7qnguy7ejp3" path="res://Scenes/Projectile/projectile_for_enemy3.tscn" id="7_lb8qc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lb8qc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i78t8"]
+size = Vector2(32, 30.25)
+
+[sub_resource type="Animation" id="Animation_db7se"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteAttack:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteHurt:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteDeath:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_xfbol"]
+resource_name = "attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteAttack:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_og23v"]
+resource_name = "death"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDeath:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_v8ytl"]
+resource_name = "taking_damage"
+length = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteHurt:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_nutjp"]
+resource_name = "walk"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteWalk:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2s4gq"]
+_data = {
+&"RESET": SubResource("Animation_db7se"),
+&"attack": SubResource("Animation_xfbol"),
+&"death": SubResource("Animation_og23v"),
+&"taking_damage": SubResource("Animation_v8ytl"),
+&"walk": SubResource("Animation_nutjp")
+}
+
+[node name="GreenDrone" instance=ExtResource("1_lb8qc")]
+scale = Vector2(1.5, 1.5)
+collision_layer = 128
+collision_mask = 129
+repel_hysteresis = 10.0
+attack_path = NodePath("Long_Range")
+speed = 100.0
+max_health = 100
+drop_reward = 1
+invincibility_time = 0.1
+
+[node name="CollisionShape2D" parent="." index="0"]
+position = Vector2(3, -7)
+shape = SubResource("RectangleShape2D_lb8qc")
+
+[node name="SpriteWalk" parent="." index="1"]
+visible = false
+texture = ExtResource("2_i78t8")
+offset = Vector2(11, -7)
+hframes = 4
+
+[node name="SpriteAttack" parent="." index="2"]
+visible = true
+texture = ExtResource("3_u7x7n")
+offset = Vector2(11, -7)
+
+[node name="SpriteHurt" parent="." index="3"]
+visible = true
+position = Vector2(0.33333576, 0)
+scale = Vector2(1.6666666, 1.5)
+texture = ExtResource("4_v6lvd")
+offset = Vector2(11, -5)
+hframes = 2
+frame = 1
+
+[node name="SpriteDeath" parent="." index="4"]
+texture = ExtResource("5_6s4d0")
+offset = Vector2(11, -7)
+hframes = 4
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+position = Vector2(3.5, -10.125)
+shape = SubResource("RectangleShape2D_i78t8")
+
+[node name="AnimationPlayer" parent="." index="6"]
+libraries = {
+&"": SubResource("AnimationLibrary_2s4gq")
+}
+
+[node name="Long_Range" parent="." index="7" instance=ExtResource("6_3eo3m")]
+projectile_scene = ExtResource("7_lb8qc")
+pierce = 0
+knockback_amount = 50.0
+
+[node name="Marker2D" parent="Long_Range" index="1"]
+position = Vector2(4.5, 3.5)
+
+[node name="DelayTimer" parent="Long_Range" index="2"]
+wait_time = 0.2
+
+[editable path="HurtBox"]
+[editable path="Long_Range"]

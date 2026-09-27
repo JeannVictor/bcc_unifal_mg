@@ -1,0 +1,35 @@
+\documentclass[11pt,a4paper,openany]{book}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm]{geometry}
+\usepackage{fontspec}
+\usepackage[brazil]{babel}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\definecolor{azul}{HTML}{0B4F7A}
+\definecolor{laranja}{HTML}{EF6C00}
+\hypersetup{colorlinks=true,linkcolor=azul,urlcolor=azul,pdftitle={Empreendedorismo em Informática},pdfauthor={Jeann Victor}}
+\titleformat{\chapter}[display]{\sffamily\bfseries\color{azul}}{\filleft\Large\color{laranja}\chaptername\ \thechapter}{1ex}{\titlerule\vspace{1ex}\Huge}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily Empreendedorismo em Informática}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\begin{document}
+\begin{titlepage}
+\pagecolor{azul}\color{white}
+\vspace*{2cm}
+{\sffamily\bfseries\fontsize{29}{34}\selectfont Empreendedorismo em Informática\par}
+\vspace{.8cm}{\color{laranja}\rule{.72\textwidth}{3pt}}
+\vspace{.8cm}{\Large\sffamily Da ideia ao negócio: fundamentos, estratégia e inovação em TI\par}
+\vfill{\large Jeann Victor\par}{\large 2026\par}
+\end{titlepage}
+\nopagecolor\color{black}
+\frontmatter
+\tableofcontents
+\mainmatter
+\input{conteudo_recuperado.tex}
+\end{document}

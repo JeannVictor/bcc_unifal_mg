@@ -1,0 +1,24 @@
+services:
+  database:
+    image: mysql:latest
+    container_name: coinconverter-db
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: coinconverter-app
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+
+volumes:
+  mysql_data:

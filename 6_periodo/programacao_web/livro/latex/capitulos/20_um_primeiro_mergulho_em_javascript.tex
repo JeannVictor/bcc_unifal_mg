@@ -1,0 +1,261 @@
+\chapter{Um Primeiro Mergulho em JavaScript}
+
+\section{O projeto: jogo de adivinhação de números}
+
+A ideia do jogo é simples de descrever, mas rica o suficiente para ilustrar praticamente todos os conceitos fundamentais da linguagem. Quando a página carrega, o programa sorteia um número aleatório entre 1 e 100. O usuário tem 10 tentativas para descobrir esse número, digitando um valor em um campo de texto e confirmando com um botão. A cada tentativa, o sistema informa se o palpite foi maior ou menor que o número sorteado. Se o usuário acertar dentro das 10 tentativas, uma mensagem de sucesso é exibida; caso contrário, o jogo termina e é exibido um botão para reiniciar.
+
+\begin{infobox}{Requisitos funcionais do jogo}
+• Sortear um número aleatório entre 1 e 100 no início do jogo.
+\end{infobox}
+
+\begin{itemize}
+  \item Permitir até 10 tentativas de adivinhação.
+\end{itemize}
+
+\begin{itemize}
+  \item A cada tentativa, informar se o valor digitado foi muito alto ou muito baixo.
+\end{itemize}
+
+\begin{itemize}
+  \item Exibir o histórico de tentativas anteriores.
+\end{itemize}
+
+\begin{itemize}
+  \item Ao acertar, exibir mensagem de parabéns e encerrar o jogo.
+\end{itemize}
+
+\begin{itemize}
+  \item Ao esgotar as tentativas sem acertar, exibir mensagem de fim de jogo.
+\end{itemize}
+
+\begin{itemize}
+  \item Oferecer um botão para reiniciar o jogo a qualquer momento após o término.
+\end{itemize}
+
+Esse exemplo é interessante justamente por ser pequeno o bastante para caber neste capítulo, mas completo o bastante para exercitar variáveis, constantes, funções, eventos, laços, manipulação do DOM e um pouco de orientação a objetos. Cada um desses conceitos será aprofundado nos capítulos seguintes; aqui, o objetivo é apenas ganhar familiaridade prática com a ”sensação”de programar em JavaScript.
+
+\section{Estrutura HTML de partida}
+
+Antes de escrever qualquer JavaScript, é preciso ter uma estrutura HTML mínima para trabalhar. O esqueleto do jogo é formado por um título, um parágrafo de instruções, um formulário simples (com um campo de texto e um botão) e uma área destinada às mensagens de status:
+
+\begin{codebox}{HTML}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo de Adivinhação</title>
+</head>
+<body>
+  <h1>Jogo de Adivinhação de Números</h1>
+  <p>Selecionamos um número aleatório entre 1 e 100.
+     Você consegue adivinhar em 10 tentativas ou menos?</p>
+
+     <form>
+       <label for="guessField">Digite uma tentativa: </label>
+       <input type="text" id="guessField" class="guessField">
+       <input type="submit" value="Enviar tentativa" class="guessSubmit">
+     </form>
+
+     <div class="resultParas">
+       <p class="guesses"></p>
+       <p class="lastResult"></p>
+       <p class="lowHigh"></p>
+     </div>
+
+  <script src="jogo.js" defer></script>
+</body>
+</html>
+\end{codebox}
+
+Note que os elementos que precisarão ser manipulados por JavaScript recebem uma classe (ou poderiam receber um id) para que seja possível localizá-los depois a partir do código.
+
+\section{Declarando as variáveis do jogo}
+
+O primeiro passo dentro do arquivo JavaScript é declarar as variáveis que o programa vai utilizar. Uma variável é, essencialmente, um espaço reservado na memória do computador para armazenar um valor.
+
+\begin{codebox}{JavaScript}
+ let randomNumber = Math.floor(Math.random() * 100) + 1;
+ let guessCount = 1;
+ let resetButton;
+
+ const guesses = document.querySelector(".guesses");
+ const lastResult = document.querySelector(".lastResult");
+ const lowOrHigh = document.querySelector(".lowHigh");
+
+ const guessSubmit = document.querySelector(".guessSubmit");
+ const guessField = document.querySelector(".guessField");
+
+ guessField.focus();
+\end{codebox}
+
+Vale destacar o funcionamento de Math.random(), um método da classe Math que gera um número decimal aleatório entre 0 (inclusive) e 1 (exclusive). Multiplicando esse valor por 100, obtém-se um número entre 0 e 99,999...; aplicando Math.floor(), o valor é arredondado para baixo, resultando em um número inteiro entre 0 e 99. Somando 1, finalmente, chega-se a um número inteiro entre 1 e 100, exatamente como desejado. As constantes guesses, lastResult e lowOrHigh são ponteiros (referências) para os três parágrafos definidos dentro da div de resultado. Da mesma forma, guessSubmit e guessField apontam, respectivamente, para o botão e para o campo de texto do formulário. Uma vez obtidas essas referências, é possível manipular esses elementos livremente a partir do código.
+
+\begin{infobox}{Dica}
+Repare que querySelector recebe como argumento um seletor CSS — os mesmos seletores usados nas folhas de estilo. Um ponto na frente do nome (.guesses) indica que se está buscando um elemento pelo valor do atributo class; já um sustenido (\#jogador) indica busca por id. Essa é uma das grandes vantagens de já conhecer CSS antes de aprender JavaScript.
+\end{infobox}
+
+\section{Escrevendo a primeira função}
+
+Uma função em JavaScript agrupa um bloco de código que pode ser executado (chamado) quando necessário. Para um primeiro teste, é possível escrever uma função simples que apenas exibe um alerta:
+
+\begin{codebox}{JavaScript}
+ function checkGuess() {
+   alert("Eu sou um placeholder!");
+ }
+\end{codebox}
+
+A palavra reservada function inicia a definição, seguida do nome escolhido para a função, parênteses (que conteriam os parâmetros, se houvesse algum) e um bloco de código delimitado por chaves. A função alert() é uma função global do navegador
+
+que exibe uma caixa de diálogo simples com uma mensagem informativa — útil para testes rápidos, embora pouco usada em interfaces reais e profissionais.
+
+\begin{infobox}{Dica}
+Uma forma prática de testar pequenos trechos de JavaScript, sem precisar editar arquivos, é abrir o console do navegador (parte das ferramentas de desenvolvedor, acessíveis geralmente pela tecla F12 ou pelo menu de inspeção). É possível digitar expressões diretamente ali e ver o resultado na hora — inclusive chamar funções já definidas no script carregado pela página.
+\end{infobox}
+
+\section{Operadores básicos}
+
+Antes de completar a lógica do jogo, vale revisar rapidamente os operadores mais comuns, todos testáveis diretamente no console do navegador:
+
+\begin{codebox}{JavaScript}
+6 + 9;       // 15   (adição)
+20 - 15;     // 5    (subtração)
+3 * 7;       // 21   (multiplicação)
+10 / 5;      // 2    (divisão)
+
+// concatenação de strings com o operador +
+let name = "Cris";
+"Olá, " + name;    // "Olá, Cris"
+
+// operadores de comparação
+5 === 2 + 3;   // true (estritamente igual: mesmo valor e mesmo tipo)
+"2" === 2;     // false (tipos diferentes: string x number)
+"2" !== 2;     // true (estritamente diferente)
+\end{codebox}
+
+Os operadores de comparação === (estritamente igual) e !== (estritamente diferente) levam em conta tanto o valor quanto o tipo dos operandos, e serão discutidos com mais detalhes no capítulo sobre números e operadores.
+
+\section{Completando a lógica de verificação}
+
+Com as variáveis e o entendimento básico de funções e operadores em mãos, é possível escrever a função que de fato verifica a tentativa do usuário:
+
+\begin{codebox}{JavaScript}
+function checkGuess() {
+  const guess = Number(guessField.value);
+
+     if (guessCount === 1) {
+       guesses.textContent = "Tentativas anteriores: ";
+     }
+
+
+
+     guesses.textContent += guess + " ";
+
+     if (guess === randomNumber) {
+       lastResult.textContent = "Parabéns! Você acertou o número!";
+       lastResult.style.backgroundColor = "green";
+       lowOrHigh.textContent = "";
+       setGameOver();
+     } else if (guessCount === 10) {
+       lastResult.textContent = "!!! GAME OVER !!!";
+       setGameOver();
+     } else {
+       lastResult.textContent = "Errado!";
+       lastResult.style.backgroundColor = "red";
+
+         if (guess < randomNumber) {
+           lowOrHigh.textContent = "Tentativa muito baixa!";
+         } else if (guess > randomNumber) {
+           lowOrHigh.textContent = "Tentativa muito alta!";
+         }
+     }
+
+     guessCount++;
+     guessField.value = "";
+     guessField.focus();
+ }
+\end{codebox}
+
+Repare em vários detalhes importantes deste trecho. Primeiro, guessField.value retorna o valor digitado pelo usuário no campo de texto — sempre como uma string — e por isso ele é convertido explicitamente para número com o construtor Number(). Segundo, a propriedade textContent permite ler e escrever o conteúdo textual de um elemento; já a propriedade style dá acesso às propriedades CSS daquele elemento diretamente pelo JavaScript, permitindo, por exemplo, mudar a cor de fundo dinamicamente. Por fim, a lógica condicional compara o palpite do usuário com o número sorteado e decide qual mensagem exibir.
+
+\section{Capturando o evento de clique}
+
+Até aqui, a função checkGuess existe, mas nada a executa automaticamente: é preciso registrar um ”ouvinte”do evento de clique no botão de envio:
+
+\begin{codebox}{JavaScript}
+ guessSubmit.addEventListener("click", checkGuess);
+\end{codebox}
+
+O método addEventListener recebe dois argumentos: o tipo do evento de interesse (aqui, "click", o clique do mouse) e a função que deve ser chamada quando o evento ocorrer. Note que o nome da função é passado sem parênteses — apenas uma referência à função, e não uma chamada imediata dela.
+
+\section{Finalizando o jogo}
+
+Falta ainda escrever a função que trata o fim do jogo, seja por vitória, seja por esgotamento das tentativas:
+
+\begin{codebox}{JavaScript}
+ function setGameOver() {
+   guessField.disabled = true;
+   guessSubmit.disabled = true;
+
+     resetButton = document.createElement("button");
+     resetButton.textContent = "Iniciar novo jogo";
+     document.body.appendChild(resetButton);
+
+     resetButton.addEventListener("click", resetGame);
+ }
+\end{codebox}
+
+Esta função desabilita o campo de texto e o botão de envio (para impedir novas tentativas) e cria dinamicamente, via document.createElement, um novo botão de reinício, que é inserido no documento com appendChild. Em seguida, um evento de clique é associado a esse novo botão, apontando para uma função resetGame, responsável por reiniciar o estado do jogo:
+
+\begin{codebox}{JavaScript}
+ function resetGame() {
+   guessCount = 1;
+
+     const resetParas = document.querySelectorAll(".resultParas p");
+     for (let i = 0; i < resetParas.length; i++) {
+       resetParas[i].textContent = "";
+     }
+
+     resetButton.parentNode.removeChild(resetButton);
+
+     guessField.disabled = false;
+     guessSubmit.disabled = false;
+     guessField.value = "";
+     guessField.focus();
+
+     lastResult.style.backgroundColor = "white";
+
+     randomNumber = Math.floor(Math.random() * 100) + 1;
+ }
+\end{codebox}
+
+Observe o laço for, que percorre todos os parágrafos de resultado limpando seu conteúdo, e a remoção do botão de reinício por meio de parentNode.removeChild() — já que um elemento não pode remover a si mesmo do DOM, mas seu elemento pai pode.
+
+Síntese do Capítulo
+
+\begin{itemize}
+  \item O jogo de adivinhação de números serve como exemplo prático que reúne variáveis, funções, eventos, laços e manipulação do DOM em um único programa coeso.
+\end{itemize}
+
+\begin{itemize}
+  \item Math.random() combinado com Math.floor() é a forma padrão de gerar números inteiros aleatórios dentro de um intervalo em JavaScript.
+\end{itemize}
+
+\begin{itemize}
+  \item querySelector e querySelectorAll localizam elementos do DOM usando a mesma sintaxe de seletores do CSS.
+\end{itemize}
+
+\begin{itemize}
+  \item textContent lê e altera o texto de um elemento; a propriedade style permite alterar CSS diretamente via JavaScript.
+\end{itemize}
+
+\begin{itemize}
+  \item addEventListener associa uma função a um evento de um elemento, sendo a forma recomendada de tratar eventos (em vez de atributos como onclick).
+\end{itemize}
+
+\begin{itemize}
+  \item Elementos podem ser criados dinamicamente com createElement e inseridos no DOM com appendChild, assim como removidos com removeChild a partir do elemento pai.
+\end{itemize}
+
+\begin{itemize}
+  \item O console do navegador é uma ferramenta valiosa para testar pequenos trechos de código e funções isoladamente, antes de integrá-los ao programa completo.
+\end{itemize}
