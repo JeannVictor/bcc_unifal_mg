@@ -16,5 +16,7 @@ Materiais acadêmicos de **Computação Paralela**.
 | [listas/](listas/) | Listas de exercícios, enunciados e resoluções. | 1 |
 | [projetos/](projetos/) | Projetos desenvolvidos durante a disciplina. | 1 |
 | [provas/](provas/) | Avaliações e materiais de preparação para provas. | 1 |
+| [resumos/](resumos/) | Resumo da matéria para as avaliações e afins.s. | 1 |
+
 
 [Voltar para 6º período](../README.md)
